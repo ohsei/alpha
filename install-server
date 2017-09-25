@@ -1,0 +1,3 @@
+yarn add webpack webpack-dev-server --dev
+
+yarn add babel-loader babel-core babel-preset-es2015 babel-preset-react babel-preset-stage-2 --dev
