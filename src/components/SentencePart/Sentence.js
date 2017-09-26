@@ -26,6 +26,7 @@ const DivSen = styled.div`
   display: block;
   position: relative;
 `
+let pressed = false 
 
 class Sentence extends Component{
   constructor (props){
@@ -34,6 +35,8 @@ class Sentence extends Component{
       imeMode: 'inactive',
       textAreaHeight: 0,
     }
+    this.onKeyUp = this.onKeyUp.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
     this.onTextAreaChange = this.onTextAreaChange.bind(this)
     this.onTextAreaClick = this.onTextAreaClick.bind(this)
   }
@@ -52,31 +55,55 @@ class Sentence extends Component{
     updateNote: PropTypes.func,
   }
 
+  onKeyUp (event){
+    pressed = false
+    const newHeight = this.inputText.htmlEl.offsetHeight
+    const oldHeight = this.state.textAreaHeight
+    
+        if (oldHeight > 0 && newHeight > oldHeight) {
+    
+          const marginTop = 0//96.875 - newHeight - oldHeight
+          const pushObj = {
+            marginTop: -marginTop
+          }
+          this.props.addSentence(pushObj)
+        }
+        else if (newHeight < oldHeight){
+          this.props.delSentence()
+        }
+  }
+  onKeyDown (){
+    if (!pressed){
+      pressed=true
+    }
+    else{
+      alert("Do not long press!")
+      const newHeight = this.inputText.htmlEl.offsetHeight
+      const oldHeight = this.state.textAreaHeight
+      
+          if (oldHeight > 0 && newHeight > oldHeight) {
+      
+            const marginTop = 0//96.875 - newHeight - oldHeight
+            const pushObj = {
+              marginTop: -marginTop
+            }
+            this.props.addSentence(pushObj)
+          }
+          else if (newHeight < oldHeight){
+            this.props.delSentence()
+          }
+      pressed=false
+    }
+  }
   onTextAreaChange (){
-    console.log('this.inputText.htmlEl.offsetHeight', this.inputText.htmlEl.offsetHeight)
-    const height = this.inputText.htmlEl.offsetHeight
-    this.setState({textAreaHeight: height})
+    const newHeight = this.inputText.htmlEl.offsetHeight
+    this.setState({textAreaHeight: newHeight})
     this.props.updateNote(this.inputText.htmlEl.innerHTML)
   }
   onTextAreaClick (){
     this.inputText.htmlEl.focus()
-  }
-
-  componentWillUpdate (nextProps, nextState){
-
-    const height = this.state.textAreaHeight
-
-    if (height > 0 && nextState.textAreaHeight > height) {
-
-      const marginTop = 96.875 - (nextState.textAreaHeight - height)
-      const pushObj = {
-        marginTop: -marginTop
-      }
-      this.props.addSentence(pushObj)
-    }
-    else if (nextState.textAreaHeight < height){
-      this.props.delSentence()
-    }
+    const height = this.inputText.htmlEl.offsetHeight
+    this.setState({textAreaHeight: height})
   }
 
   render (){
@@ -96,8 +123,11 @@ class Sentence extends Component{
             spellCheck={false}
             style={{imeMode: this.state.imeMode}}
             innerRef={(ref) => {this.inputText = ref}}
+            onKeyPress={this.onKeyPress}
             onChange={this.onTextAreaChange}
             onClick={this.onTextAreaClick}
+            onKeyUp={this.onKeyUp}
+            onKeyDown={this.onKeyDown}
           />
         </DivSen>
       </div>
