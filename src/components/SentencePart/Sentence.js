@@ -26,7 +26,7 @@ const DivSen = styled.div`
   display: block;
   position: relative;
 `
-let pressed = false 
+let pressed = false
 
 class Sentence extends Component{
   constructor (props){
@@ -55,44 +55,17 @@ class Sentence extends Component{
     updateNote: PropTypes.func,
   }
 
-  onKeyUp (event){
+  onKeyUp (){
     pressed = false
-    const newHeight = this.inputText.htmlEl.offsetHeight
-    const oldHeight = this.state.textAreaHeight
-    
-        if (oldHeight > 0 && newHeight > oldHeight) {
-    
-          const marginTop = 0//96.875 - newHeight - oldHeight
-          const pushObj = {
-            marginTop: -marginTop
-          }
-          this.props.addSentence(pushObj)
-        }
-        else if (newHeight < oldHeight){
-          this.props.delSentence()
-        }
   }
   onKeyDown (){
     if (!pressed){
-      pressed=true
+      pressed = true
     }
-    else{
-      alert("Do not long press!")
-      const newHeight = this.inputText.htmlEl.offsetHeight
-      const oldHeight = this.state.textAreaHeight
-      
-          if (oldHeight > 0 && newHeight > oldHeight) {
-      
-            const marginTop = 0//96.875 - newHeight - oldHeight
-            const pushObj = {
-              marginTop: -marginTop
-            }
-            this.props.addSentence(pushObj)
-          }
-          else if (newHeight < oldHeight){
-            this.props.delSentence()
-          }
-      pressed=false
+    else {
+      alert('Do not long press!')
+
+      pressed = false
     }
   }
   onTextAreaChange (){
@@ -104,6 +77,23 @@ class Sentence extends Component{
     this.inputText.htmlEl.focus()
     const height = this.inputText.htmlEl.offsetHeight
     this.setState({textAreaHeight: height})
+  }
+
+  componentWillUpdate (){
+    const newHeight = this.inputText.htmlEl.offsetHeight
+    const oldHeight = this.state.textAreaHeight
+
+    if (oldHeight > 0 && newHeight > oldHeight) {
+
+      const marginTop = 0//96.875 - newHeight - oldHeight
+      const pushObj = {
+        marginTop: -marginTop
+      }
+      this.props.addSentence(pushObj)
+    }
+    else if (newHeight < oldHeight){
+      this.props.delSentence()
+    }
   }
 
   render (){
