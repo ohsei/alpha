@@ -15,38 +15,17 @@ const TextArea = styled(ContentEditable)`
   word-wrap: break-word;
   font-family: 'MyFamilyCHROME';
   font-size: 80px;
-  position:absolute;
+  position: absolute;
   top:0;
   left:0;
+  z-index: 9;
 `
 const DivSen = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-`
-const DivSen2 = styled.div`
   width: 100%;
   z-index: 0;
   display: block;
   position: relative;
 `
-const DivLine = styled.div`
-  width: 100%;
-  display: flex;
-  margin: 22px 0 0 0;
-  border-width: 1px;
-  border-style: solid;
-  border-color: ${props => props.borderColor}
-`
-const DivLineTwo = styled.div`
-  width: 100%;
-  display: flex;
-  margin: 22px 0 0 0;
-  border-width: 1px;
-  border-style: solid;
-  border-color: ${props => props.lineNum == 2 ? 'white' : props.borderColor};
-`
-
 let id = 0
 
 class Sentence extends Component{
@@ -109,36 +88,24 @@ class Sentence extends Component{
 
     const { marginTopArray, note, id } = this.props
     const senList = marginTopArray.map((obj, i) => {
-      if (i == 0){
-        return (
-          <DivSen key={i}>
-            <DivSen2>
-              <DivLineTwo borderColor='gray' />
-              <DivLine borderColor='gray' />
-              <DivLine borderColor='orange' />
-              <DivLineTwo borderColor='gray' />
-              <TextArea
-                html={note[id].html}
-                spellCheck={false}
-                style={{imeMode: this.state.imeMode}}
-                innerRef={(ref) => {this.inputText = ref}}
-                onChange={this.onTextAreaChange}
-                onClick={this.onTextAreaClick}
-              />
-            </DivSen2>
-          </DivSen>
-        )
-      }
-      else {
-        return <FourLine key={i} marginTop={this.props.marginTopArray[i].marginTop} />
-      }
+      return <FourLine key={i} marginTop={this.props.marginTopArray[i].marginTop} />
     })
 
 
     return (
 
-      <div style={{ width: '95%'}}>
-        {senList}
+      <div style={{ width: '95%', display: 'flex'}}>
+        <DivSen>
+          {senList}
+          <TextArea
+            html={note[id].html}
+            spellCheck={false}
+            style={{imeMode: this.state.imeMode}}
+            innerRef={(ref) => {this.inputText = ref}}
+            onChange={this.onTextAreaChange}
+            onClick={this.onTextAreaClick}
+          />
+        </DivSen>
       </div>
     )
   }
