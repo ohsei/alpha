@@ -169,9 +169,7 @@ class Main extends Component {
           id: 0,
           type: 'txtOnly',
           html: '',
-          sentenceNum: 0,
           marginTopArray: [{
-            id: 0,
             marginTop: 0
           }]
         }
@@ -328,12 +326,11 @@ class Main extends Component {
     }
   }
 
-  loadFile (event){
-    this.setState({setting: event.article.setting})
-    this.setState({article: event.article})
-    this.setState({curSegmentNo: event.article.segments.length - 1})
-    this.saveFileTitle.value = this.state.article.saveFileTitle
-    this.inputText.focus()
+  loadFile (file){
+    this.setState({setting: file.setting})
+    this.setState({note: file.note})
+    this.setState({curSegmentNo: file.note.length - 1})
+    this.saveFileTitle.value = file.saveFileTitle
   }
 
   setFileTitle (event){
@@ -351,9 +348,10 @@ class Main extends Component {
       tmpNote[i].id++
     }
     curNo++
-    tmpNote.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', sentenceNum: 0, marginTopArray: [{id: 0, marginTop: 0}]})
+    tmpNote.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', marginTopArray: [{marginTop: 0}]})
 
     this.setState({note: tmpNote})
+    this.setCurSegment({curNo: curNo})
   }
 
   delSegment (){
@@ -389,15 +387,14 @@ class Main extends Component {
     }
     }
   }
-  addSentence (senNum, pushObj){
+  addSentence (pushObj){
+    console.log('pushObj', pushObj)
     let note = this.state.note
-    note[this.state.curSegmentNo].sentenceNum = senNum
     note[this.state.curSegmentNo].marginTopArray.push(pushObj)
     this.setState({note: note})
   }
-  delSentence (senNum){
+  delSentence (){
     let note = this.state.note
-    note[this.state.curSegmentNo].sentenceNum = senNum
     note[this.state.curSegmentNo].marginTopArray.pop()
     this.setState({note: note})
   }
@@ -634,16 +631,6 @@ class Main extends Component {
     }
   }
 
-  componentWillMout (){
-
-  }
-  componentDidMount (){
-    console.log(this.saveFileTitle.value)
-
-  }
-
-  componentDidUpdate (){
-  }
 
   printFinish (){
     this.setState({isPrint: false})
@@ -690,7 +677,7 @@ class Main extends Component {
               <Menu
                 ref={ref => this.Menu = ref}
                 saveFileTitle={this.state.article.saveFileTitle}
-                article={this.state.article}
+                note={this.state.note}
                 setting={this.state.setting}
                 loadFile={this.loadFile}
                 setSetting={this.setSetting}

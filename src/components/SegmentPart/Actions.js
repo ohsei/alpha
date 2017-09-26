@@ -113,7 +113,7 @@ class Actions extends Component{
 
     if (this.props.type == 'txtOnly'){
       this.imgAddAction.disabled = true
-    } else{
+    } else {
       this.imgAddAction.disabled = false
     }
 
@@ -158,7 +158,7 @@ class Actions extends Component{
 
     if (this.props.type == 'txtOnly'){
       this.imgAddAction.disabled = true
-    }else {
+    } else {
       this.imgAddAction.disabled = false
     }
 
@@ -256,14 +256,14 @@ class Actions extends Component{
             onClick={this.addSegment} />
         </div>
         <StyledButton
-            style={{
+          style={{
             marginRight: 5,
             backgroundImage: 'url(' + require('../../resources/img/new_page.png') + ')',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat'
           }}
-            innerRef={(ref) => {this.btnPageBreak = ref}}
-            onClick={this.addPageBreak} />
+          innerRef={(ref) => {this.btnPageBreak = ref}}
+          onClick={this.addPageBreak} />
       </DivAction>
     )
   }

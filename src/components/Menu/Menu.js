@@ -9,9 +9,9 @@ const Item = styled.div`
   width: 30px;
   background-color: orange;
   color:white;
-  -webkit-writing-mode: ${props=>props.vertical ? 'vertical-lr' : 'horizontal-tb'};
-  -ms-writing-mode:  ${props=>props.vertical ? 'tb-lr' : 'lr-tb'};
-  writing-mode: ${props=>props.vertical ? 'tb-lr' : 'lr-tb'};
+  -webkit-writing-mode: ${props => props.vertical ? 'vertical-lr' : 'horizontal-tb'};
+  -ms-writing-mode:  ${props => props.vertical ? 'tb-lr' : 'lr-tb'};
+  writing-mode: ${props => props.vertical ? 'tb-lr' : 'lr-tb'};
   text-orientation:upright;
   height: 40px;
   border: 0.1px solid white;
@@ -27,7 +27,7 @@ const DivMenu = styled.div`
   height: 350px;
 `
 const ItemSetting = Item.extend`
-  vertical : ${props=>props.vertical};
+  vertical : ${props => props.vertical};
   margin: 0 0 10px 0;
   padding: 10px 0 5px 0;
 `
@@ -64,8 +64,8 @@ class Menu extends Component {
 
       reader.onload = function (){
         var fileStr = reader.result
-        let tmpArticle = JSON.parse(fileStr)
-        this.props.loadFile({article:tmpArticle})
+        let savedFile = JSON.parse(fileStr)
+        this.props.loadFile(savedFile)
       }.bind(this)
 
       reader.readAsText(file)
@@ -78,15 +78,17 @@ class Menu extends Component {
       return
     }
 
-    let objContent = this.props.article
+    let objContent = {}
+    objContent.note = this.props.note
     objContent.setting = this.props.setting
+    objContent.saveFileTitle = this.props.saveFileTitle
     let content = JSON.stringify(objContent)
     var blob = new Blob([content], {type: 'text/plain;charset=utf-8'})
 
-    if(window.navigator.msSaveBlob) {
+    if (window.navigator.msSaveBlob) {
       window.navigator.msSaveBlob(blob, this.props.saveFileTitle)
       //window.navigator.msSaveOrOpenBlob(blob,"test.txt");
-    }else{
+    } else {
       this.save.download = this.props.saveFileTitle
       this.save.href = window.URL.createObjectURL(blob)
     }
@@ -105,7 +107,7 @@ class Menu extends Component {
   render (){
     return (
       <DivMenu>
-        <SetMenuItem name="設定"
+        <SetMenuItem name='設定'
           setSetting={this.setSetting}
         ></SetMenuItem>
         <ItemSetting vertical><a
@@ -115,12 +117,12 @@ class Menu extends Component {
           ref={(ref) => {this.save = ref}}
           onClick={this.saveFile}>保存</a></ItemSetting>
         <ItemSetting vertical><a
-          ref={(ref)=>{this.newFile = ref}}
+          ref={(ref) => {this.newFile = ref}}
           onClick={this.createNewFile}>新規</a></ItemSetting>
-        <ItemSetting vertical><label htmlFor="fileopen">
+        <ItemSetting vertical><label htmlFor='fileopen'>
           開く
         </label></ItemSetting>
-        <InputFileOpen id="fileopen" type="file"
+        <InputFileOpen id='fileopen' type='file'
           innerRef={(ref) => {this.open = ref}}
           onChange={this.openFile} />
       </DivMenu>
@@ -130,7 +132,7 @@ class Menu extends Component {
 Menu.propTypes = {
   saveFileTitle: PropTypes.any,
   loadFile: PropTypes.any,
-  article: PropTypes.any,
+  note: PropTypes.any,
   setting: PropTypes.any,
   setSetting: PropTypes.any,
   createNewFile: PropTypes.any,

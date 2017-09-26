@@ -26,7 +26,6 @@ const DivSen = styled.div`
   display: block;
   position: relative;
 `
-let id = 0
 
 class Sentence extends Component{
   constructor (props){
@@ -40,7 +39,6 @@ class Sentence extends Component{
   }
 
   static propTypes = {
-    sentenceNum: PropTypes.number,
     note: PropTypes.arrayOf(PropTypes.object),
     id: PropTypes.number,
     marginTopArray: PropTypes.arrayOf(
@@ -55,6 +53,7 @@ class Sentence extends Component{
   }
 
   onTextAreaChange (){
+    console.log('this.inputText.htmlEl.offsetHeight', this.inputText.htmlEl.offsetHeight)
     const height = this.inputText.htmlEl.offsetHeight
     this.setState({textAreaHeight: height})
     this.props.updateNote(this.inputText.htmlEl.innerHTML)
@@ -64,23 +63,19 @@ class Sentence extends Component{
   }
 
   componentWillUpdate (nextProps, nextState){
-    const {sentenceNum} = this.props
 
     const height = this.state.textAreaHeight
 
-    if (height > 0 && nextState.textAreaHeight > height ){
-      id++
+    if (height > 0 && nextState.textAreaHeight > height) {
+
       const marginTop = 96.875 - (nextState.textAreaHeight - height)
       const pushObj = {
-        id: id,
         marginTop: -marginTop
       }
-
-      this.props.addSentence(sentenceNum + 1, pushObj)
+      this.props.addSentence(pushObj)
     }
     else if (nextState.textAreaHeight < height){
-      id--
-      this.props.delSentence(sentenceNum - 1)
+      this.props.delSentence()
     }
   }
 
@@ -90,7 +85,6 @@ class Sentence extends Component{
     const senList = marginTopArray.map((obj, i) => {
       return <FourLine key={i} marginTop={this.props.marginTopArray[i].marginTop} />
     })
-
 
     return (
 
