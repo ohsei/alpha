@@ -49,7 +49,6 @@ const DivLineTwo = styled.div`
 
 let id = 0
 
-
 class Sentence extends Component{
   constructor (props){
     super(props)
@@ -57,15 +56,29 @@ class Sentence extends Component{
       imeMode: 'inactive',
       textAreaHeight: 0,
     }
-
     this.onTextAreaChange = this.onTextAreaChange.bind(this)
     this.onTextAreaClick = this.onTextAreaClick.bind(this)
   }
 
+  static propTypes = {
+    sentenceNum: PropTypes.number,
+    note: PropTypes.arrayOf(PropTypes.object),
+    id: PropTypes.number,
+    marginTopArray: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        marginTop: PropTypes.number,
+      })
+    ),
+    addSentence: PropTypes.func,
+    delSentence: PropTypes.func,
+    updateNote: PropTypes.func,
+  }
 
   onTextAreaChange (){
     const height = this.inputText.htmlEl.offsetHeight
     this.setState({textAreaHeight: height})
+    this.props.updateNote(this.inputText.htmlEl.innerHTML)
   }
   onTextAreaClick (){
     this.inputText.htmlEl.focus()
@@ -73,6 +86,7 @@ class Sentence extends Component{
 
   componentWillUpdate (nextProps, nextState){
     const {sentenceNum} = this.props
+
     const height = this.state.textAreaHeight
 
     if (height > 0 && nextState.textAreaHeight > height ){
@@ -91,22 +105,9 @@ class Sentence extends Component{
     }
   }
 
-  static propTypes = {
-    sentenceNum: PropTypes.number,
-    note: PropTypes.arrayOf(PropTypes.object),
-    marginTopArray: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number,
-        marginTop: PropTypes.number,
-      })
-    ),
-    addSentence: PropTypes.func,
-    delSentence: PropTypes.func,
-  }
-
   render (){
 
-    const { marginTopArray } = this.props
+    const { marginTopArray, note, id } = this.props
     const senList = marginTopArray.map((obj, i) => {
       if (i == 0){
         return (
@@ -117,6 +118,7 @@ class Sentence extends Component{
               <DivLine borderColor='orange' />
               <DivLineTwo borderColor='gray' />
               <TextArea
+                html={note[id].html}
                 spellCheck={false}
                 style={{imeMode: this.state.imeMode}}
                 innerRef={(ref) => {this.inputText = ref}}

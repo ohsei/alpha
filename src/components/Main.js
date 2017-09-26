@@ -249,6 +249,7 @@ class Main extends Component {
 
     this.addSentence = this.addSentence.bind(this)
     this.delSentence = this.delSentence.bind(this)
+    this.updateNote = this.updateNote.bind(this)
   }
 
   onPaste (e){
@@ -398,6 +399,11 @@ class Main extends Component {
     let note = this.state.note
     note[this.state.curSegmentNo].sentenceNum = senNum
     note[this.state.curSegmentNo].marginTopArray.pop()
+    this.setState({note: note})
+  }
+  updateNote (html){
+    let note = this.state.note
+    note[this.state.curSegmentNo].html = html
     this.setState({note: note})
   }
 
@@ -730,7 +736,8 @@ class Main extends Component {
               addSegment={this.addSegment}
               setCurSegment={this.setCurSegment}
               addSentence={this.addSentence}
-              delSentence={this.delSentence} />
+              delSentence={this.delSentence}
+              updateNote={this.updateNote} />
           </DivSegments>
 
 

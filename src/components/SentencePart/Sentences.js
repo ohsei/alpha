@@ -11,8 +11,6 @@ class Sentences extends Component{
   static propTypes = {
     id: PropTypes.number,
     note: PropTypes.arrayOf(PropTypes.object),
-    addSentence: PropTypes.func,
-    delSentence: PropTypes.func,
   }
   render (){
     const {note, id} = this.props
@@ -21,8 +19,6 @@ class Sentences extends Component{
       <Sentence
         sentenceNum={note[id].sentenceNum}
         marginTopArray={note[id].marginTopArray}
-        addSentence={this.props.addSentence}
-        delSentence={this.props.delSentence}
         {...this.props} />
     )
   }
