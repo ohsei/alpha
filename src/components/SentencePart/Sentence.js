@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import ContentEditable from 'react-contenteditable'
 
+import {getBrowserType} from '../../utils/browserType'
+
 import FourLine from './FourLine'
 
 const TextArea = styled(ContentEditable)`
@@ -27,6 +29,7 @@ const DivSen = styled.div`
   position: relative;
 `
 let pressed = false
+let isShiftKeyPressed = false
 
 class Sentence extends Component{
   constructor (props){
@@ -55,28 +58,55 @@ class Sentence extends Component{
     updateNote: PropTypes.func,
   }
 
-  onKeyUp (){
+  onKeyUp (event){
+    if (event.keyCode == 16){
+      isShiftKeyPressed = false
+    }
     pressed = false
-  }
-  onKeyDown (){
-    if (!pressed){
-      pressed = true
-    }
-    else {
-      alert('Do not long press!')
-
-      pressed = false
-    }
-  }
-  onTextAreaChange (){
-    const newHeight = this.inputText.htmlEl.offsetHeight
-    this.setState({textAreaHeight: newHeight})
+    this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
+    this.setState({html: this.inputText.htmlEl.innerHTML})
     this.props.updateNote(this.inputText.htmlEl.innerHTML)
   }
+
+  onKeyDown (event){
+    if (getBrowserType() == 'ie'){
+       if (event.keyCode == 16){
+        isShiftKeyPressed = true
+      }
+      if (event.keyCode == 13){
+        if (isShiftKeyPressed != true){
+          event.preventDefault()
+        }
+      }
+    }
+    else{
+      if (!pressed){
+        pressed = true
+      }
+      else {
+        if (event.keyCode == 13) {
+            alert('Do not long press!')
+            event.preventDefault()
+          }
+          pressed = false
+        }
+      }
+  }
+
+  onTextAreaChange (event){
+    if (getBrowserType() != 'edge'){
+      this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
+  
+      this.setState({html: this.inputText.htmlEl.innerHTML})
+      this.props.updateNote(this.inputText.htmlEl.innerHTML)
+    }
+  }
+
   onTextAreaClick (){
     this.inputText.htmlEl.focus()
-    const height = this.inputText.htmlEl.offsetHeight
-    this.setState({textAreaHeight: height})
+    if (getBrowserType() == 'ie'){
+      this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
+    }
   }
 
   componentWillUpdate (){
@@ -99,6 +129,7 @@ class Sentence extends Component{
   render (){
 
     const { marginTopArray, note, id } = this.props
+
     const senList = marginTopArray.map((obj, i) => {
       return <FourLine key={i} marginTop={this.props.marginTopArray[i].marginTop} />
     })
@@ -113,7 +144,6 @@ class Sentence extends Component{
             spellCheck={false}
             style={{imeMode: this.state.imeMode}}
             innerRef={(ref) => {this.inputText = ref}}
-            onKeyPress={this.onKeyPress}
             onChange={this.onTextAreaChange}
             onClick={this.onTextAreaClick}
             onKeyUp={this.onKeyUp}

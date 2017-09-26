@@ -388,7 +388,6 @@ class Main extends Component {
     }
   }
   addSentence (pushObj){
-    console.log('pushObj', pushObj)
     let note = this.state.note
     note[this.state.curSegmentNo].marginTopArray.push(pushObj)
     this.setState({note: note})
