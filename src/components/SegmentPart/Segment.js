@@ -33,10 +33,9 @@ class Segment extends Component{
     id: PropTypes.number,
     width: PropTypes.string,
     setting: PropTypes.object,
-    note: PropTypes.object,
+    note: PropTypes.arrayOf(PropTypes.object),
     addSegment: PropTypes.func,
     setCurSegment: PropTypes.func,
-    setMarginTopArray: PropTypes.func,
   }
 
   setCurSegment (){

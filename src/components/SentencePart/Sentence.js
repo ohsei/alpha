@@ -60,7 +60,6 @@ class Sentence extends Component{
 
     this.onTextAreaChange = this.onTextAreaChange.bind(this)
     this.onTextAreaClick = this.onTextAreaClick.bind(this)
-    this.getSenList = this.getSenList.bind(this)
   }
 
 
@@ -75,49 +74,42 @@ class Sentence extends Component{
   componentWillUpdate (nextProps, nextState){
     const {sentenceNum} = this.props
     const height = this.state.textAreaHeight
-    let marginTopArray = this.props.marginTopArray
-    console.log('height',height)
-    console.log('nextState.textAreaHeight',nextState.textAreaHeight)
-    console.log('this.inputText.htmlEl.innerHTML',this.inputText.htmlEl.innerHTML)
 
     if (height > 0 && nextState.textAreaHeight > height ){
       id++
       const marginTop = 96.875 - (nextState.textAreaHeight - height)
-      marginTopArray.push({
+      const pushObj = {
         id: id,
         marginTop: -marginTop
-      })
-      this.props.setSentenceNum(sentenceNum + 1)
-      this.props.setMarginTopArray(marginTopArray)
+      }
+
+      this.props.addSentence(sentenceNum + 1, pushObj)
     }
     else if (nextState.textAreaHeight < height){
       id--
-      marginTopArray.pop()
-      this.props.setSentenceNum(sentenceNum - 1)
-      this.props.setMarginTopArray(marginTopArray)
+      this.props.delSentence(sentenceNum - 1)
     }
-
-
   }
 
   static propTypes = {
     sentenceNum: PropTypes.number,
+    note: PropTypes.arrayOf(PropTypes.object),
     marginTopArray: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
         marginTop: PropTypes.number,
       })
     ),
-    setSentenceNum: PropTypes.func,
-    setMarginTopArray: PropTypes.func,
+    addSentence: PropTypes.func,
+    delSentence: PropTypes.func,
   }
 
-  getSenList (){
-    let tmpSenList = []
+  render (){
 
-    for (let i = 0;i <= this.props.sentenceNum;i++){
+    const { marginTopArray } = this.props
+    const senList = marginTopArray.map((obj, i) => {
       if (i == 0){
-        tmpSenList.push(
+        return (
           <DivSen key={i}>
             <DivSen2>
               <DivLineTwo borderColor='gray' />
@@ -136,20 +128,14 @@ class Sentence extends Component{
         )
       }
       else {
-        tmpSenList.push(<FourLine key={i} marginTop={this.props.marginTopArray[i].marginTop} />)
+        return <FourLine key={i} marginTop={this.props.marginTopArray[i].marginTop} />
       }
-    }
+    })
 
-    return tmpSenList
-  }
-
-  render (){
-
-    const senList = this.getSenList()
 
     return (
 
-      <div style={{ width: '95%'}} innerRef={(ref) => {this.sentenceArea = ref}}>
+      <div style={{ width: '95%'}}>
         {senList}
       </div>
     )

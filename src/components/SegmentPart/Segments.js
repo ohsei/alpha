@@ -14,8 +14,8 @@ class Segments extends Component{
     note: PropTypes.arrayOf(PropTypes.object),
     addSegment: PropTypes.func,
     setCurSegment: PropTypes.func,
-    setSentenceNum: PropTypes.func,
-    setMarginTopArray: PropTypes.func,
+    addSentence: PropTypes.func,
+    delSentence: PropTypes.func,
   }
   render (){
     const { note } = this.props
@@ -25,8 +25,8 @@ class Segments extends Component{
         id={i}
         addSegment={this.props.addSegment}
         setCurSegment={this.setCurSegment}
-        setSentenceNum={this.props.setSentenceNum}
-        setMarginTopArray={this.props.setMarginTopArray}
+        addSentence={this.props.addSentence}
+        delSentence={this.props.delSentence}
         {...this.props} />
     )
 

@@ -247,13 +247,14 @@ class Main extends Component {
 
     this.onPaste = this.onPaste.bind(this)
 
-    this.setSentenceNum = this.setSentenceNum.bind(this)
-    this.setMarginTopArray = this.setMarginTopArray.bind(this)
+    this.addSentence = this.addSentence.bind(this)
+    this.delSentence = this.delSentence.bind(this)
   }
 
   onPaste (e){
     e.preventDefault()
     var text
+
     if (window.clipboardData) {
       text = window.clipboardData.getData('text')
     } else {
@@ -263,17 +264,17 @@ class Main extends Component {
     if (document.selection) {
       // 〜Internet Explorer 10
       var range = document.selection.createRange()
-        range.text = text
+      range.text = text
     } else {
       // Internet Explorer 11/Chrome/Firefox
       var selection = window.getSelection()
-        var range = selection.getRangeAt(0)
-        var node = document.createTextNode(text)
-        range.insertNode(node)
-        range.setStartAfter(node)
-        range.setEndAfter(node)
-        selection.removeAllRanges()
-        selection.addRange(range)
+      var range = selection.getRangeAt(0)
+      var node = document.createTextNode(text)
+      range.insertNode(node)
+      range.setStartAfter(node)
+      range.setEndAfter(node)
+      selection.removeAllRanges()
+      selection.addRange(range)
     }
   }
   createNewFile (){
@@ -387,14 +388,16 @@ class Main extends Component {
     }
     }
   }
-  setSentenceNum (senNum){
+  addSentence (senNum, pushObj){
     let note = this.state.note
     note[this.state.curSegmentNo].sentenceNum = senNum
+    note[this.state.curSegmentNo].marginTopArray.push(pushObj)
     this.setState({note: note})
   }
-  setMarginTopArray (marginTopArray){
+  delSentence (senNum){
     let note = this.state.note
-    note[this.state.curSegmentNo].marginTopArray = marginTopArray
+    note[this.state.curSegmentNo].sentenceNum = senNum
+    note[this.state.curSegmentNo].marginTopArray.pop()
     this.setState({note: note})
   }
 
@@ -620,7 +623,7 @@ class Main extends Component {
   print (){
     if (this.state.isPrint == true){
       this.PrintArticle.onClearLoadstateArray()
-    }else {
+    } else {
       this.setState({isPrint: true})
     }
   }
@@ -726,8 +729,8 @@ class Main extends Component {
               note={this.state.note}
               addSegment={this.addSegment}
               setCurSegment={this.setCurSegment}
-              setSentenceNum={this.setSentenceNum}
-              setMarginTopArray={this.setMarginTopArray} />
+              addSentence={this.addSentence}
+              delSentence={this.delSentence} />
           </DivSegments>
 
 
