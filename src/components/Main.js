@@ -248,8 +248,12 @@ class Main extends Component {
     this.addSentence = this.addSentence.bind(this)
     this.delSentence = this.delSentence.bind(this)
     this.updateNote = this.updateNote.bind(this)
+    this.finishNewFile =  this.finishNewFile.bind(this)
   }
 
+  finishNewFile (){
+    this.setState({isNewFile: false})
+  }
   onPaste (e){
     e.preventDefault()
     var text
@@ -277,16 +281,20 @@ class Main extends Component {
     }
   }
   createNewFile (){
-    let tmpSegments =  [{id: 0, type: 'txtOnly', dataUrl: '', jaSentence: '', isPageBreak: false, sentences: [{id: 0, words: []}]}]
-    let tmpSetting = {}
-    let tmpArticle = this.state.article
-    tmpArticle.segments = tmpSegments
-    tmpArticle.setting = tmpSetting
-    tmpArticle.saveFileTitle = ''
-    this.inputText.value = ''
+    let note =  [
+      {
+        id: 0,
+        type: 'txtOnly',
+        html: '',
+        marginTopArray: [{
+          marginTop: 0
+        }]
+      }
+    ]
+  
     this.saveFileTitle.value = ''
     this.colorChange.value = '#000'
-    this.setState({article: tmpArticle})
+    this.setState({note: note})
     this.setState({curSegmentNo: 0})
     this.setState({nowLanguage: 'english'})
     this.setState({imeMode: 'inactive'})
@@ -327,9 +335,10 @@ class Main extends Component {
   }
 
   loadFile (file){
+    const curSegmentNo = file.note.length - 1
     this.setState({setting: file.setting})
     this.setState({note: file.note})
-    this.setState({curSegmentNo: file.note.length - 1})
+    this.setState({curSegmentNo: curSegmentNo})
     this.saveFileTitle.value = file.saveFileTitle
   }
 
@@ -659,7 +668,7 @@ class Main extends Component {
     return (
       <div>
         <PrintOrientation layout={this.state.setting.layout} />
-        <DivBg onKeyDown={this.keyDown} isPrint={this.state.isPrint}>
+        <DivBg innerRef={ref => this.bg = ref} onKeyDown={this.keyDown} isPrint={this.state.isPrint}>
           <DivFixed >
             <DivTitle width={`${this.state.width}px`}>
               <DivFixedTitle> 4線マスター</DivFixedTitle>
@@ -715,6 +724,7 @@ class Main extends Component {
             innerRef={(ref) => {this.allSegs = ref}}
             width={`${this.state.width.toString()}px`}>
             <Segments
+              ref={ref => this.segments = ref}
               width={`${this.state.width.toString()}px`}
               curSegmentNo={this.state.curSegmentNo}
               setting={this.state.setting}
@@ -723,7 +733,8 @@ class Main extends Component {
               setCurSegment={this.setCurSegment}
               addSentence={this.addSentence}
               delSentence={this.delSentence}
-              updateNote={this.updateNote} />
+              updateNote={this.updateNote}
+              finishNewFile={this.finishNewFile} />
           </DivSegments>
 
 

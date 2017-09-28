@@ -58,6 +58,7 @@ class Sentence extends Component{
     addSentence: PropTypes.func,
     delSentence: PropTypes.func,
     updateNote: PropTypes.func,
+    finishNewFile: PropTypes.func,
   }
 
   onKeyUp (event){

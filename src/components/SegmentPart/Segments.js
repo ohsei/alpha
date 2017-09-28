@@ -11,6 +11,7 @@ class Segments extends Component{
   static propTypes = {
     curSegmentNo: PropTypes.number,
     setting: PropTypes.object,
+    isNewFile: PropTypes.bool,
     note: PropTypes.arrayOf(PropTypes.object),
     addSegment: PropTypes.func,
     setCurSegment: PropTypes.func,

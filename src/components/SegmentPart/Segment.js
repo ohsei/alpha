@@ -31,6 +31,7 @@ class Segment extends Component{
   }
   static propTypes = {
     id: PropTypes.number,
+    isNewFile: PropTypes.bool,
     width: PropTypes.string,
     setting: PropTypes.object,
     note: PropTypes.arrayOf(PropTypes.object),
