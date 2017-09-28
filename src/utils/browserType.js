@@ -1,6 +1,5 @@
 export const getBrowserType = () => {
     const ua = navigator.userAgent
-    console.log('ua: %s', ua)
 
     let agent = '';
     

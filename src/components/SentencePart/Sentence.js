@@ -28,8 +28,10 @@ const DivSen = styled.div`
   display: block;
   position: relative;
 `
-let pressed = false
+let keyPressed = false
 let isShiftKeyPressed = false
+let isNewLine = false
+const browserType = getBrowserType()
 
 class Sentence extends Component{
   constructor (props){
@@ -62,51 +64,53 @@ class Sentence extends Component{
     if (event.keyCode == 16){
       isShiftKeyPressed = false
     }
-    pressed = false
+    if (browserType == 'ie' && isNewLine) {
+      this.inputText.htmlEl.innerHTML = this.inputText.htmlEl.innerHTML + ' '
+      isNewLine = false
+    }
+    keyPressed = false
+    /* IEの場合、ohChang()コールされないため、ここで高さ変化を検知 */
     this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
-    this.setState({html: this.inputText.htmlEl.innerHTML})
-    this.props.updateNote(this.inputText.htmlEl.innerHTML)
+    console.log('onKeyUp html: %s', this.inputText.htmlEl.innerHTML)
   }
 
   onKeyDown (event){
-    if (getBrowserType() == 'ie'){
-       if (event.keyCode == 16){
+    console.log('onKeyDown html: %s', this.inputText.htmlEl.innerHTML)
+      if (event.keyCode == 16){
         isShiftKeyPressed = true
       }
       if (event.keyCode == 13){
         if (isShiftKeyPressed != true){
           event.preventDefault()
         }
-      }
-    }
-    else{
-      if (!pressed){
-        pressed = true
-      }
-      else {
-        if (event.keyCode == 13) {
-            alert('Do not long press!')
-            event.preventDefault()
-          }
-          pressed = false
+        else{
+          isNewLine = true
         }
       }
+
+      if (event.keyCode != 13){
+        if (!keyPressed) {
+          keyPressed = true
+        }
+        else {
+          console.log('long press')
+          if (!(String.fromCharCode(event.keyCode)).match(/^[a-zA-Z0-9]+$/)) {
+            event.preventDefault()
+            alert('Do not long press!')
+          }
+          keyPressed = false
+        }
+    }
   }
 
   onTextAreaChange (event){
-    if (getBrowserType() != 'edge'){
-      this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
-  
-      this.setState({html: this.inputText.htmlEl.innerHTML})
-      this.props.updateNote(this.inputText.htmlEl.innerHTML)
-    }
+    console.log('onTextAreaChange html: %s', this.inputText.htmlEl.innerHTML)
+    this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
+    this.props.updateNote(this.inputText.htmlEl.innerHTML)
   }
 
   onTextAreaClick (){
     this.inputText.htmlEl.focus()
-    if (getBrowserType() == 'ie'){
-      this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
-    }
   }
 
   componentWillUpdate (){

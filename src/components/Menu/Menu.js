@@ -79,6 +79,7 @@ class Menu extends Component {
     }
 
     let objContent = {}
+
     objContent.note = this.props.note
     objContent.setting = this.props.setting
     objContent.saveFileTitle = this.props.saveFileTitle
