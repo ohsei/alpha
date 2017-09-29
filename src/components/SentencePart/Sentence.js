@@ -55,16 +55,17 @@ class Sentence extends Component{
         marginTop: PropTypes.number,
       })
     ),
+    offsetHeight: PropTypes.number,
     addSentence: PropTypes.func,
     delSentence: PropTypes.func,
     updateNote: PropTypes.func,
-    finishNewFile: PropTypes.func,
   }
 
   onKeyUp (event){
     if (event.keyCode == 16){
       isShiftKeyPressed = false
     }
+
     if (browserType == 'ie' && isNewLine) {
       this.inputText.htmlEl.innerHTML = this.inputText.htmlEl.innerHTML + ' '
       isNewLine = false
@@ -72,46 +73,48 @@ class Sentence extends Component{
     keyPressed = false
     /* IEの場合、ohChang()コールされないため、ここで高さ変化を検知 */
     this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
-    console.log('onKeyUp html: %s', this.inputText.htmlEl.innerHTML)
   }
 
   onKeyDown (event){
-    console.log('onKeyDown html: %s', this.inputText.htmlEl.innerHTML)
-      if (event.keyCode == 16){
-        isShiftKeyPressed = true
-      }
-      if (event.keyCode == 13){
-        if (isShiftKeyPressed != true){
-          event.preventDefault()
-        }
-        else{
-          isNewLine = true
-        }
-      }
+    if (event.keyCode == 16){
+      isShiftKeyPressed = true
+    }
 
-      if (event.keyCode != 13){
-        if (!keyPressed) {
-          keyPressed = true
+    if (event.keyCode == 13){
+      if (isShiftKeyPressed != true){
+        event.preventDefault()
+      }
+      else {
+        isNewLine = true
+      }
+    }
+
+    if (event.keyCode != 13){
+      if (!keyPressed) {
+        keyPressed = true
+      }
+      else {
+        if (!(String.fromCharCode(event.keyCode)).match(/^[a-zA-Z0-9]+$/)) {
+          event.preventDefault()
+          alert('Do not long press!')
         }
-        else {
-          console.log('long press')
-          if (!(String.fromCharCode(event.keyCode)).match(/^[a-zA-Z0-9]+$/)) {
-            event.preventDefault()
-            alert('Do not long press!')
-          }
-          keyPressed = false
-        }
+        keyPressed = false
+      }
     }
   }
 
-  onTextAreaChange (event){
-    console.log('onTextAreaChange html: %s', this.inputText.htmlEl.innerHTML)
+  onTextAreaChange (){
     this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
-    this.props.updateNote(this.inputText.htmlEl.innerHTML)
+    this.props.updateNote(this.inputText.htmlEl.innerHTML, this.inputText.htmlEl.offsetHeight)
   }
 
   onTextAreaClick (){
     this.inputText.htmlEl.focus()
+  }
+
+  componentWillReceiveProps (nextProps){
+    const {offsetHeight} = nextProps
+    this.setState({textAreaHeight: offsetHeight})
   }
 
   componentWillUpdate (){
@@ -143,7 +146,7 @@ class Sentence extends Component{
 
       <div style={{ width: '95%', display: 'flex'}}>
         <DivSen>
-          {senList}
+          <div ref={ref => this.senList = ref}>{senList}</div>
           <TextArea
             html={note[id].html}
             spellCheck={false}

@@ -8,6 +8,7 @@ class Segments extends Component{
   constructor (props){
     super(props)
   }
+
   static propTypes = {
     curSegmentNo: PropTypes.number,
     setting: PropTypes.object,
@@ -16,19 +17,21 @@ class Segments extends Component{
     addSegment: PropTypes.func,
     setCurSegment: PropTypes.func,
   }
+
   render (){
     const { note } = this.props
     const segList = note.map((obj, i) =>
       <Segment
         key={i}
         id={i}
+        isPageBreak={obj.isPageBreak}
         addSegment={this.props.addSegment}
         setCurSegment={this.setCurSegment}
         {...this.props} />
     )
 
     return (
-      <div>{segList}</div>
+      <div ref={ref => this.segments = ref}>{segList}</div>
     )
   }
 }

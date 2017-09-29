@@ -40,6 +40,10 @@ class Actions extends Component{
   }
 
   setImgOnly (){
+    if (this.props.curSegmentNo != this.props.id){
+      alert('先にこの行を選択してください。')
+      return
+    }
     this.props.setType({type: 'imgOnly'})
   }
 
@@ -56,7 +60,11 @@ class Actions extends Component{
   }
 
   delSegment (){
-    this.props.delSegment({pattern: 'del'})
+    if (this.props.curSegmentNo != this.props.id){
+      alert('先にこの行を選択してください。')
+      return
+    }
+    this.props.delSegment()
   }
 
   addSegment (){
@@ -68,6 +76,10 @@ class Actions extends Component{
   }
 
   addPageBreak (){
+    if (this.props.curSegmentNo != this.props.id){
+      alert('先にこの行を選択してください。')
+      return
+    }
     this.props.addPageBreak()
   }
 
@@ -272,9 +284,9 @@ class Actions extends Component{
 Actions.propTypes = {
   id: PropTypes.any,
   curSegmentNo: PropTypes.any,
-  addSegment: PropTypes.any,
-  delSegment: PropTypes.any,
-  addPageBreak: PropTypes.any,
+  addPageBreak: PropTypes.func,
+  addSegment: PropTypes.func,
+  delSegment: PropTypes.func,
   setType: PropTypes.any,
   setImg: PropTypes.any,
   type: PropTypes.string.isRequired,

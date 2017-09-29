@@ -12,13 +12,16 @@ class Sentences extends Component{
     id: PropTypes.number,
     note: PropTypes.arrayOf(PropTypes.object),
   }
+
   render (){
     const {note, id} = this.props
 
     return (
       <Sentence
+        ref={ref => this.sentence = ref}
         sentenceNum={note[id].sentenceNum}
         marginTopArray={note[id].marginTopArray}
+        offsetHeight={note[id].offsetHeight}
         {...this.props} />
     )
   }

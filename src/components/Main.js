@@ -169,6 +169,8 @@ class Main extends Component {
           id: 0,
           type: 'txtOnly',
           html: '',
+          offsetHeight: 96,
+          isPageBreak: false,
           marginTopArray: [{
             marginTop: 0
           }]
@@ -198,13 +200,11 @@ class Main extends Component {
       isCtrlKeyPressed: false,
       isEnterKeyPressed: false,
     }
-    /* セグメントの追加、削除 */
-    this.editSegments = this.editSegments.bind(this)
     /* 編集中セグメントの選択 */
     this.setCurSegment = this.setCurSegment.bind(this)
-    /* セグメントの追加、called by editSegments */
+    /* セグメントの追加 */
     this.addSegment = this.addSegment.bind(this)
-    /* セグメントの削除、called by editSegments */
+    /* セグメントの削除 */
     this.delSegment = this.delSegment.bind(this)
     /* 文章タイトルの設定 */
     this.setFileTitle = this.setFileTitle.bind(this)
@@ -286,12 +286,13 @@ class Main extends Component {
         id: 0,
         type: 'txtOnly',
         html: '',
+        isPageBreak: false,
+        offsetHeight: 96,
         marginTopArray: [{
           marginTop: 0
         }]
       }
     ]
-  
     this.saveFileTitle.value = ''
     this.colorChange.value = '#000'
     this.setState({note: note})
@@ -350,52 +351,31 @@ class Main extends Component {
   }
 
   addSegment (){
-    let tmpNote = this.state.note
+    let note = this.state.note
     let curNo = this.state.curSegmentNo
 
-    for (let i = curNo + 1;i < tmpNote.length;i++){
-      tmpNote[i].id++
+    for (let i = curNo + 1;i < note.length;i++){
+      note[i].id++
     }
     curNo++
-    tmpNote.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', marginTopArray: [{marginTop: 0}]})
+    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', isPageBreak: false, offsetHeight: 96, marginTopArray: [{marginTop: 0}]})
 
-    this.setState({note: tmpNote})
-    this.setCurSegment({curNo: curNo})
+    this.setState({note: note})
+    this.setCurSegment(curNo)
   }
 
   delSegment (){
-    let tmpArticle = this.state.article
-    let tmpSegments = tmpArticle.segments
+    let note = this.state.note
     let curNo = this.state.curSegmentNo
 
-    for (let i = curNo + 1;i < tmpSegments.length;i++){
-      tmpSegments[i].id--
+    for (let i = curNo + 1;i < note.length;i++){
+      note[i].id--
     }
-    tmpSegments.splice(curNo, 1)
-    return tmpArticle
+    note.splice(curNo, 1)
+    this.setState({note: note})
+    this.setCurSegment(curNo - 1)
   }
 
-  editSegments (object){
-    switch (object.pattern){
-    case 'add':{
-      let tmpArticle = this.addSegment(object.type)
-
-      let curNo = this.state.curSegmentNo + 1
-      this.setState({article: tmpArticle})
-      this.setCurSegment({curNo: curNo})
-      break
-    }
-
-    case 'del':{
-      let tmpArticle = this.delSegment()
-
-      let curNo = this.state.curSegmentNo - 1
-      this.setState({article: tmpArticle})
-      this.setCurSegment({curNo: curNo})
-      break
-    }
-    }
-  }
   addSentence (pushObj){
     let note = this.state.note
     note[this.state.curSegmentNo].marginTopArray.push(pushObj)
@@ -406,9 +386,10 @@ class Main extends Component {
     note[this.state.curSegmentNo].marginTopArray.pop()
     this.setState({note: note})
   }
-  updateNote (html){
+  updateNote (html, offsetHeight){
     let note = this.state.note
     note[this.state.curSegmentNo].html = html
+    note[this.state.curSegmentNo].offsetHeight = offsetHeight
     this.setState({note: note})
   }
 
@@ -474,7 +455,7 @@ class Main extends Component {
   onInputKeyup (event){
 
     if (this.state.isCtrlKeyPressed && this.state.isEnterKeyPressed){
-      this.editSegments({pattern: 'add', type: 'txtOnly'})
+      this.addSegment()
       this.setState({isCtrlKeyPressed: false})
       this.setState({isEnterKeyPressed: false})
       return
@@ -617,18 +598,18 @@ class Main extends Component {
   }
 
   setType (object){
-    let oldArticle = this.state.article
-    oldArticle.segments[this.state.curSegmentNo].type = object.type
+    let note = this.state.note
+    note[this.state.curSegmentNo].type = object.type
 
-    this.setState({article: oldArticle})
+    this.setState({note: note})
   }
 
   addPageBreak (){
-    let oldArticle = this.state.article
-    oldArticle.segments[this.state.curSegmentNo].isPageBreak = true
-    this.editSegments({'pattern': 'add', 'type': 'txtOnly'})
+    let note = this.state.note
+    note[this.state.curSegmentNo].isPageBreak = true
+    this.addSegment()
 
-    this.setState({article: oldArticle})
+    this.setState({note: note})
   }
 
   print (){
@@ -724,12 +705,13 @@ class Main extends Component {
             innerRef={(ref) => {this.allSegs = ref}}
             width={`${this.state.width.toString()}px`}>
             <Segments
-              ref={ref => this.segments = ref}
               width={`${this.state.width.toString()}px`}
               curSegmentNo={this.state.curSegmentNo}
               setting={this.state.setting}
               note={this.state.note}
               addSegment={this.addSegment}
+              delSegment={this.delSegment}
+              addPageBreak={this.addPageBreak}
               setCurSegment={this.setCurSegment}
               addSentence={this.addSentence}
               delSentence={this.delSentence}
