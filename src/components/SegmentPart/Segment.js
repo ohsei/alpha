@@ -3,10 +3,13 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import Actions from './Actions'
-
+import TxtOnlySeg from './TxtOnlySeg'
+import ImgOnlySeg from './ImgOnlySeg'
+import ImgTxtSeg from './ImgTxtSeg'
+import TxtImgSeg from './TxtImgSeg'
 
 const SegArea = styled.div`
-  width: ${props => props.width};
+  width: ${props => `${props.width}px`};
   background-color: white;
   border: 2px solid orange;
 `
@@ -15,14 +18,14 @@ const DivInterval = styled.div`
   background-color: lightgreen;
 `
 const PageBreakLine = styled.div`
-width: 100%;
-height: 2;
-border:1px dotted blue;
-page-break-after: always;
+  width: 100%;
+  height: 2;
+  border:1px dotted blue;
+  page-break-after: always;
 
-@media print{
-  border-color: white;
-}
+  @media print{
+    border-color: white;
+  }
 `
 
 const DrawPageBreakLine = (object) => {
@@ -44,24 +47,19 @@ class Segment extends Component{
     this.state = {
       imeMode: 'inactive'
     }
-    this.setCurSegment = this.setCurSegment.bind(this)
   }
   static propTypes = {
     id: PropTypes.number,
-    isNewFile: PropTypes.bool,
-    width: PropTypes.string,
+    width: PropTypes.number,
     setting: PropTypes.object,
     note: PropTypes.arrayOf(PropTypes.object),
     addSegment: PropTypes.func,
-    setCurSegment: PropTypes.func,
     isPageBreak: PropTypes.bool,
     title: PropTypes.string,
     name: PropTypes.string,
+    type: PropTypes.string,
   }
 
-  setCurSegment (){
-    this.props.setCurSegment(this.props.id)
-  }
   render (){
     const {
       width, addSegment, id, setting, isPageBreak, title, name
@@ -72,51 +70,28 @@ class Segment extends Component{
         return <ImgOnlySeg
           ref={(ref)=>{this.imgOnlySeg = ref}}
           id={this.props.id}
-          jaSentence={this.props.jaSentence}
-          content={this.props.content}
-          setting={this.props.setting}
-          curSegmentNo={this.props.curSegmentNo}
-          setCurSegment={this.setCurSegment}
           dataUrl={this.props.dataUrl}
-          width={this.props.width}
+          {...this.props}
         />
-      } else if (this.props.type == 'imgTxt'){
+      }else if (this.props.type == 'imgTxt'){
         return <ImgTxtSeg
           ref={(ref)=>{this.imgTxtSeg = ref}}
           id={this.props.id}
-          jaSentence={this.props.jaSentence}
-          content={this.props.content}
-          setting={this.props.setting}
-          curSegmentNo={this.props.curSegmentNo}
-          setCurSegment={this.setCurSegment}
           dataUrl={this.props.dataUrl}
-          width={this.props.width}
+          {...this.props}
         />
-      } else if (this.props.type == 'txtImg'){
+      }else if (this.props.type == 'txtImg'){
         return <TxtImgSeg
-          ref={(ref)=>{this.imgTxtSeg = ref}}
+          ref={(ref)=>{this.txtImgSeg = ref}}
           id={this.props.id}
-          jaSentence={this.props.jaSentence}
-          content={this.props.content}
-          setting={this.props.setting}
-          curSegmentNo={this.props.curSegmentNo}
-          setCurSegment={this.setCurSegment}
           dataUrl={this.props.dataUrl}
-          width={this.props.width}
+          {...this.props}
         />
-      } else {
-          return <TxtOnlySeg
-            ref={(ref)=>{this.txtOnlySeg = ref}}
-            id={this.props.id}
-            jaSentence={this.props.jaSentence}
-            content={this.props.content}
-            setting={this.props.setting}
-            curSegmentNo={this.props.curSegmentNo}
-            setCurSegment={this.setCurSegment}
-            width={this.props.width}
-          />
-        }
-      })()
+      }else {
+        return  <TxtOnlySeg {...this.props} />
+      }
+    })()
+
     return (
       <div>
         <SegArea width={width}>
@@ -125,7 +100,7 @@ class Segment extends Component{
             addSegment={addSegment}
             id={id}
             {...this.props}
-            type={'txtOnly'} />
+            type={this.props.type} />
         </SegArea>
         <DivInterval interval={setting.interval} />
         <DrawPageBreakLine

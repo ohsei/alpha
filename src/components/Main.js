@@ -77,7 +77,7 @@ const StyleEditArea = styled.div`
 const DivSegments = styled.div`
   z-index: 0;
   margin: 150px 0 0 50px;
-  width: ${props => props.width};
+  width: ${props => `${props.width}px`};
 
   @media print{
     margin: 0;
@@ -142,7 +142,7 @@ const defaultSetting = {
   interval: '24pt',
   lineNos: 0,
 }
-
+const browserType = getBrowserType()
 const PrintOrientation = (object) => {
   if (object.layout == 'landscape'){
     return (
@@ -169,7 +169,9 @@ class Main extends Component {
           id: 0,
           type: 'txtOnly',
           html: '',
-          offsetHeight: 96,
+          jaHtml: '',
+          dataUrl: '',
+          offsetHeight: browserType == 'ie' ? 92 : 96,
           isPageBreak: false,
           marginTopArray: [{
             marginTop: 0
@@ -177,7 +179,7 @@ class Main extends Component {
         }
       ],
       article: {
-        segments: [{id: 0, type: 'txtOnly', dataUrl: '', jaSentence: '', isPageBreak: false, sentences: [{id: 0, words: []}]}],
+        segments: [{id: 0, type: 'txtOnly', jaHtml: '', dataUrl: '', jaSentence: '', isPageBreak: false, sentences: [{id: 0, words: []}]}],
         setting: {},
         saveFileTitle: '',
       },
@@ -248,12 +250,8 @@ class Main extends Component {
     this.addSentence = this.addSentence.bind(this)
     this.delSentence = this.delSentence.bind(this)
     this.updateNote = this.updateNote.bind(this)
-    this.finishNewFile =  this.finishNewFile.bind(this)
   }
 
-  finishNewFile (){
-    this.setState({isNewFile: false})
-  }
   onPaste (e){
     e.preventDefault()
     var text
@@ -286,13 +284,16 @@ class Main extends Component {
         id: 0,
         type: 'txtOnly',
         html: '',
+        jaHtml: '',
+        dataUrl: '', 
         isPageBreak: false,
-        offsetHeight: 96,
+        offsetHeight: browserType == 'ie' ? 92 : 96,
         marginTopArray: [{
           marginTop: 0
         }]
       }
     ]
+    console.log('createNewFile offsetHeight:', note)
     this.saveFileTitle.value = ''
     this.colorChange.value = '#000'
     this.setState({note: note})
@@ -358,7 +359,7 @@ class Main extends Component {
       note[i].id++
     }
     curNo++
-    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', isPageBreak: false, offsetHeight: 96, marginTopArray: [{marginTop: 0}]})
+    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', dataUrl: '', isPageBreak: false, offsetHeight: browserType == 'ie' ? 92 : 96, marginTopArray: [{marginTop: 0}]})
 
     this.setState({note: note})
     this.setCurSegment(curNo)
@@ -386,10 +387,7 @@ class Main extends Component {
     note[this.state.curSegmentNo].marginTopArray.pop()
     this.setState({note: note})
   }
-  updateNote (html, offsetHeight){
-    let note = this.state.note
-    note[this.state.curSegmentNo].html = html
-    note[this.state.curSegmentNo].offsetHeight = offsetHeight
+  updateNote (note){
     this.setState({note: note})
   }
 
@@ -591,10 +589,10 @@ class Main extends Component {
   }
 
   setImg (object){
-    let oldArticle = this.state.article
-    oldArticle.segments[this.state.curSegmentNo].dataUrl = object.img
+    let note = this.state.note
+    note[this.state.curSegmentNo].dataUrl = object.img
 
-    this.setState({article: oldArticle})
+    this.setState({note: note})
   }
 
   setType (object){
@@ -703,9 +701,9 @@ class Main extends Component {
           </DivFixed>
           <DivSegments
             innerRef={(ref) => {this.allSegs = ref}}
-            width={`${this.state.width.toString()}px`}>
+            width={this.state.width}>
             <Segments
-              width={`${this.state.width.toString()}px`}
+              width={this.state.width}
               curSegmentNo={this.state.curSegmentNo}
               setting={this.state.setting}
               note={this.state.note}
@@ -716,7 +714,8 @@ class Main extends Component {
               addSentence={this.addSentence}
               delSentence={this.delSentence}
               updateNote={this.updateNote}
-              finishNewFile={this.finishNewFile} />
+              setType={this.setType}
+              setImg={this.setImg} />
           </DivSegments>
 
 

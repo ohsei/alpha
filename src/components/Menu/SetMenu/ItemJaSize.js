@@ -51,23 +51,24 @@ class ItemJaSize extends Component{
   }
 
   setUpJaSize (){
-    let tmpJaPos
-    let tmpDownJaSize
+    let tmpJaPos = this.props.setting.jaPos
+    let tmpDownJaSize = this.props.setting.downJaSize
+  
     if (this.upJaSizeSelect.value != 'オフ'){
       tmpJaPos = 'up'
       tmpDownJaSize = 'オフ'
     }
     let param = {
-      upJaSize:this.upJaSizeSelect.value,
-      downJaSize:tmpDownJaSize,
+      upJaSize: this.upJaSizeSelect.value,
+      downJaSize: tmpDownJaSize,
       jaPos:tmpJaPos,
     }
     this.props.setUpJaSize(param)
   }
 
   setDownJaSize (){
-    let tmpJaPos
-    let tmpUpJaSize
+    let tmpJaPos = this.props.setting.jaPos
+    let tmpUpJaSize = this.props.setting.upJaSize
 
     if (this.downJaSizeSelect.value != 'オフ'){
       tmpJaPos = 'down'

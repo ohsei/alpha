@@ -48,14 +48,26 @@ class Actions extends Component{
   }
 
   setImgTxt (){
+    if (this.props.curSegmentNo != this.props.id){
+      alert('先にこの行を選択してください。')
+      return
+    }
     this.props.setType({type: 'imgTxt'})
   }
 
   setTxtImg (){
+    if (this.props.curSegmentNo != this.props.id){
+      alert('先にこの行を選択してください。')
+      return
+    }
     this.props.setType({type: 'txtImg'})
   }
 
   setTxtOnly (){
+    if (this.props.curSegmentNo != this.props.id){
+      alert('先にこの行を選択してください。')
+      return
+    }
     this.props.setType({type: 'txtOnly'})
   }
 

@@ -65,17 +65,29 @@ class Sentence extends Component{
     if (event.keyCode == 16){
       isShiftKeyPressed = false
     }
-
-    if (browserType == 'ie' && isNewLine) {
-      this.inputText.htmlEl.innerHTML = this.inputText.htmlEl.innerHTML + ' '
-      isNewLine = false
+    
+    if (browserType == 'ie' ){
+      console.log('browserType %s',browserType)
+      
+      if (isNewLine) {
+       // this.inputText.htmlEl.innerHTML = this.inputText.htmlEl.innerHTML + ' '
+        isNewLine = false
+      }
     }
     keyPressed = false
     /* IEの場合、ohChang()コールされないため、ここで高さ変化を検知 */
-    this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
+    //this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
+
+    console.log('htmlEl %s',this.inputText.htmlEl.innerHTML)
+    console.log('offsetHeight %d',this.inputText.htmlEl.offsetHeight)
+    let note = this.props.note
+    note.html = this.inputText.htmlEl.innerHTML
+    note.offsetHeight = this.inputText.htmlEl.offsetHeight
+    this.props.updateNote(note)
   }
 
   onKeyDown (event){
+    console.log('key %d',event.keyCode)
     if (event.keyCode == 16){
       isShiftKeyPressed = true
     }
@@ -104,8 +116,11 @@ class Sentence extends Component{
   }
 
   onTextAreaChange (){
-    this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
-    this.props.updateNote(this.inputText.htmlEl.innerHTML, this.inputText.htmlEl.offsetHeight)
+   // this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
+   let note = this.props.note
+   note.html = this.inputText.htmlEl.innerHTML
+   note.offsetHeight = this.inputText.htmlEl.offsetHeight
+   this.props.updateNote(note)
   }
 
   onTextAreaClick (){
@@ -114,6 +129,7 @@ class Sentence extends Component{
 
   componentWillReceiveProps (nextProps){
     const {offsetHeight} = nextProps
+    console.log('componentWillReceiveProps newHeight %d',offsetHeight)
     this.setState({textAreaHeight: offsetHeight})
   }
 
@@ -121,6 +137,8 @@ class Sentence extends Component{
     const newHeight = this.inputText.htmlEl.offsetHeight
     const oldHeight = this.state.textAreaHeight
 
+    console.log('componentWillUpdate newHeight %d',newHeight)
+    console.log('componentWillUpdate oldHeight %d',oldHeight)
     if (oldHeight > 0 && newHeight > oldHeight) {
 
       const marginTop = 0//96.875 - newHeight - oldHeight

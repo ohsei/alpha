@@ -19,7 +19,7 @@ class Segments extends Component{
   }
 
   render (){
-    const { note } = this.props
+    const { note, setting } = this.props
     const segList = note.map((obj, i) =>
       <Segment
         key={i}
@@ -27,6 +27,9 @@ class Segments extends Component{
         isPageBreak={obj.isPageBreak}
         addSegment={this.props.addSegment}
         setCurSegment={this.setCurSegment}
+        type={note[i].type}
+        dataUrl={note[i].dataUrl}
+        note={note}
         {...this.props} />
     )
 
