@@ -51,6 +51,7 @@ class TxtImgSeg extends Component{
       let wordHeight = this.divSegWithJan.getHeight()
 
       canvas.width = picWidth
+
       if (picHeight >= wordHeight){
         canvas.height = picHeight
       }
@@ -78,18 +79,27 @@ class TxtImgSeg extends Component{
   }
 
   render (){
+    const {isPrint, width, segContent, curSegmentNo,
+      updateHtml, updateJaHtml, addSentence, delSentence, addSegment} = this.props
     return (
       <SentenceArea
-        width={this.props.width}
+        width={width}
         onClick={this.setCurSegment} >
         <LabNum {...this.props} />
         <Sentences
-          senWidth={(this.props.width-50) * 0.6}
-          note={this.props.note}
-          ref={(ref)=> {this.divSegWithJan = ref}} {...this.props}
+          curSegmentNo={curSegmentNo}
+          isPrint={isPrint}
+          senWidth={(width - 50) * 0.6}
+          segContent={segContent}
+          ref={(ref) => {this.divSegWithJan = ref}}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          addSegment={addSegment}
         />
         <DivCanvas
-          width={(this.props.width-50) * 0.4}
+          width={(this.props.width - 50) * 0.4}
           innerRef={(ref) => this.divCanvas = ref}>
           <canvas height='110px' ref={(ref) => {this.imgCanvas = ref}} />
         </DivCanvas>
@@ -99,7 +109,9 @@ class TxtImgSeg extends Component{
 }
 
 TxtImgSeg.propTypes = {
-  content: PropTypes.any,
+  segContent: PropTypes.object,
+  isPrint: PropTypes.bool,
+  width: PropTypes.number,
   editSegments: PropTypes.any,
   jaSentence: PropTypes.any,
   setting: PropTypes.any,
@@ -109,5 +121,11 @@ TxtImgSeg.propTypes = {
   offsetHeight: PropTypes.any,
   isPageBreak: PropTypes.any,
   dataUrl: PropTypes.any,
+  updateHtml: PropTypes.func,
+  updateJaHtml: PropTypes.func,
+  addSentence: PropTypes.func,
+  delSentence: PropTypes.func,
+  addSegment: PropTypes.func,
 }
+
 export default TxtImgSeg

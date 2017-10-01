@@ -2,61 +2,33 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import LabNum from '../Segment/LabNum'
-import PrintSegWithJan from './PrintSegWithJan'
+import Sentences from './Sentences'
+import PrintLabNum from './PrintLabNum'
 
-const DivContent = styled.div`
-  background-color: white;
+
+const SentenceArea = styled.div`
   display: flex;
-  direction: row;
-  justify-content: space-around;
-  width: 100%;
-  border: 1px solid gray;
-  margin: 0 0 0 0;
-
-  @media print{
-    border: none;
-    width: 95%;
-    padding: 10px;
-  }
-`
-const DivSel = styled.div`
-  width: 10%;
-  text-align: center;
-  font-size: 30px;
-  color: #222;
-  background-color: ${props =>
-  {if (props.id == props.curNo){
-    return 'darkgray'
-  }else{
-    return 'lightgray'
-  }}};
-
-  @media print{
-    display: none;
-    padding: 10px;
-  }
-`
-const DivImgTxt = styled.div`
-  display: flex;
-  direction: row;
-  justify-content: space-around;
   width: 100%;
 `
 
 const DivCanvas = styled.div`
-  width: 40%;
-  text-align: center;
+  width: ${props => `${props.width}px`};
+  display: flex;
+  direction: row;
+  justify-content: space-around;
   margin: 0px auto;
+  text-align: center;
 `
+
 class PrintTxtImgSeg extends Component{
   constructor (props){
     super(props)
-    this.state = {
-      imageLoaded: false,
-    }
-    this.selectSegment = this.selectSegment.bind(this)
+
+    this.setCurSegment = this.setCurSegment.bind(this)
     this.loadImage = this.loadImage.bind(this)
+  }
+  setCurSegment (){
+    this.props.setCurSegment(this.props.id)
   }
 
   loadImage (){
@@ -70,8 +42,8 @@ class PrintTxtImgSeg extends Component{
       let picHeight = img.height
       let scale = 1.0
 
-      if (picWidth > this.divCanvas.offsetWidth * 0.95){
-        picWidth = this.divCanvas.offsetWidth * 0.95
+      if (picWidth > canvas.width * 0.95){
+        picWidth = canvas.width * 0.95
         scale = img.width / picWidth
         picHeight =  img.height / scale
       }
@@ -79,6 +51,7 @@ class PrintTxtImgSeg extends Component{
       let wordHeight = this.divSegWithJan.getHeight()
 
       canvas.width = picWidth
+
       if (picHeight >= wordHeight){
         canvas.height = picHeight
       }
@@ -98,48 +71,41 @@ class PrintTxtImgSeg extends Component{
     }.bind(this)
     img.src = this.props.dataUrl
   }
+
   componentDidMount (){
     this.loadImage ()
   }
-  componentDidUpdate (){
-  
-  }
-
-  selectSegment (){
-    this.props.setCurSegment({curNo:this.props.id})
-  }
 
   render (){
+    const { segContent, width, setting, updateHtml, updateJaHtml, addSentence, delSentence} = this.props
     return (
-      <DivContent>
-        <LabNum
-          curSegmentNo={this.props.id}
-          setting={this.props.setting}>
-        </LabNum>
-        <DivImgTxt>
-          <PrintSegWithJan
-            ref={(ref)=> {this.divSegWithJan = ref}}
-            jaSentence={this.props.jaSentence}
-            setting={this.props.setting}
-            content={this.props.content}
-          />
-          <DivCanvas
-            innerRef={(ref)=> {this.divCanvas = ref}}>
-            <canvas style={{display: 'block'}} ref={(ref) => {this.imgCanvas = ref}} />
-          </DivCanvas>
-        </DivImgTxt>
-        <DivSel id={this.props.id} curNo={this.props.curSegmentNo}
-          innerRef={(ref) => {this.selSegment = ref}}
-          onClick={this.selectSegment}>
-        選択
-        </DivSel>
-      </DivContent>
+      <SentenceArea
+        width={width}
+        onClick={this.setCurSegment} >
+        <PrintLabNum {...this.props} />
+        <Sentences
+          senWidth={(width - 50) * 0.6}
+          segContent={segContent}
+          ref={(ref) => {this.divSegWithJan = ref}}
+          setting={setting}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
+        />
+        <DivCanvas
+          width={(width - 50) * 0.4}
+          innerRef={(ref) => this.divCanvas = ref}>
+          <canvas height='110px' ref={(ref) => {this.imgCanvas = ref}} />
+        </DivCanvas>
+      </SentenceArea>
     )
   }
 }
 
 PrintTxtImgSeg.propTypes = {
-  content: PropTypes.any,
+  segContent: PropTypes.object,
+  width: PropTypes.number,
   editSegments: PropTypes.any,
   jaSentence: PropTypes.any,
   setting: PropTypes.any,
@@ -149,6 +115,11 @@ PrintTxtImgSeg.propTypes = {
   offsetHeight: PropTypes.any,
   isPageBreak: PropTypes.any,
   dataUrl: PropTypes.any,
-  setLoadedStatus: PropTypes.any,
+  setLoadedStatus: PropTypes.func,
+  updateHtml: PropTypes.func,
+  updateJaHtml: PropTypes.func,
+  addSentence: PropTypes.func,
+  delSentence: PropTypes.func,
 }
+
 export default PrintTxtImgSeg

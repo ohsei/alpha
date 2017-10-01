@@ -2,18 +2,14 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import LabNum from '../Segment/LabNum'
+import PrintLabNum from './PrintLabNum'
 
-const DivContent = styled.div`
-  background-color: white;
+
+const SentenceArea = styled.div`
   display: flex;
-  direction: row;
-  justify-content: space-around;
-  width: 95%;
-  border: none;
-  margin: 0 0 0 0;
-  padding: 10px;
+  width: 100%;
 `
+
 const DivCanvas = styled.div`
   width: 100%;
   display: flex;
@@ -27,8 +23,26 @@ class PrintImgOnlySeg extends Component{
   constructor (props){
     super(props)
 
+    this.setCurSegment = this.setCurSegment.bind(this)
     this.loadImage = this.loadImage.bind(this)
-    this.getWordWidth = this.getWordWidth.bind(this)
+  }
+
+  static propTypes = {
+    content: PropTypes.any,
+    editSegments: PropTypes.any,
+    jaSentence: PropTypes.any,
+    setting: PropTypes.any,
+    setCurSegment: PropTypes.any,
+    id: PropTypes.any,
+    curSegmentNo: PropTypes.any,
+    offsetHeight: PropTypes.any,
+    isPageBreak: PropTypes.any,
+    dataUrl: PropTypes.any,
+    setLoadedStatus: PropTypes.func,
+  }
+
+  setCurSegment (){
+    this.props.setCurSegment(this.props.id)
   }
 
   loadImage (){
@@ -53,48 +67,25 @@ class PrintImgOnlySeg extends Component{
       this.props.setLoadedStatus()
     }.bind(this)
     img.src = this.props.dataUrl
+  
   }
 
-  getWordWidth (){
-    return 0
-  }
   componentDidMount (){
     this.loadImage ()
-  }
-  componentWillReceiveProps (nextProps){
-
-  }
-  componentDidUpdate (){
-    
   }
 
 
   render (){
     return (
-      <DivContent>
-        <LabNum
-          curSegmentNo={this.props.id}
-          setting={this.props.setting}>
-        </LabNum>
+      <SentenceArea
+        onClick={this.setCurSegment} >
+        <PrintLabNum {...this.props} />
         <DivCanvas innerRef={(ref) => this.divCanvas = ref}>
-          <canvas width='300px' height='110px' ref={(ref) => {this.imgCanvas = ref}} />
+          <canvas height='110px' ref={(ref) => {this.imgCanvas = ref}} />
         </DivCanvas>
-      </DivContent>
+      </SentenceArea>
     )
   }
 }
 
-PrintImgOnlySeg.propTypes = {
-  content: PropTypes.any,
-  editSegments: PropTypes.any,
-  jaSentence: PropTypes.any,
-  setting: PropTypes.any,
-  setCurSegment: PropTypes.any,
-  id: PropTypes.any,
-  curSegmentNo: PropTypes.any,
-  offsetHeight: PropTypes.any,
-  isPageBreak: PropTypes.any,
-  dataUrl: PropTypes.any,
-  setLoadedStatus: PropTypes.any,
-}
 export default PrintImgOnlySeg

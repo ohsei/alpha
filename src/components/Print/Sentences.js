@@ -22,17 +22,14 @@ class Sentences extends Component{
     this.onUpChange = this.onUpChange.bind(this)
   }
   static propTypes = {
-    curSegmentNo: PropTypes.number,
     id: PropTypes.number,
     senWidth: PropTypes.number,
     segContent: PropTypes.object,
     setting: PropTypes.object,
-    isPrint: PropTypes.bool,
     updateHtml: PropTypes.func,
     updateJaHtml: PropTypes.func,
     addSentence: PropTypes.func,
     delSentence: PropTypes.func,
-    addSegment: PropTypes.func,
   }
 
   getHeight (){
@@ -46,9 +43,8 @@ class Sentences extends Component{
   onDownChange (){
     this.props.updateJaHtml({jaHtml: this.upJaHtml.htmlEl.innerHTML})
   }
-
   render (){
-    const {segContent, id, setting, isPrint, curSegmentNo} = this.props
+    const {segContent, id, setting,  updateHtml, addSentence, delSentence} = this.props
     const upJaSize = setting.upJaSize
     const downJaSize = setting.downJaSize
 
@@ -58,17 +54,14 @@ class Sentences extends Component{
         width={this.props.senWidth}>
         {setting.upJaSize != 'オフ' && <DivJan html={segContent.jaHtml} innerRef={ref => this.upJaHtml = ref} fontSize={upJaSize} spellCheck={false} onChange={this.onUpChange} />}
         <Sentence
-          curSegmentNo={curSegmentNo}
-          isPrint={isPrint}
           ref={ref => this.sentence = ref}
           id={id}
           segContent={segContent}
           marginTopArray={segContent.marginTopArray}
           offsetHeight={segContent.offsetHeight}
-          addSentence={this.props.addSentence}
-          delSentence={this.props.delSentence}
-          addSegment={this.props.addSegment}
-          updateHtml={this.props.updateHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          updateHtml={updateHtml}
         />
         {setting.downJaSize != 'オフ' && <DivJan html={segContent.jaHtml} innerRef={ref => this.downJaHtml = ref} fontSize={downJaSize} spellCheck={false} onChange={this.onDownChange} />}
       </DivSentences>

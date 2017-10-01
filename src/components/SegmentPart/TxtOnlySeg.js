@@ -19,22 +19,42 @@ class TxtOnlySeg extends Component{
   }
   static propTypes = {
     id: PropTypes.number,
+    curSegmentNo: PropTypes.number,
+    width: PropTypes.number,
+    isPrint: PropTypes.bool,
+    segContent: PropTypes.object,
     setCurSegment: PropTypes.func,
+    setting: PropTypes.object,
+    updateHtml: PropTypes.func,
+    updateJaHtml: PropTypes.func,
+    addSentence: PropTypes.func,
+    delSentence: PropTypes.func,
+    addSegment: PropTypes.func,
   }
 
   setCurSegment (){
     this.props.setCurSegment(this.props.id)
   }
   render (){
-     return (
+    const {id, segContent, width, setting, isPrint, curSegmentNo,
+      updateHtml, updateJaHtml, addSentence, delSentence, addSegment} = this.props
+    return (
       <SentenceArea
-        width={this.props.width}
+        width={width}
         onClick={this.setCurSegment} >
-        <LabNum {...this.props} />
+        <LabNum setting={setting} id={id} />
         <Sentences
-          senWidth={this.props.width-50}
-          note={this.props.note}
-          {...this.props} />
+          curSegmentNo={curSegmentNo}
+          isPrint={isPrint}
+          id={id}
+          senWidth={width - 50}
+          segContent={segContent}
+          setting={setting}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          addSegment={addSegment} />
       </SentenceArea>
     )
   }

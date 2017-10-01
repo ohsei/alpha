@@ -52,43 +52,98 @@ class Segment extends Component{
     id: PropTypes.number,
     width: PropTypes.number,
     setting: PropTypes.object,
-    note: PropTypes.arrayOf(PropTypes.object),
+    curSegmentNo: PropTypes.number,
     addSegment: PropTypes.func,
-    isPageBreak: PropTypes.bool,
+    delSegment: PropTypes.func,
+    addSentence: PropTypes.func,
+    delSentence: PropTypes.func,
+    addPageBreak: PropTypes.func,
     title: PropTypes.string,
     name: PropTypes.string,
-    type: PropTypes.string,
+    segContent: PropTypes.object,
+    updateHtml: PropTypes.func,
+    updateJaHtml: PropTypes.func,
+    setCurSegment: PropTypes.func,
+    setType: PropTypes.func,
+    setImg: PropTypes.func,
+    isPrint: PropTypes.bool,
   }
 
   render (){
     const {
-      width, addSegment, id, setting, isPageBreak, title, name
+      width, addSegment, id, setting, segContent, title, name, curSegmentNo, isPrint,
+      updateHtml, updateJaHtml, setCurSegment, delSegment, addSentence, delSentence, addPageBreak,
+      setType, setImg,
     } = this.props
 
+    const dataUrl = segContent.dataUrl
+    const isPageBreak = segContent.isPageBreak
+    const type = segContent.type
+
     const content = (()  => {
-      if (this.props.type == 'imgOnly'){
+      if (type == 'imgOnly'){
         return <ImgOnlySeg
-          ref={(ref)=>{this.imgOnlySeg = ref}}
-          id={this.props.id}
-          dataUrl={this.props.dataUrl}
-          {...this.props}
+          curSegmentNo={curSegmentNo}
+          isPrint={isPrint}
+          width={width}
+          ref={(ref) => {this.imgOnlySeg = ref}}
+          id={id}
+          dataUrl={dataUrl}
+          segContent={segContent}
+          setting={setting}
+          setCurSegment={setCurSegment}
         />
-      }else if (this.props.type == 'imgTxt'){
+      } else if (type == 'imgTxt'){
         return <ImgTxtSeg
-          ref={(ref)=>{this.imgTxtSeg = ref}}
-          id={this.props.id}
-          dataUrl={this.props.dataUrl}
-          {...this.props}
+          curSegmentNo={curSegmentNo}
+          isPrint={isPrint}
+          width={width}
+          ref={(ref) => {this.imgTxtSeg = ref}}
+          id={id}
+          dataUrl={dataUrl}
+          segContent={segContent}
+          setting={setting}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          setCurSegment={setCurSegment}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          addSegment={addSegment}
         />
-      }else if (this.props.type == 'txtImg'){
+      } else if (type == 'txtImg'){
         return <TxtImgSeg
-          ref={(ref)=>{this.txtImgSeg = ref}}
-          id={this.props.id}
-          dataUrl={this.props.dataUrl}
-          {...this.props}
+          curSegmentNo={curSegmentNo}
+          isPrint={isPrint}
+          width={width}
+          ref={(ref) => {this.txtImgSeg = ref}}
+          id={id}
+          dataUrl={dataUrl}
+          segContent={segContent}
+          setting={setting}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          setCurSegment={setCurSegment}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          addSegment={addSegment}
         />
-      }else {
-        return  <TxtOnlySeg {...this.props} />
+      } else {
+        return <TxtOnlySeg
+          curSegmentNo={curSegmentNo}
+          isPrint={isPrint}
+          width={width}
+          ref={(ref) => {this.txtOnlySeg = ref}}
+          id={id}
+          dataUrl={dataUrl}
+          setting={setting}
+          segContent={segContent}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          setCurSegment={setCurSegment}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          addSegment={addSegment}
+        />
       }
     })()
 
@@ -97,10 +152,14 @@ class Segment extends Component{
         <SegArea width={width}>
           {content}
           <Actions
+            curSegmentNo={curSegmentNo}
             addSegment={addSegment}
+            delSegment={delSegment}
+            addPageBreak={addPageBreak}
+            setType={setType}
+            setImg={setImg}
             id={id}
-            {...this.props}
-            type={this.props.type} />
+            type={type} />
         </SegArea>
         <DivInterval interval={setting.interval} />
         <DrawPageBreakLine

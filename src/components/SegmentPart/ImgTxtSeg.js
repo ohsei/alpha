@@ -2,8 +2,9 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import LabNum from './LabNum'
 import Sentences from '../SentencePart/Sentences'
+
+import LabNum from './LabNum'
 
 
 const SentenceArea = styled.div`
@@ -51,6 +52,7 @@ class ImgTxtSeg extends Component{
       let wordHeight = this.divSegWithJan.getHeight()
 
       canvas.width = picWidth
+
       if (picHeight >= wordHeight){
         canvas.height = picHeight
       }
@@ -78,20 +80,30 @@ class ImgTxtSeg extends Component{
   }
 
   render (){
+    const {isPrint, width, segContent, setting, addSegment, curSegmentNo,
+      updateHtml, updateJaHtml, addSentence, delSentence} = this.props
     return (
       <SentenceArea
-        width={this.props.width}
+        width={width}
         onClick={this.setCurSegment} >
         <LabNum {...this.props} />
         <DivCanvas
-          width={(this.props.width-50) * 0.4}
+          width={(width - 50) * 0.4}
           innerRef={(ref) => this.divCanvas = ref}>
           <canvas height='110px' ref={(ref) => {this.imgCanvas = ref}} />
         </DivCanvas>
         <Sentences
-          senWidth={(this.props.width-50) * 0.6}
-          note={this.props.note}
-          ref={(ref)=> {this.divSegWithJan = ref}} {...this.props}
+          curSegmentNo={curSegmentNo}
+          isPrint={isPrint}
+          senWidth={(width - 50) * 0.6}
+          segContent={segContent}
+          setting={setting}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          addSegment={addSegment}
+          ref={(ref) => {this.divSegWithJan = ref}}
         />
       </SentenceArea>
     )
@@ -99,9 +111,9 @@ class ImgTxtSeg extends Component{
 }
 
 ImgTxtSeg.propTypes = {
-  content: PropTypes.any,
-  editSegments: PropTypes.any,
-  jaSentence: PropTypes.any,
+  isPrint: PropTypes.bool,
+  width: PropTypes.number,
+  segContent: PropTypes.object,
   setting: PropTypes.any,
   setCurSegment: PropTypes.any,
   id: PropTypes.any,
@@ -109,5 +121,11 @@ ImgTxtSeg.propTypes = {
   offsetHeight: PropTypes.any,
   isPageBreak: PropTypes.any,
   dataUrl: PropTypes.any,
+  updateHtml: PropTypes.func,
+  updateJaHtml: PropTypes.func,
+  addSentence: PropTypes.func,
+  delSentence: PropTypes.func,
+  addSegment: PropTypes.func,
 }
+
 export default ImgTxtSeg

@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import Menu from './Menu/Menu'
-import Segments from './SegmentPart/Segments'
-
-import PrintArticle from './Print/PrintArticle'
 import styled, { injectGlobal } from 'styled-components'
+
 import {getBrowserType} from '../utils/browserType'
 import Flines_block_Regular_chrome from '../resources/font/4lines_block-Regular.otf'
 import Flines_block_Regular_ie from '../resources/font/4lines_block-regular-webfont.eot'
+
+import Menu from './Menu/Menu'
+import Segments from './SegmentPart/Segments'
+import PrintNote from './Print/PrintNote'
 
 injectGlobal`
 @font-face {
@@ -143,6 +144,7 @@ const defaultSetting = {
   lineNos: 0,
 }
 const browserType = getBrowserType()
+
 const PrintOrientation = (object) => {
   if (object.layout == 'landscape'){
     return (
@@ -178,22 +180,11 @@ class Main extends Component {
           }]
         }
       ],
-      article: {
-        segments: [{id: 0, type: 'txtOnly', jaHtml: '', dataUrl: '', jaSentence: '', isPageBreak: false, sentences: [{id: 0, words: []}]}],
-        setting: {},
-        saveFileTitle: '',
-      },
+      saveFileTitle: '',
       curSegmentNo: 0,
       width: defaultWidth,
-      enWordSize: enWordSize,
-      bigWordEnSize: bigWordEnSize,
-      otherWordEnSize: otherWordEnSize,
-      spaceWordEnSize: spaceWordEnSize,
       setting: defaultSetting,
-      nowLanguage: 'english',
       name: '',
-      calWordWidth: 0,
-      printSegments: '',
       isPrint: false,
       imeMode: 'inactive',
       isBoldBtnActive: false,
@@ -230,8 +221,7 @@ class Main extends Component {
     this.setImg = this.setImg.bind(this)
     /* type設定 */
     this.setType = this.setType.bind(this)
-    /* 英字文字サイズ取得 */
-    this.getEnWordSize = this.getEnWordSize.bind(this)
+
     /* 改ページ追加 */
     this.addPageBreak = this.addPageBreak.bind(this)
     /* 印刷 */
@@ -245,39 +235,12 @@ class Main extends Component {
 
     this.onInputChange = this.onInputChange.bind(this)
 
-    this.onPaste = this.onPaste.bind(this)
-
     this.addSentence = this.addSentence.bind(this)
     this.delSentence = this.delSentence.bind(this)
-    this.updateNote = this.updateNote.bind(this)
+    this.updateHtml = this.updateHtml.bind(this)
+    this.updateJaHtml = this.updateJaHtml.bind(this)
   }
 
-  onPaste (e){
-    e.preventDefault()
-    var text
-
-    if (window.clipboardData) {
-      text = window.clipboardData.getData('text')
-    } else {
-      text = e.clipboardData.getData('text/plain')
-    }
-
-    if (document.selection) {
-      // 〜Internet Explorer 10
-      var range = document.selection.createRange()
-      range.text = text
-    } else {
-      // Internet Explorer 11/Chrome/Firefox
-      var selection = window.getSelection()
-      var range = selection.getRangeAt(0)
-      var node = document.createTextNode(text)
-      range.insertNode(node)
-      range.setStartAfter(node)
-      range.setEndAfter(node)
-      selection.removeAllRanges()
-      selection.addRange(range)
-    }
-  }
   createNewFile (){
     let note =  [
       {
@@ -285,7 +248,7 @@ class Main extends Component {
         type: 'txtOnly',
         html: '',
         jaHtml: '',
-        dataUrl: '', 
+        dataUrl: '',
         isPageBreak: false,
         offsetHeight: browserType == 'ie' ? 92 : 96,
         marginTopArray: [{
@@ -293,10 +256,10 @@ class Main extends Component {
         }]
       }
     ]
-    console.log('createNewFile offsetHeight:', note)
     this.saveFileTitle.value = ''
     this.colorChange.value = '#000'
     this.setState({note: note})
+    this.setState({saveFileTitle: ''})
     this.setState({curSegmentNo: 0})
     this.setState({nowLanguage: 'english'})
     this.setState({imeMode: 'inactive'})
@@ -341,14 +304,14 @@ class Main extends Component {
     this.setState({setting: file.setting})
     this.setState({note: file.note})
     this.setState({curSegmentNo: curSegmentNo})
+    this.setState({saveFileTitle: file.saveFileTitle})
     this.saveFileTitle.value = file.saveFileTitle
   }
 
   setFileTitle (event){
-    let tmpArticle = this.state.article
-    tmpArticle.saveFileTitle = event.target.value
+    const saveFileTitle = event.target.value
 
-    this.setState({article: tmpArticle})
+    this.setState({saveFileTitle: saveFileTitle})
   }
 
   addSegment (){
@@ -359,7 +322,7 @@ class Main extends Component {
       note[i].id++
     }
     curNo++
-    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', dataUrl: '', isPageBreak: false, offsetHeight: browserType == 'ie' ? 92 : 96, marginTopArray: [{marginTop: 0}]})
+    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', jaHtml: '', dataUrl: '', isPageBreak: false, offsetHeight: browserType == 'ie' ? 92 : 96, marginTopArray: [{marginTop: 0}]})
 
     this.setState({note: note})
     this.setCurSegment(curNo)
@@ -387,7 +350,16 @@ class Main extends Component {
     note[this.state.curSegmentNo].marginTopArray.pop()
     this.setState({note: note})
   }
-  updateNote (note){
+  updateHtml (object){
+    const note = this.state.note
+    note[this.state.curSegmentNo].html = object.html
+    note[this.state.curSegmentNo].offsetHeight = object.offsetHeight
+    this.setState({note: note})
+  }
+
+  updateJaHtml (object){
+    const note = this.state.note
+    note[this.state.curSegmentNo].jaHtml = object.jaHtml
     this.setState({note: note})
   }
 
@@ -410,28 +382,6 @@ class Main extends Component {
     document.execCommand('ForeColor', false, this.colorChange.value)
 
   }
-
-  getEnWordSize (word) {
-    if (word == 'W'){
-      return this.state.bigWordEnSize * 1.5
-    }
-    else if (word == 'w'){
-      return this.state.enWordSize * 1.25
-    }
-    else if (word.match(/^[A-Z]+$/)){
-      return this.state.bigWordEnSize
-    }
-    else if (word.match(/^[a-z]+$/)){
-      return this.state.enWordSize
-    }
-    else if (word == ' '){
-      return this.state.spaceWordEnSize
-    }
-    else {
-      return this.state.otherWordEnSize
-    }
-  }
-
 
   onInputChange (event){
 
@@ -487,7 +437,6 @@ class Main extends Component {
     for (let i = 0;i < inStr.length;i++){
       const word = inStr[i]
 
-      tmpLength = tmpLength + this.getEnWordSize(word)
 
       /* 改行 */
       let maxWidth = this.state.width * 0.85
@@ -520,69 +469,7 @@ class Main extends Component {
     }
     const innerHtml = this.inputText.innerHTML
     console.log('innerHtml', innerHtml)
-    /*for (let j=0;j < tmpSegment.sentences.length;j++){
-      for(let k=0;k < tmpSegment.sentences[j].words.length;k++){
 
-        let styleWord = tmpSegment.sentences[j].words[k].content
-        if (innerHtml[i]=='<' && styleWord!='<'){
-          let style = innerHtml[i].slice(i, innerHtml[i].indexOf('<'))
-          if (innerHtml.slice(i,i+22).indexOf('<font color=') == 0){
-            curStyle.color = innerHtml.slice(i+13, i+20)
-            i = i+22
-          }
-          else if (innerHtml.slice(i,i+3).indexOf('<b>') == 0){
-            curStyle.fontWeight='bold'
-            i=i+3
-          }
-          else if (innerHtml.slice(i,i+12).indexOf('<b style="">') == 0) {
-            curStyle.fontWeight='bold'
-            i=i+12
-          }
-          else if (innerHtml.slice(i,i+3).indexOf('<u>') == 0){
-            curStyle.textDecoration='underline'
-            i=i+3
-          }
-          else if (innerHtml.slice(i,i+12).indexOf('<u style="">') == 0) {
-            curStyle.textDecoration='underline'
-            i=i+12
-          }
-          else if (innerHtml.slice(i,i+3).indexOf('<i>') == 0){
-            curStyle.fontStyle='italic'
-            i=i+3
-          }
-          else if (innerHtml.slice(i,i+12).indexOf('<i style="">') == 0) {
-            curStyle.fontStyle='italic'
-            i=i+12
-          }
-          else if (innerHtml.slice(i,i+4).indexOf('</b>') == 0){
-            curStyle.fontWeight='normal'
-            i = i+4
-          }
-          else if (innerHtml.slice(i,i+4).indexOf('</u>') == 0){
-            curStyle.textDecoration='none'
-            i = i+4
-          }
-          else if (innerHtml.slice(i,i+4).indexOf('</i>') == 0){
-            curStyle.fontStyle='normal'
-            i = i+4
-          }
-          else if (innerHtml.slice(i,i+7).indexOf('</font>') == 0){
-            curStyle.color='#000'
-            i = i+7
-          }
-        }
-        if (innerHtml[i] == styleWord){
-          tmpSegment.sentences[j].words[k].color=curStyle.color
-          tmpSegment.sentences[j].words[k].fontWeight=curStyle.fontWeight
-          tmpSegment.sentences[j].words[k].fontStyle=curStyle.fontStyle
-          tmpSegment.sentences[j].words[k].textDecoration=curStyle.textDecoration
-          i++
-        }
-        else {
-          k--
-        }
-      }
-    }*/
 
     tmpArticle.segments[curSegmentNo] = tmpSegment
     this.setState({article: tmpArticle})
@@ -611,8 +498,9 @@ class Main extends Component {
   }
 
   print (){
+
     if (this.state.isPrint == true){
-      this.PrintArticle.onClearLoadstateArray()
+      this.PrintNote.onClearLoadstateArray()
     } else {
       this.setState({isPrint: true})
     }
@@ -663,7 +551,7 @@ class Main extends Component {
             <DivMenu>
               <Menu
                 ref={ref => this.Menu = ref}
-                saveFileTitle={this.state.article.saveFileTitle}
+                saveFileTitle={this.state.saveFileTitle}
                 note={this.state.note}
                 setting={this.state.setting}
                 loadFile={this.loadFile}
@@ -703,6 +591,8 @@ class Main extends Component {
             innerRef={(ref) => {this.allSegs = ref}}
             width={this.state.width}>
             <Segments
+              isPrint={this.state.isPrint}
+              title={this.state.saveFileTitle}
               width={this.state.width}
               curSegmentNo={this.state.curSegmentNo}
               setting={this.state.setting}
@@ -713,40 +603,24 @@ class Main extends Component {
               setCurSegment={this.setCurSegment}
               addSentence={this.addSentence}
               delSentence={this.delSentence}
-              updateNote={this.updateNote}
+              updateHtml={this.updateHtml}
+              updateJaHtml={this.updateJaHtml}
               setType={this.setType}
               setImg={this.setImg} />
           </DivSegments>
-
-
-          {/*<DivSegments
-            innerRef={(ref) => {this.allSegs = ref}}
-            width={`${this.state.width.toString()}px`}>
-            <Segments
-              ref={(ref) => {this.segments = ref}}
-              title={this.state.article.saveFileTitle}
-              name='test'
-              content={this.state.article.segments}
-              editSegments={this.editSegments}
-              setCurSegment={this.setCurSegment}
-              setting={this.state.setting}
-              curSegmentNo={this.state.curSegmentNo}
-              offsetHeight={this.state.segsHeight}
-              setImg={this.setImg}
-              setType={this.setType}
-              addPageBreak={this.addPageBreak}
-              width={this.state.width}
-            />
-          </DivSegments>*/}
         </DivBg>
-        <PrintArticle
-          width={this.state.width.toString() + 'px'}
+        <PrintNote
+          width={this.state.width}
           isPrint={this.state.isPrint}
-          ref={(ref) => {this.PrintArticle = ref}}
-          title={this.state.article.saveFileTitle}
-          content={this.state.article.segments}
+          ref={(ref) => {this.PrintNote = ref}}
+          title={this.state.saveFileTitle}
+          note={this.state.note}
           setting={this.state.setting}
-          printFinish={this.printFinish} />
+          printFinish={this.printFinish}
+          updateHtml={this.updateHtml}
+          updateJaHtml={this.updateJaHtml}
+          addSentence={this.addSentence}
+          delSentence={this.delSentence} />
       </div>
     )
   }

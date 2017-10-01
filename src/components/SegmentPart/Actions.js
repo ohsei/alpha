@@ -39,6 +39,18 @@ class Actions extends Component{
     this.imgAdd = this.imgAdd.bind(this)
   }
 
+
+  static propTypes = {
+    id: PropTypes.any,
+    curSegmentNo: PropTypes.any,
+    addPageBreak: PropTypes.func,
+    addSegment: PropTypes.func,
+    delSegment: PropTypes.func,
+    setType: PropTypes.func,
+    setImg: PropTypes.any,
+    type: PropTypes.string.isRequired,
+  }
+
   setImgOnly (){
     if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
@@ -293,15 +305,5 @@ class Actions extends Component{
   }
 }
 
-Actions.propTypes = {
-  id: PropTypes.any,
-  curSegmentNo: PropTypes.any,
-  addPageBreak: PropTypes.func,
-  addSegment: PropTypes.func,
-  delSegment: PropTypes.func,
-  setType: PropTypes.any,
-  setImg: PropTypes.any,
-  type: PropTypes.string.isRequired,
-}
 
 export default Actions

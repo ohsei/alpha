@@ -30,6 +30,7 @@ const DivSen = styled.div`
 `
 let keyPressed = false
 let isShiftKeyPressed = false
+let isCtrlKeyPressed = false
 let isNewLine = false
 const browserType = getBrowserType()
 
@@ -47,30 +48,27 @@ class Sentence extends Component{
   }
 
   static propTypes = {
-    note: PropTypes.arrayOf(PropTypes.object),
+    segContent: PropTypes.object,
+    curSegmentNo: PropTypes.number,
     id: PropTypes.number,
-    marginTopArray: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number,
-        marginTop: PropTypes.number,
-      })
-    ),
+    isPrint: PropTypes.bool,
     offsetHeight: PropTypes.number,
     addSentence: PropTypes.func,
     delSentence: PropTypes.func,
-    updateNote: PropTypes.func,
+    updateHtml: PropTypes.func,
+    addSegment: PropTypes.func,
   }
 
   onKeyUp (event){
+    const {updateHtml} = this.props
+
     if (event.keyCode == 16){
       isShiftKeyPressed = false
     }
-    
+
     if (browserType == 'ie' ){
-      console.log('browserType %s',browserType)
-      
       if (isNewLine) {
-       // this.inputText.htmlEl.innerHTML = this.inputText.htmlEl.innerHTML + ' '
+        // this.inputText.htmlEl.innerHTML = this.inputText.htmlEl.innerHTML + ' '
         isNewLine = false
       }
     }
@@ -78,26 +76,29 @@ class Sentence extends Component{
     /* IEの場合、ohChang()コールされないため、ここで高さ変化を検知 */
     //this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
 
-    console.log('htmlEl %s',this.inputText.htmlEl.innerHTML)
-    console.log('offsetHeight %d',this.inputText.htmlEl.offsetHeight)
-    let note = this.props.note
-    note.html = this.inputText.htmlEl.innerHTML
-    note.offsetHeight = this.inputText.htmlEl.offsetHeight
-    this.props.updateNote(note)
+    updateHtml(
+      {
+        html: this.inputText.htmlEl.innerHTML,
+        offsetHeight: this.inputText.htmlEl.offsetHeight
+      })
   }
 
   onKeyDown (event){
-    console.log('key %d',event.keyCode)
+
+    if (event.ctrlKey){
+      isCtrlKeyPressed = true
+    }
+
     if (event.keyCode == 16){
       isShiftKeyPressed = true
     }
 
     if (event.keyCode == 13){
-      if (isShiftKeyPressed != true){
-        event.preventDefault()
+      if (isShiftKeyPressed == true){
+        isNewLine = true
       }
       else {
-        isNewLine = true
+        event.preventDefault()
       }
     }
 
@@ -116,29 +117,29 @@ class Sentence extends Component{
   }
 
   onTextAreaChange (){
-   // this.setState({textAreaHeight: this.inputText.htmlEl.offsetHeight})
-   let note = this.props.note
-   note.html = this.inputText.htmlEl.innerHTML
-   note.offsetHeight = this.inputText.htmlEl.offsetHeight
-   this.props.updateNote(note)
+    const {updateHtml} = this.props
+    updateHtml(
+      {
+        html: this.inputText.htmlEl.innerHTML,
+        offsetHeight: this.inputText.htmlEl.offsetHeight
+      })
   }
 
   onTextAreaClick (){
     this.inputText.htmlEl.focus()
   }
 
-  componentWillReceiveProps (nextProps){
-    const {offsetHeight} = nextProps
-    console.log('componentWillReceiveProps newHeight %d',offsetHeight)
+  componentWillReceiveProps (){
+    const offsetHeight = this.inputText.htmlEl.offsetHeight
     this.setState({textAreaHeight: offsetHeight})
   }
 
-  componentWillUpdate (){
+  componentWillUpdate (nextProps){
     const newHeight = this.inputText.htmlEl.offsetHeight
     const oldHeight = this.state.textAreaHeight
 
-    console.log('componentWillUpdate newHeight %d',newHeight)
-    console.log('componentWillUpdate oldHeight %d',oldHeight)
+    if (nextProps.isPrint ) return
+
     if (oldHeight > 0 && newHeight > oldHeight) {
 
       const marginTop = 0//96.875 - newHeight - oldHeight
@@ -154,10 +155,13 @@ class Sentence extends Component{
 
   render (){
 
-    const { marginTopArray, note, id } = this.props
-
-    const senList = marginTopArray.map((obj, i) => {
-      return <FourLine key={i} marginTop={this.props.marginTopArray[i].marginTop} />
+    const { segContent } = this.props
+    console.log('render====start')
+    console.log ('=====segContent=====', segContent)
+    console.log('render====end')
+    
+    const senList = segContent.marginTopArray.map((obj, i) => {
+      return <FourLine key={i} marginTop={segContent.marginTopArray[i].marginTop} />
     })
 
     return (
@@ -166,7 +170,7 @@ class Sentence extends Component{
         <DivSen>
           <div ref={ref => this.senList = ref}>{senList}</div>
           <TextArea
-            html={note[id].html}
+            html={segContent.html}
             spellCheck={false}
             style={{imeMode: this.state.imeMode}}
             innerRef={(ref) => {this.inputText = ref}}

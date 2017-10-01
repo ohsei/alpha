@@ -1,56 +1,49 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import PropTypes from 'prop-types'
 
-import LabNum from '../Segment/LabNum'
-import PrintSegWithJan from './PrintSegWithJan'
+import Sentences from './Sentences'
+import PrintLabNum from './PrintLabNum'
 
-const DivContent = styled.div`
-  background-color: white;
+const SentenceArea = styled.div`
   display: flex;
-  direction: row;
-  justify-content: space-around;
-  width: 95%;
-  border: none;
-  margin: 0 0 0 0;
-  padding: 10px;
+  width: ${props => `${props.width}px`};
 `
 
 class PrintTxtOnlySeg extends Component{
   constructor (props){
     super(props)
   }
+  static propTypes = {
+    id: PropTypes.number,
+    width: PropTypes.number,
+    segContent: PropTypes.object,
+    setting: PropTypes.object,
+    updateHtml: PropTypes.func,
+    updateJaHtml: PropTypes.func,
+    addSentence: PropTypes.func,
+    delSentence: PropTypes.func,
+  }
 
   render (){
+    const {segContent, width, setting, id,
+      updateHtml, updateJaHtml, addSentence, delSentence} = this.props
+
     return (
-      <DivContent>
-        <LabNum
-          curSegmentNo={this.props.id}
-          setting={this.props.setting}>
-        </LabNum>
-        <PrintSegWithJan
-          width={100}
-          ref={(ref) => {this.divSegWithJan = ref}}
-          jaSentence={this.props.jaSentence}
-          setting={this.props.setting}
-          content={this.props.content}
-        />
-      </DivContent>
+      <SentenceArea width={width}>
+        <PrintLabNum {...this.props} />
+        <Sentences
+          id={id}
+          senWidth={width - 50}
+          segContent={segContent}
+          setting={setting}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence} />
+      </SentenceArea>
     )
   }
 }
-
-PrintTxtOnlySeg.propTypes = {
-  content: PropTypes.any,
-  editSegments: PropTypes.any,
-  jaSentence: PropTypes.any,
-  setting: PropTypes.any,
-  setCurSegment: PropTypes.any,
-  id: PropTypes.any,
-  curSegmentNo: PropTypes.any,
-  offsetHeight: PropTypes.any,
-  isPageBreak: PropTypes.any,
-}
-
 
 export default PrintTxtOnlySeg

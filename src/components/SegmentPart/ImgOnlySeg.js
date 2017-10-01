@@ -27,6 +27,20 @@ class ImgOnlySeg extends Component{
     this.setCurSegment = this.setCurSegment.bind(this)
     this.loadImage = this.loadImage.bind(this)
   }
+
+  static propTypes = {
+    content: PropTypes.any,
+    editSegments: PropTypes.any,
+    jaSentence: PropTypes.any,
+    setting: PropTypes.any,
+    setCurSegment: PropTypes.any,
+    id: PropTypes.any,
+    curSegmentNo: PropTypes.any,
+    offsetHeight: PropTypes.any,
+    isPageBreak: PropTypes.any,
+    dataUrl: PropTypes.any,
+  }
+
   setCurSegment (){
     this.props.setCurSegment(this.props.id)
   }
@@ -75,16 +89,4 @@ class ImgOnlySeg extends Component{
   }
 }
 
-ImgOnlySeg.propTypes = {
-  content: PropTypes.any,
-  editSegments: PropTypes.any,
-  jaSentence: PropTypes.any,
-  setting: PropTypes.any,
-  setCurSegment: PropTypes.any,
-  id: PropTypes.any,
-  curSegmentNo: PropTypes.any,
-  offsetHeight: PropTypes.any,
-  isPageBreak: PropTypes.any,
-  dataUrl: PropTypes.any,
-}
 export default ImgOnlySeg

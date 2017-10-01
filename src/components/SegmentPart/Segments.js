@@ -10,27 +10,48 @@ class Segments extends Component{
   }
 
   static propTypes = {
-    curSegmentNo: PropTypes.number,
+    width: PropTypes.number,
     setting: PropTypes.object,
-    isNewFile: PropTypes.bool,
+    title: PropTypes.string,
+    curSegmentNo: PropTypes.number,
     note: PropTypes.arrayOf(PropTypes.object),
     addSegment: PropTypes.func,
+    addPageBreak: PropTypes.func,
+    setType: PropTypes.func,
+    setImg: PropTypes.func,
+    delSegment: PropTypes.func,
     setCurSegment: PropTypes.func,
+    updateHtml: PropTypes.func,
+    updateJaHtml: PropTypes.func,
+    addSentence: PropTypes.func,
+    delSentence: PropTypes.func,
+    isPrint: PropTypes.bool,
   }
-
   render (){
-    const { note, setting } = this.props
+    const { width, note, title, setting, curSegmentNo, isPrint,
+      updateHtml, updateJaHtml, addSentence, delSentence, addSegment, delSegment, addPageBreak,
+      setType, setImg} = this.props
     const segList = note.map((obj, i) =>
       <Segment
+        isPrint={isPrint}
+        width={width}
         key={i}
         id={i}
-        isPageBreak={obj.isPageBreak}
-        addSegment={this.props.addSegment}
-        setCurSegment={this.setCurSegment}
-        type={note[i].type}
-        dataUrl={note[i].dataUrl}
-        note={note}
-        {...this.props} />
+        title={title}
+        curSegmentNo={curSegmentNo}
+        addSegment={addSegment}
+        delSegment={delSegment}
+        setCurSegment={this.props.setCurSegment}
+        segContent={note[i]}
+        setType={setType}
+        setImg={setImg}
+        setting={setting}
+        updateHtml={updateHtml}
+        updateJaHtml={updateJaHtml}
+        addSentence={addSentence}
+        delSentence={delSentence}
+        addPageBreak={addPageBreak}
+      />
     )
 
     return (

@@ -31,7 +31,9 @@ class LabNum extends Component{
   }
 
   render (){
-    const lineNo = this.getLineNo(this.props.setting.lineNos, this.props.id)
+    const {setting, id } = this.props
+
+    const lineNo = this.getLineNo(setting.lineNos, id)
     return (
       <StyledPre >{lineNo}</StyledPre>
     )

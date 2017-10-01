@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+
+import PrintHeader from '../Print/PrintHeader'
 
 import PrintTxtOnlySeg from './PrintTxtOnlySeg'
 import PrintImgOnlySeg from './PrintImgOnlySeg'
 import PrintImgTxtSeg from './PrintImgTxtSeg'
 import PrintTxtImgSeg from './PrintTxtImgSeg'
-import styled from 'styled-components'
-import PrintHeader from '../Print/PrintHeader'
 
 /* defin layout start */
 const DivSegs = styled.section`
@@ -19,7 +20,7 @@ const DivSegs = styled.section`
   position: relative;
 `
 const DivInterval = styled.div`
-  height: ${props=>props.interval};
+  height: ${props => props.interval};
   background-color: white;
 `
 const PageBreakLine = styled.div`
@@ -43,7 +44,7 @@ const DrawPageBreakLine = (object) => {
       </div>
     )
   }
-  else{
+  else {
     return false
   }
 }
@@ -60,51 +61,62 @@ class PrintSegment extends Component {
   setLoadedStatus (){
     this.props.setLoadedStatus({id: this.props.id})
   }
-  componentDidMount (){
-  }
-
-  componentWillUnmout (){
-  }
 
   render (){
+    const {note, id, setting, title, width, name,
+      updateHtml, updateJaHtml, addSentence, delSentence} = this.props
+    const type = note[id].type
+
     const content = (()  => {
-      if (this.props.type == 'imgOnly'){
+      if (type == 'imgOnly'){
         return <PrintImgOnlySeg
-          ref={(ref)=>{this.imgOnlySeg = ref}}
-          id={this.props.id}
-          jaSentence={this.props.jaSentence}
-          content={this.props.content}
-          setting={this.props.setting}
-          dataUrl={this.props.dataUrl}
+          ref={(ref) => {this.imgOnlySeg = ref}}
+          id={id}
+          width={width}
+          segContent={note[id]}
+          setting={setting}
           setLoadedStatus={this.setLoadedStatus}
+          dataUrl={note[id].dataUrl}
         />
-      } else if (this.props.type == 'imgTxt'){
+      } else if (type == 'imgTxt'){
         return <PrintImgTxtSeg
-          ref={(ref)=>{this.imgTxtSeg = ref}}
-          id={this.props.id}
-          jaSentence={this.props.jaSentence}
-          content={this.props.content}
-          setting={this.props.setting}
-          dataUrl={this.props.dataUrl}
+          ref={(ref) => {this.imgTxtSeg = ref}}
+          id={id}
+          width={width}
+          segContent={note[id]}
+          setting={setting}
           setLoadedStatus={this.setLoadedStatus}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          dataUrl={note[id].dataUrl}
         />
-      } else if (this.props.type == 'txtImg'){
+      } else if (type == 'txtImg'){
         return <PrintTxtImgSeg
-          ref={(ref)=>{this.txtImgSeg = ref}}
-          id={this.props.id}
-          jaSentence={this.props.jaSentence}
-          content={this.props.content}
-          setting={this.props.setting}
-          dataUrl={this.props.dataUrl}
+          ref={(ref) => {this.txtImgSeg = ref}}
+          id={id}
+          width={width}
+          segContent={note[id]}
+          setting={setting}
           setLoadedStatus={this.setLoadedStatus}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
+          dataUrl={note[id].dataUrl}
         />
       } else {
         return <PrintTxtOnlySeg
-          ref={(ref)=>{this.txtOnlySeg = ref}}
-          id={this.props.id}
-          jaSentence={this.props.jaSentence}
-          content={this.props.content}
-          setting={this.props.setting}
+          ref={(ref) => {this.txtOnlySeg = ref}}
+          id={id}
+          segContent={note[id]}
+          setting={setting}
+          width={width}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addSentence={addSentence}
+          delSentence={delSentence}
         />
       }
     })()
@@ -113,28 +125,28 @@ class PrintSegment extends Component {
         <DivSegs innerRef={(ref) => {this.segment = ref}}>
           { content }
         </DivSegs>
-        <DivInterval interval={this.props.setting.interval} />
+        <DivInterval interval={setting.interval} />
         <DrawPageBreakLine
-          isPageBreak={this.props.isPageBreak}
-          title={this.props.title}
-          name={this.props.name} />
+          isPageBreak={note[id].isPageBreak}
+          title={title}
+          name={name} />
       </div>
     )
   }
 }
 
 PrintSegment.propTypes = {
-  type:PropTypes.any,
-  content: PropTypes.any,
-  jaSentence: PropTypes.any,
+  note: PropTypes.array,
   setting: PropTypes.any,
   id: PropTypes.any,
-  offsetHeight: PropTypes.any,
-  isPageBreak: PropTypes.any,
-  title: PropTypes.any,
+  title: PropTypes.string,
   name: PropTypes.any,
-  dataUrl: PropTypes.any,
-  setLoadedStatus: PropTypes.any,
+  width: PropTypes.number,
+  updateHtml: PropTypes.func,
+  updateJaHtml: PropTypes.func,
+  addSentence: PropTypes.func,
+  delSentence: PropTypes.func,
+  setLoadedStatus: PropTypes.func,
 }
 
 export default PrintSegment

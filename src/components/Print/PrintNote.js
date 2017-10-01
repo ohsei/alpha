@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+
 import PrintSegments from './PrintSegments'
 
 const StyledDiv = styled.div`
   display: ${props => props.isPrint ? 'block' : 'none'};
-  width: ${props=>props.width};
+  width: ${props => `${props.width}px`};
 `
 const StyledButton = styled.button`
   width: 150px;
@@ -19,46 +20,19 @@ const StyledButton = styled.button`
 const namelist = [
   {
     id: 0,
-    name:'aa'
+    name: 'aa'
   },
   {
     id: 1,
-    name:'bb'
+    name: 'bb'
   },
   {
     id: 2,
-    name:'cc'
+    name: 'cc'
   },
-  {
-    id: 3,
-    name: 'dd'
-  },
-  {
-    id: 4,
-    name: 'ff'
-  },
-  {
-    id: 5,
-    name: 'gg'
-  },
-  {
-    id: 6,
-    name: 'hh'
-  },
-  {
-    id: 7,
-    name: 'ii'
-  },
-  {
-    id: 8,
-    name: 'jj'
-  },
-  {
-    id: 9,
-    name: 'kk'
-  }
 ]
-class PrintArticle extends Component{
+
+class PrintNote extends Component{
   constructor (props){
     super(props)
     this.state = {
@@ -74,11 +48,6 @@ class PrintArticle extends Component{
     this.cancel = this.cancel.bind(this)
   }
 
-  componentWillMount (){
-  }
-
-  componentDidMount (){
-  }
   componentWillReceiveProps (nextProps){
     if ((nextProps.isPrint == true) && (this.state.isloadArrayCreated == false)){
       namelist.map((list) => {
@@ -88,11 +57,13 @@ class PrintArticle extends Component{
       this.setState({isloadArrayCreated: true})
     }
   }
-  componentDidUpdate (prevProps, prevState){
+
+  componentDidUpdate (){
     if (this.props.isPrint == true){
       if (this.state.printStatus == '印刷可'){
-        return 
+        return
       }
+
       if (this.state.printStatus == '印刷用意中...'){
         if (this.getState() == true){
           this.setState({printStatus: '印刷可'})
@@ -115,10 +86,12 @@ class PrintArticle extends Component{
     if  (this.state.loadedArray.length <= 0){
       return false
     }
+
     for (let i = 0; i < this.state.loadedArray.length;i++){
       if (this.state.loadedArray[i].segments.length <= 0){
         return false
       }
+
       for (let j = 0;j < this.state.loadedArray[i].segments.length;j++){
         if (this.state.loadedArray[i].segments[j].loaded == false){
           return false
@@ -130,10 +103,11 @@ class PrintArticle extends Component{
 
   pushSegment (object){
     let tmpLoadedArray = this.state.loadedArray
+
     if (tmpLoadedArray[object.id].segments[object.segmentId] === undefined){
       if (object.type == 'txtOnly'){
         tmpLoadedArray[object.id].segments.push({id: object.segmentId, loaded: true})
-      }else{
+      } else {
         tmpLoadedArray[object.id].segments.push({id: object.segmentId, loaded: false})
       }
     }
@@ -152,22 +126,29 @@ class PrintArticle extends Component{
   }
 
   render (){
+    const {note, title, setting, width, updateHtml, updateJaHtml, addSentence, delSentence} = this.props
 
     let listSegments = null
+
     if (this.props.isPrint == true){
       listSegments = namelist.map((list) => {
-        return(
+        return (
           <PrintSegments
             ref={(ref) => {this.PrintSegments = ref}}
+            title={title}
             id={list.id}
             key={list.id}
             isPrint={true}
-            title={this.props.title}
             name={list.name}
-            content={this.props.content}
-            setting={this.props.setting}
+            note={note}
+            width={width}
+            setting={setting}
             setLoadedStatus={this.setLoadedStatus}
             pushSegment={this.pushSegment}
+            updateHtml={updateHtml}
+            updateJaHtml={updateJaHtml}
+            addSentence={addSentence}
+            delSentence={delSentence}
           />
         )
       })
@@ -179,21 +160,25 @@ class PrintArticle extends Component{
         <StyledButton onClick={this.print}>{this.state.printStatus}</StyledButton>
         <StyledButton onClick={this.cancel}>キャンセル</StyledButton>
         {listSegments}
-        </StyledDiv>
+      </StyledDiv>
     )
   }
 
-  componentWillUnmount (){
-  }
 }
 
 
-PrintArticle.propTypes = {
+PrintNote.propTypes = {
+  note: PropTypes.array,
+  title: PropTypes.string,
   isPrint: PropTypes.any,
-  title: PropTypes.any,
-  content: PropTypes.any,
+  width: PropTypes.number,
   setting: PropTypes.any,
   printFinish: PropTypes.any,
+  updateHtml: PropTypes.func,
+  updateJaHtml: PropTypes.func,
+  addSentence: PropTypes.func,
+  delSentence: PropTypes.func,
 }
-export default PrintArticle
+
+export default PrintNote
 

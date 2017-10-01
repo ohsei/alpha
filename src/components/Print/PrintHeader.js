@@ -25,6 +25,7 @@ const DivName = styled.div`
   font-size: 26px;
   text-align: left;
 `
+
 class PrintHeader extends Component{
 
   render (){

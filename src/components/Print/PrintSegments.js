@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+
+import PrintHeader from '../Print/PrintHeader'
+
 
 import PrintSegment from './PrintSegment'
-
-import styled from 'styled-components'
-import PrintHeader from '../Print/PrintHeader'
 
 const UlSeg = styled.ul`
   margin: 0;
@@ -13,6 +14,7 @@ const UlSeg = styled.ul`
 const StyledSection = styled.section`
   page-break-after: always;
 `
+
 class PrintSegments extends Component{
   constructor (props){
     super(props)
@@ -22,35 +24,31 @@ class PrintSegments extends Component{
   setLoadedStatus (object){
     this.props.setLoadedStatus({id: this.props.id, segmentId: object.id})
   }
-  componentDidMount (){
 
-  }
-  componentWillUnmout (){
-
-  }
   render (){
-    let listItems = this.props.content.map((list) =>{
-      this.props.pushSegment({id: this.props.id, segmentId: list.id, type: list.type})
+    const {note, width, id, name, title,
+      updateHtml, updateJaHtml, addSentence, delSentence} = this.props
+    let listItems = note.map((list) => {
+      this.props.pushSegment({id: id, segmentId: list.id, type: list.type})
 
       return (<PrintSegment
         ref={(ref) => {this.segment = ref}}
         id={list.id}
         key={list.id}
-        jaSentence={list.jaSentence}
-        content={list.sentences}
+        note={note}
+        width={width}
         setting={this.props.setting}
-        offsetHeight={this.props.offsetHeight}
-        title={this.props.title}
-        name={this.props.name}
-        dataUrl={list.dataUrl}
-        type={list.type}
-        isPageBreak={list.isPageBreak}
         setLoadedStatus={this.setLoadedStatus}
+        updateHtml={updateHtml}
+        updateJaHtml={updateJaHtml}
+        addSentence={addSentence}
+        delSentence={delSentence}
+        name={name}
       ></PrintSegment>)
     })
-    return(
+    return (
       <StyledSection width='100%' className='text-center'>
-        <PrintHeader title={this.props.title} name={this.props.name} />
+        <PrintHeader title={title} name={name} />
         <UlSeg>{listItems}</UlSeg>
       </StyledSection>
     )
@@ -58,15 +56,19 @@ class PrintSegments extends Component{
 }
 
 PrintSegments.propTypes = {
-  id: PropTypes.any,
-  title: PropTypes.any,
+  width: PropTypes.number,
+  id: PropTypes.number,
+  note: PropTypes.array,
+  title: PropTypes.string,
   name: PropTypes.any,
   setting: PropTypes.any,
-  content: PropTypes.any,
-  offsetHeight: PropTypes.any,
   segsLoad: PropTypes.array,
   pushSegment: PropTypes.any,
-  setLoadedStatus: PropTypes.any,
+  updateHtml: PropTypes.func,
+  updateJaHtml: PropTypes.func,
+  addSentence: PropTypes.func,
+  delSentence: PropTypes.func,
+  setLoadedStatus: PropTypes.func,
 
 }
 

@@ -8,17 +8,22 @@ const StyledPre = styled.pre`
    font-size: 30px;
 `
 
-class LabNum extends Component{
+class PrintLabNum extends Component{
   constructor (props){
     super(props)
     this.getLineNo = this.getLineNo.bind(this)
   }
 
+  static propTypes = {
+    id: PropTypes.number,
+    setting: PropTypes.object,
+  }
   getLineNo (lineNoType, curNo){
-    switch(parseInt(lineNoType)){
+    switch (parseInt(lineNoType)){
     case 0:{
       return (curNo + 1).toString()
     }
+
     case 1:{
       return ('(' + (curNo + 1).toString() + ')').toString()
     }
@@ -26,16 +31,13 @@ class LabNum extends Component{
   }
 
   render (){
-    const lineNo = this.getLineNo(this.props.setting.lineNos, this.props.curSegmentNo)
+    const {setting, id } = this.props
+
+    const lineNo = this.getLineNo(setting.lineNos, id)
     return (
       <StyledPre >{lineNo}</StyledPre>
     )
   }
 }
 
-LabNum.propTypes = {
-  curSegmentNo: PropTypes.any,
-  setting: PropTypes.any,
-}
-
-export default LabNum
+export default PrintLabNum
