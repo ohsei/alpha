@@ -1,11 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import html2canvas from 'html2canvas'
 
 const DivSen = styled.div`
   width: 100%;
   z-index: 0;
   display: block;
+  overflow: hidden;
+  background-color: white;
 `
 const DivLine = styled.div`
   width: 100%;
@@ -28,10 +31,22 @@ class FourLine extends React.Component{
   static propTypes = {
     marginTop: PropTypes.number
   }
+  componentDidMount(){
+    html2canvas(this.divsen, {
+      onrendered: function(canvas) {
+        const blob = canvas.msToBlob(blob)
+        window.navigator.msSaveBlob(blob, "fourline.png")
+         // const blob = canvas.toBlob(blob)
+        // FileSaver.saveAs(blob, "fourline.png")
+      }
+    })
+  }
   render (){
     const {marginTop} = this.props
     return (
-      <DivSen style={{marginTop: marginTop}}>
+      <DivSen
+        innerRef={ref=>this.divsen=ref}
+        style={{marginTop: marginTop}}>
         <DivLineTwo borderColor='gray' />
         <DivLine borderColor='gray' />
         <DivLine borderColor='orange' />

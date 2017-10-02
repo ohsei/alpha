@@ -17,20 +17,6 @@ const StyledButton = styled.button`
     display: none;
   }
 `
-const namelist = [
-  {
-    id: 0,
-    name: 'aa'
-  },
-  {
-    id: 1,
-    name: 'bb'
-  },
-  {
-    id: 2,
-    name: 'cc'
-  },
-]
 
 class PrintNote extends Component{
   constructor (props){
@@ -49,6 +35,8 @@ class PrintNote extends Component{
   }
 
   componentWillReceiveProps (nextProps){
+    const {namelist} = this.props
+
     if ((nextProps.isPrint == true) && (this.state.isloadArrayCreated == false)){
       namelist.map((list) => {
         let tmpLoadedArray = this.state.loadedArray
@@ -126,7 +114,8 @@ class PrintNote extends Component{
   }
 
   render (){
-    const {note, title, setting, width, updateHtml, updateJaHtml, addSentence, delSentence} = this.props
+    const {note, title, setting, width, namelist,
+      updateHtml, updateJaHtml, addSentence, delSentence} = this.props
 
     let listSegments = null
 
@@ -168,6 +157,7 @@ class PrintNote extends Component{
 
 
 PrintNote.propTypes = {
+  namelist: PropTypes.array,
   note: PropTypes.array,
   title: PropTypes.string,
   isPrint: PropTypes.any,

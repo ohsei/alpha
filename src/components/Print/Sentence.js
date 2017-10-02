@@ -3,23 +3,23 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import ContentEditable from 'react-contenteditable'
 
+import {getBrowserType} from '../../utils/browserType'
 
 import FourLine from './FourLine'
+const browserType = getBrowserType()
 
 const TextArea = styled(ContentEditable)`
   margin: 0 0 0 1px;
   width: 85%;
-  font-size: 24px;
   border: none;
   outline-style: none;
   white-space: pre-line;
   word-wrap: break-word;
-  font-family: 'MyFamilyCHROME';
-  font-size: 80px;
-  position: absolute;
-  top:0;
-  left:0;
+  font-family: ${props => props.fontFamily};
+  font-size: ${props => props.fontSize};
+  position: relative;
   z-index: 9;
+  background-repeadt: repeat-x;
 `
 const DivSen = styled.div`
   width: 100%;
@@ -47,27 +47,29 @@ class Sentence extends Component{
     updateHtml: PropTypes.func,
   }
 
+  componentDidMount (){
+    if (browserType == 'ie'){
+      this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line_ie.png')})`    
+    }
+    else{
+      this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line.png')})` 
+    }
+  }
   render (){
 
     const { segContent } = this.props
 
-    const senList = segContent.marginTopArray.map((obj, i) => {
-      return <FourLine key={i} marginTop={segContent.marginTopArray[i].marginTop} />
-    })
-
     return (
-
-      <div style={{ width: '95%', display: 'flex'}}>
-        <DivSen>
-          <div ref={ref => this.senList = ref}>{senList}</div>
-          <TextArea
+      <DivSen>
+        <TextArea
             html={segContent.html}
             spellCheck={false}
             style={{imeMode: this.state.imeMode}}
             innerRef={(ref) => {this.inputText = ref}}
+            fontFamily={browserType == 'ie' ? 'MyFamilyIE' : 'MyFamilyCHROME'}
+            fontSize={browserType == 'ie' ? '96px': '80px'}
           />
         </DivSen>
-      </div>
     )
   }
 }

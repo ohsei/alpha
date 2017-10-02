@@ -348,7 +348,6 @@ class Main extends Component {
     const html = object.html
     const note = this.state.note
     note[this.state.curSegmentNo].html = html
-    note[this.state.curSegmentNo].offsetHeight = object.offsetHeight
     this.setState({note: note})
   }
 
@@ -380,7 +379,7 @@ class Main extends Component {
 
   onInputChange (event){
 
-    this.inputText.value = this.inputText.value.replace(/[^\x01-\x7E]/, '')
+   // this.inputText.value = this.inputText.value.replace(/[^\x01-\x7E]/, '')
 
   }
   setImg (object){
@@ -508,7 +507,8 @@ class Main extends Component {
           updateHtml={this.updateHtml}
           updateJaHtml={this.updateJaHtml}
           addSentence={this.addSentence}
-          delSentence={this.delSentence} />
+          delSentence={this.delSentence}
+          namelist={[{id: 0, name: '四線太郎'}]} />
       </div>
     )
   }

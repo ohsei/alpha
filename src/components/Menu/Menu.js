@@ -88,7 +88,6 @@ class Menu extends Component {
 
     if (window.navigator.msSaveBlob) {
       window.navigator.msSaveBlob(blob, this.props.saveFileTitle)
-      //window.navigator.msSaveOrOpenBlob(blob,"test.txt");
     } else {
       this.save.download = this.props.saveFileTitle
       this.save.href = window.URL.createObjectURL(blob)
