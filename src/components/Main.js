@@ -173,11 +173,7 @@ class Main extends Component {
           html: '',
           jaHtml: '',
           dataUrl: '',
-          offsetHeight: browserType == 'ie' ? 92 : 96,
           isPageBreak: false,
-          marginTopArray: [{
-            marginTop: 0
-          }]
         }
       ],
       saveFileTitle: '',
@@ -359,6 +355,8 @@ class Main extends Component {
 
   setCurSegment (curNo) {
     this.setState({curSegmentNo: curNo})
+    
+    this.colorChange.value = '#000'
   }
 
   setBold (){
