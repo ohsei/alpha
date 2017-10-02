@@ -2,8 +2,10 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import LabNum from './LabNum'
+
 import Sentences from '../SentencePart/Sentences'
+
+import LabNum from './LabNum'
 
 
 const SentenceArea = styled.div`
@@ -79,7 +81,7 @@ class TxtImgSeg extends Component{
   }
 
   render (){
-    const {isPrint, width, segContent, curSegmentNo,
+    const {isPrint, width, segContent, curSegmentNo, setting,
       updateHtml, updateJaHtml, addSentence, delSentence, addSegment} = this.props
     return (
       <SentenceArea
@@ -87,6 +89,7 @@ class TxtImgSeg extends Component{
         onClick={this.setCurSegment} >
         <LabNum {...this.props} />
         <Sentences
+          setting={setting}
           curSegmentNo={curSegmentNo}
           isPrint={isPrint}
           senWidth={(width - 50) * 0.6}

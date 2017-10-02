@@ -29,9 +29,11 @@ const DivSen = styled.div`
   position: relative;
 `
 let keyPressed = false
+let isKey229 = false
 let isShiftKeyPressed = false
 let isCtrlKeyPressed = false
 let isNewLine = false
+
 const browserType = getBrowserType()
 
 class Sentence extends Component{
@@ -43,8 +45,10 @@ class Sentence extends Component{
     }
     this.onKeyUp = this.onKeyUp.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
+    this.onKeyPress = this.onKeyPress.bind(this)
     this.onTextAreaChange = this.onTextAreaChange.bind(this)
     this.onTextAreaClick = this.onTextAreaClick.bind(this)
+    this.onPaste = this.onPaste.bind(this)
   }
 
   static propTypes = {
@@ -83,7 +87,16 @@ class Sentence extends Component{
       })
   }
 
+  onKeyPress (event){
+
+  }
   onKeyDown (event){
+    console.log('down ', event.keyCode)
+    console.log('html', this.inputText.htmlEl.innerHTML)
+
+    if (event.keyCode == 229){
+      isKey229 = true
+    }
 
     if (event.ctrlKey){
       isCtrlKeyPressed = true
@@ -107,22 +120,63 @@ class Sentence extends Component{
         keyPressed = true
       }
       else {
-        if (!(String.fromCharCode(event.keyCode)).match(/^[a-zA-Z0-9]+$/)) {
+        if (!isKey229 && !(String.fromCharCode(event.keyCode)).match(/^[a-zA-Z0-9]+$/)) {
           event.preventDefault()
           alert('Do not long press!')
+          isKey229 = false
         }
         keyPressed = false
       }
     }
   }
 
+  onPaste (e){
+    e.preventDefault()
+    var text
+
+    if (window.clipboardData) {
+      text = window.clipboardData.getData('text')
+    } else {
+      text = e.clipboardData.getData('text/plain')
+    }
+
+    if (document.selection) {
+      // 〜Internet Explorer 10
+      var range = document.selection.createRange()
+      range.text = text
+    } else {
+      // Internet Explorer 11/Chrome/Firefox
+      var selection = window.getSelection()
+      var range = selection.getRangeAt(0)
+      var node = document.createTextNode(text)
+      range.insertNode(node)
+      range.setStartAfter(node)
+      range.setEndAfter(node)
+      selection.removeAllRanges()
+      selection.addRange(range)
+    }
+  }
+
   onTextAreaChange (){
     const {updateHtml} = this.props
+
+    if (this.inputText.htmlEl.innerHTML.match(/[^\x01-\x7E]/)){
+      this.inputText.htmlEl.focus()
+      this.inputText.htmlEl.innerHTML = this.inputText.htmlEl.innerHTML.replace(/[^\x01-\x7E]/, ' ')
+      var selection = window.getSelection()
+      var range = document.createRange()
+      range.setStart(this.inputText.htmlEl.firstChild, this.inputText.htmlEl.innerText.length)
+      range.collapse(true)
+      selection.removeAllRanges()
+      selection.addRange(range)
+    }
+
     updateHtml(
       {
         html: this.inputText.htmlEl.innerHTML,
         offsetHeight: this.inputText.htmlEl.offsetHeight
       })
+
   }
 
   onTextAreaClick (){
@@ -156,10 +210,6 @@ class Sentence extends Component{
   render (){
 
     const { segContent } = this.props
-    console.log('render====start')
-    console.log ('=====segContent=====', segContent)
-    console.log('render====end')
-    
     const senList = segContent.marginTopArray.map((obj, i) => {
       return <FourLine key={i} marginTop={segContent.marginTopArray[i].marginTop} />
     })
@@ -178,6 +228,8 @@ class Sentence extends Component{
             onClick={this.onTextAreaClick}
             onKeyUp={this.onKeyUp}
             onKeyDown={this.onKeyDown}
+            onKeyPress={this.onKeyPress}
+            onPaste={this.onPaste}
           />
         </DivSen>
       </div>

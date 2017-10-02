@@ -205,8 +205,6 @@ class Main extends Component {
     this.loadFile = this.loadFile.bind(this)
     /* 設定メニュー処理 */
     this.setSetting = this.setSetting.bind(this)
-    /* 入力欄処理 */
-    this.onInputKeyup = this.onInputKeyup.bind(this)
     /* 色設定 */
     this.setColor = this.setColor.bind(this)
     /* Bold設定 */
@@ -228,10 +226,6 @@ class Main extends Component {
     this.print = this.print.bind(this)
     /* 印刷完了処理 */
     this.printFinish = this.printFinish.bind(this)
-    /* 入力キー制御 */
-    this.keyDown = this.keyDown.bind(this)
-    /* 入力エリアキー制御 */
-    this.onInputKeyDown = this.onInputKeyDown.bind(this)
 
     this.onInputChange = this.onInputChange.bind(this)
 
@@ -351,8 +345,9 @@ class Main extends Component {
     this.setState({note: note})
   }
   updateHtml (object){
+    const html = object.html
     const note = this.state.note
-    note[this.state.curSegmentNo].html = object.html
+    note[this.state.curSegmentNo].html = html
     note[this.state.curSegmentNo].offsetHeight = object.offsetHeight
     this.setState({note: note})
   }
@@ -388,93 +383,6 @@ class Main extends Component {
     this.inputText.value = this.inputText.value.replace(/[^\x01-\x7E]/, '')
 
   }
-  onInputKeyDown (event){
-
-    if (event.which == 13){
-      this.setState({isEnterKeyPressed: true})
-    }
-
-    if (event.ctrlKey){
-      this.setState({isCtrlKeyPressed: true})
-    }
-  }
-
-
-  onInputKeyup (event){
-
-    if (this.state.isCtrlKeyPressed && this.state.isEnterKeyPressed){
-      this.addSegment()
-      this.setState({isCtrlKeyPressed: false})
-      this.setState({isEnterKeyPressed: false})
-      return
-    }
-    /* 入力チェック */
-
-    let tmpSegment = {id: this.state.curSegmentNo, type: 'txtOnly', dataUrl: '', jaSentence: '', isPageBreak: false, sentences: [{id: 0, words: []}]}
-    let tmpArticle = this.state.article
-    let curSegmentNo = this.state.curSegmentNo
-    let sentences = tmpArticle.segments[curSegmentNo].sentences
-    let lineNo = 0
-
-    tmpSegment.type = this.state.article.segments[this.state.curSegmentNo].type
-    tmpSegment.dataUrl = this.state.article.segments[this.state.curSegmentNo].dataUrl
-    tmpSegment.isPageBreak = this.state.article.segments[this.state.curSegmentNo].isPageBreak
-    tmpSegment.jaSentence = tmpArticle.segments[curSegmentNo].jaSentence
-
-    if (this.state.nowLanguage == 'japanese'){
-      tmpSegment = this.state.article.segments[this.state.curSegmentNo]
-      tmpSegment.jaSentence =  event.target.value
-
-      tmpArticle.segments[curSegmentNo] = tmpSegment
-      this.setState({article: tmpArticle})
-
-      return
-    }
-
-    let tmpLength = 0
-    const inStr = this.inputText.innerText
-
-    for (let i = 0;i < inStr.length;i++){
-      const word = inStr[i]
-
-
-      /* 改行 */
-      let maxWidth = this.state.width * 0.85
-
-      if (tmpSegment.type == 'imgTxt'){
-        maxWidth = maxWidth * 0.6
-      }
-
-      if ((tmpLength > maxWidth) || (word == '\n')){
-        lineNo++
-        tmpSegment.sentences.push({id: lineNo, words: []})
-        tmpLength = 0
-      }
-      const insWord = {
-        content: word,
-        color: '#000',
-        fontWeight: 'normal',
-        fontStyle: 'normal',
-        textDecoration: 'none'
-      }
-
-      tmpSegment.sentences[lineNo].words.push(insWord)
-    }
-    let i = 0
-    let curStyle = {
-      color: '#000',
-      fontWeight: 'normal',
-      fontStyle: 'normal',
-      textDecoration: 'none'
-    }
-    const innerHtml = this.inputText.innerHTML
-    console.log('innerHtml', innerHtml)
-
-
-    tmpArticle.segments[curSegmentNo] = tmpSegment
-    this.setState({article: tmpArticle})
-  }
-
   setImg (object){
     let note = this.state.note
     note[this.state.curSegmentNo].dataUrl = object.img
@@ -511,31 +419,11 @@ class Main extends Component {
     this.setState({isPrint: false})
   }
 
-  keyDown (event){
-    /* if ((event.target != this.english) && (event.target != this.japanese) && (event.target != this.inputText) && (event.target != this.saveFileTitle)){
-      event.preventDefault()
-    }
-
-    if (event.keyCode == 9){
-      if (this.inputText == event.target){
-        if (!this.english.checked){
-          this.setEnglish()
-        }
-        else{
-          this.setJapanese()
-        }
-      }
-    }
-    if ((event.target != this.saveFileTitle)){
-      this.inputText.focus()
-    }*/
-  }
-
   render () {
     return (
       <div>
         <PrintOrientation layout={this.state.setting.layout} />
-        <DivBg innerRef={ref => this.bg = ref} onKeyDown={this.keyDown} isPrint={this.state.isPrint}>
+        <DivBg innerRef={ref => this.bg = ref} isPrint={this.state.isPrint}>
           <DivFixed >
             <DivTitle width={`${this.state.width}px`}>
               <DivFixedTitle> 4線マスター</DivFixedTitle>
