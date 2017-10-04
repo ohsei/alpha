@@ -81,8 +81,9 @@ class TxtImgSeg extends Component{
   }
 
   render (){
-    const {isPrint, width, segContent, curSegmentNo, setting,
-      updateHtml, updateJaHtml, addSentence, delSentence, addSegment} = this.props
+    const {id, isPrint, width, segContent, curSegmentNo, setting, tabNodeList,
+      updateHtml, updateJaHtml, addSegment, setCurSegment, updateTabNode,
+      addTabNode, delTabNode} = this.props
     return (
       <SentenceArea
         width={width}
@@ -97,9 +98,13 @@ class TxtImgSeg extends Component{
           ref={(ref) => {this.divSegWithJan = ref}}
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
-          addSentence={addSentence}
-          delSentence={delSentence}
           addSegment={addSegment}
+          addTabNode={addTabNode}
+          delTabNode={delTabNode}
+          setCurSegment={setCurSegment}
+          tabNodeList={tabNodeList}
+          updateTabNode={updateTabNode}
+          id={id}
         />
         <DivCanvas
           width={(this.props.width - 50) * 0.4}
@@ -126,9 +131,11 @@ TxtImgSeg.propTypes = {
   dataUrl: PropTypes.any,
   updateHtml: PropTypes.func,
   updateJaHtml: PropTypes.func,
-  addSentence: PropTypes.func,
-  delSentence: PropTypes.func,
   addSegment: PropTypes.func,
+  tabNodeList: PropTypes.array,
+  addTabNode: PropTypes.func,
+  delTabNode: PropTypes.func,
+  updateTabNode: PropTypes.func,
 }
 
 export default TxtImgSeg

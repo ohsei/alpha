@@ -27,23 +27,28 @@ class TxtOnlySeg extends Component{
     setting: PropTypes.object,
     updateHtml: PropTypes.func,
     updateJaHtml: PropTypes.func,
-    addSentence: PropTypes.func,
-    delSentence: PropTypes.func,
     addSegment: PropTypes.func,
+    tabNodeList: PropTypes.array,
+    addTabNode: PropTypes.func,
+    delTabNode: PropTypes.func,
+    updateTabNode: PropTypes.func,
   }
 
   setCurSegment (){
     this.props.setCurSegment(this.props.id)
   }
+
   render (){
-    const {id, segContent, width, setting, isPrint, curSegmentNo,
-      updateHtml, updateJaHtml, addSentence, delSentence, addSegment} = this.props
+    const {id, segContent, width, setting, isPrint, curSegmentNo, tabNodeList,
+      updateHtml, updateJaHtml, addSegment, addTabNode, delTabNode, updateTabNode, setCurSegment} = this.props
     return (
       <SentenceArea
+        innerRef={ref=>this.sentencearea=ref}
         width={width}
         onClick={this.setCurSegment} >
         <LabNum setting={setting} id={id} />
         <Sentences
+          ref={ref=>this.sentences=ref}
           curSegmentNo={curSegmentNo}
           isPrint={isPrint}
           id={id}
@@ -52,9 +57,12 @@ class TxtOnlySeg extends Component{
           setting={setting}
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
-          addSentence={addSentence}
-          delSentence={delSentence}
-          addSegment={addSegment} />
+          addSegment={addSegment}
+          addTabNode={addTabNode}
+          delTabNode={delTabNode}
+          updateTabNode={updateTabNode}
+          setCurSegment={setCurSegment}
+          tabNodeList={tabNodeList}/>
       </SentenceArea>
     )
   }

@@ -20,7 +20,7 @@ const TextArea = styled(ContentEditable)`
   font-size: ${props => props.fontSize};
   position: relative;
   z-index: 9;
-  background-repeadt: repeat-x;
+
 `
 const DivSen = styled.div`
   width: 100%;
@@ -49,6 +49,7 @@ class Sentence extends Component{
     this.onTextAreaBlur = this.onTextAreaBlur.bind(this)
     this.onTextAreaClick = this.onTextAreaClick.bind(this)
     this.onPaste = this.onPaste.bind(this)
+    this.focus = this.focus.bind(this)
   }
 
   static propTypes = {
@@ -75,11 +76,15 @@ class Sentence extends Component{
       }
     }
     updateHtml(
-      {
-        html: this.inputText.htmlEl.innerHTML,
-      })
+    {
+      html: this.inputText.htmlEl.innerHTML,
+      offsetHeight: this.inputText.htmlEl.offsetHeight,
+    })
   }
 
+  focus (){
+    this.inputText.htmlEl.focus()
+  }
   onKeyDown (event){
 
     if (event.ctrlKey){
@@ -130,8 +135,7 @@ class Sentence extends Component{
   }
 
   onTextAreaBlur (){
-    console.log('match %d', this.inputText.htmlEl.innerHTML.match(/[^\x01-\x7E]/))
-
+    console.log('onTextAreaBlur',this.inputText.htmlEl.innerHTML)
     if (this.inputText.htmlEl.innerHTML.match(/[^\x01-\x7E]/)){
       alert('英字のみでお願いいします。')
       let i = 0
@@ -154,12 +158,13 @@ class Sentence extends Component{
 
     updateHtml(
       {
-        html: this.inputText.htmlEl.innerHTML,
+        html: this.inputText.htmlEl.innerHTML,  
+        offsetHeight: this.inputText.htmlEl.offsetHeight,
       })
   }
 
   onTextAreaClick (){
-    this.inputText.htmlEl.focus()
+    
   }
 
   componentDidMount (){

@@ -17,17 +17,18 @@ const TextArea = styled(ContentEditable)`
   word-wrap: break-word;
   font-family: ${props => props.fontFamily};
   font-size: ${props => props.fontSize};
-  position: relative;
   z-index: 9;
-  background-repeadt: repeat-x;
+  position: absolute;
+  top:0;
+  left:0;
 `
+
 const DivSen = styled.div`
   width: 100%;
   z-index: 0;
   display: block;
   position: relative;
 `
-
 
 class Sentence extends Component{
   constructor (props){
@@ -48,19 +49,40 @@ class Sentence extends Component{
   }
 
   componentDidMount (){
-    if (browserType == 'ie'){
+
+/*    if (browserType == 'ie'){
       this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line_ie.png')})`    
     }
     else{
       this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line.png')})` 
-    }
+    }*/
   }
   render (){
-
     const { segContent } = this.props
+    let height = 0
+    console.log('height : %d', segContent.offsetHeight)
+    if (browserType == 'ie'){
+      height = segContent.offsetHeight / 96
+    }
+    else{
+      height = segContent.offsetHeight / 96
+    }
+    let i = 0
+    let marginTopArray = []
+    for (i=0;i<height;i++){
+      marginTopArray.push(0)
+    }
+    let senList = null
+    if (marginTopArray){
+      senList = marginTopArray.map((obj, i) => {
+        return <FourLine key={i} marginTop={marginTopArray[i].marginTop} />
+      })
+    }
 
     return (
+      <div style={{display: 'flex'}}>
       <DivSen>
+        <div ref={ref => this.senList = ref}>{senList}</div>
         <TextArea
             html={segContent.html}
             spellCheck={false}
@@ -70,6 +92,7 @@ class Sentence extends Component{
             fontSize={browserType == 'ie' ? '96px': '80px'}
           />
         </DivSen>
+        </div>
     )
   }
 }

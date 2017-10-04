@@ -80,8 +80,8 @@ class ImgTxtSeg extends Component{
   }
 
   render (){
-    const {isPrint, width, segContent, setting, addSegment, curSegmentNo,
-      updateHtml, updateJaHtml, addSentence, delSentence} = this.props
+    const {id, isPrint, width, segContent, setting, addSegment, curSegmentNo, tabNodeList,
+      updateHtml, updateJaHtml, addTabNode, delTabNode, setCurSegment, updateTabNode} = this.props
     return (
       <SentenceArea
         width={width}
@@ -100,10 +100,14 @@ class ImgTxtSeg extends Component{
           setting={setting}
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
-          addSentence={addSentence}
-          delSentence={delSentence}
           addSegment={addSegment}
           ref={(ref) => {this.divSegWithJan = ref}}
+          addTabNode={addTabNode}
+          delTabNode={delTabNode}
+          setCurSegment={setCurSegment}
+          tabNodeList={tabNodeList}
+          updateTabNode={updateTabNode}
+          id={id}
         />
       </SentenceArea>
     )
@@ -123,9 +127,11 @@ ImgTxtSeg.propTypes = {
   dataUrl: PropTypes.any,
   updateHtml: PropTypes.func,
   updateJaHtml: PropTypes.func,
-  addSentence: PropTypes.func,
-  delSentence: PropTypes.func,
   addSegment: PropTypes.func,
+  tabNodeList: PropTypes.array,
+  addTabNode: PropTypes.func,
+  delTabNode: PropTypes.func,
+  updateTabNode: PropTypes.func,
 }
 
 export default ImgTxtSeg

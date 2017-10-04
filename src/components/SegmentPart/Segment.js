@@ -67,13 +67,17 @@ class Segment extends Component{
     setType: PropTypes.func,
     setImg: PropTypes.func,
     isPrint: PropTypes.bool,
+    tabNodeList: PropTypes.array,
+    addTabNode: PropTypes.func,
+    delTabNode: PropTypes.func,
+    updateTabNode: PropTypes.func,
   }
 
   render (){
     const {
-      width, addSegment, id, setting, segContent, title, name, curSegmentNo, isPrint,
+      width, addSegment, id, setting, segContent, title, name, curSegmentNo, isPrint, tabNodeList,
       updateHtml, updateJaHtml, setCurSegment, delSegment, addSentence, delSentence, addPageBreak,
-      setType, setImg,
+      setType, setImg, addTabNode, delTabNode, updateTabNode,
     } = this.props
 
     const dataUrl = segContent.dataUrl
@@ -109,6 +113,10 @@ class Segment extends Component{
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment}
+          addTabNode={addTabNode}
+          delTabNode={delTabNode}
+          updateTabNode={updateTabNode}
+          tabNodeList={tabNodeList}
         />
       } else if (type == 'txtImg'){
         return <TxtImgSeg
@@ -125,7 +133,11 @@ class Segment extends Component{
           setCurSegment={setCurSegment}
           addSentence={addSentence}
           delSentence={delSentence}
-          addSegment={addSegment}
+          addSegment={addSegment
+          }addTabNode={addTabNode}
+          delTabNode={delTabNode}
+          updateTabNode={updateTabNode}
+          tabNodeList={tabNodeList}
         />
       } else {
         return <TxtOnlySeg
@@ -143,6 +155,10 @@ class Segment extends Component{
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment}
+          addTabNode={addTabNode}
+          delTabNode={delTabNode}
+          updateTabNode={updateTabNode}
+          tabNodeList={tabNodeList}
         />
       }
     })()

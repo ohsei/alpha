@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled, { injectGlobal } from 'styled-components'
-
+import html2canvas from 'html2canvas'
 import {getBrowserType} from '../utils/browserType'
 import Flines_block_Regular_chrome from '../resources/font/4lines_block-Regular.otf'
 import Flines_block_Regular_ie from '../resources/font/4lines_block-regular-webfont.eot'
@@ -24,7 +24,9 @@ const strDefaultWidth = defaultWidth.toString() + 'px'
 
 /* define layout start*/
 
-const DivBg = styled.div`
+const DivBg = styled.div.attrs({
+  tabIndex: -1,
+})`
   display: ${props => props.isPrint ? 'none' : 'block'};
   position: relative;
   background-color: lightgreen;
@@ -34,14 +36,18 @@ const DivBg = styled.div`
   padding: 0;
   border: none;
 `
-const DivFixed = styled.div`
+const DivFixed = styled.div.attrs({
+  tabIndex: -1,
+})`
   position:fixed;
   width:100%;
   z-index:9;
   top:0;
   left:0;
 `
-const DivTitle = styled.div`
+const DivTitle = styled.div.attrs({
+  tabIndex: -1,
+})`
   position: fixed;
   
   z-index: 99;
@@ -58,13 +64,17 @@ const DivTitle = styled.div`
 
   width: ${props => props.width};
 `
-const DivMenu = styled.div`
+const DivMenu = styled.div.attrs({
+  tabIndex: -1,
+})`
   position: fixed;
   z-index: 999;
   top: 50px;
   left: 5px;
 `
-const StyleEditArea = styled.div`
+const StyleEditArea = styled.div.attrs({
+  tabIndex: -1,
+})`
   position: fixed;
   display: flex;
   top: 40px;
@@ -85,10 +95,14 @@ const DivSegments = styled.div`
     padding: 0;
   }
 `
-const InSetColor = styled.input`
+const InSetColor = styled.input.attrs({
+  tabIndex: -1,
+})`
   height: 50px;
 `
-const Button = styled.button`
+const Button = styled.button.attrs({
+  tabIndex: -1,
+})`
   width: 50px;
   height: 50px;
   border: ${props => {if (props.active == true) {return '2px solid black'} else {return '1px solid lightgray'}}};
@@ -98,19 +112,25 @@ const Button = styled.button`
   text-decoration: ${props => {if (props.active == true) {return 'underline'} else {return 'none'}}};
   background-color: white;
 `
-const DivFixedTitle = styled.div`
+const DivFixedTitle = styled.div.attrs({
+  tabIndex: -1,
+})`
   background-color: lightgreen;
   width: 20%;
   font-size: 30px;
   color: white;
 `
-const TitleBorder = styled.div`
+const TitleBorder = styled.div.attrs({
+  tabIndex: -1,
+})`
   margin: 4px 0 0 0;
   width: 80%;
   border: 2px solid orange;
   background-color: white;
 `
-const InFileTitle = styled.input`
+const InFileTitle = styled.input.attrs({
+  tabIndex: -1,
+})`
   margin: 0;
   width: 100%;
   height: auto;
@@ -174,6 +194,7 @@ class Main extends Component {
           jaHtml: '',
           dataUrl: '',
           isPageBreak: false,
+          offsetHeight: 0,
         }
       ],
       saveFileTitle: '',
@@ -188,6 +209,7 @@ class Main extends Component {
       isUnderLineBtnActive: false,
       isCtrlKeyPressed: false,
       isEnterKeyPressed: false,
+      tabNodeList: [],
     }
     /* 編集中セグメントの選択 */
     this.setCurSegment = this.setCurSegment.bind(this)
@@ -225,10 +247,12 @@ class Main extends Component {
 
     this.onInputChange = this.onInputChange.bind(this)
 
-    this.addSentence = this.addSentence.bind(this)
-    this.delSentence = this.delSentence.bind(this)
     this.updateHtml = this.updateHtml.bind(this)
     this.updateJaHtml = this.updateJaHtml.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+    this.addTabNode = this.addTabNode.bind(this)
+    this.delTabNode = this.delTabNode.bind(this)
+    this.updateTabNode = this.updateTabNode.bind(this)
   }
 
   createNewFile (){
@@ -240,10 +264,7 @@ class Main extends Component {
         jaHtml: '',
         dataUrl: '',
         isPageBreak: false,
-        offsetHeight: browserType == 'ie' ? 92 : 96,
-        marginTopArray: [{
-          marginTop: 0
-        }]
+        offsetHeight: 0,
       }
     ]
     this.saveFileTitle.value = ''
@@ -312,7 +333,7 @@ class Main extends Component {
       note[i].id++
     }
     curNo++
-    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', jaHtml: '', dataUrl: '', isPageBreak: false, offsetHeight: browserType == 'ie' ? 92 : 96, marginTopArray: [{marginTop: 0}]})
+    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', jaHtml: '', dataUrl: '', isPageBreak: false, offsetHeight: 0,})
 
     this.setState({note: note})
     this.setCurSegment(curNo)
@@ -330,20 +351,10 @@ class Main extends Component {
     this.setCurSegment(curNo - 1)
   }
 
-  addSentence (pushObj){
-    let note = this.state.note
-    note[this.state.curSegmentNo].marginTopArray.push(pushObj)
-    this.setState({note: note})
-  }
-  delSentence (){
-    let note = this.state.note
-    note[this.state.curSegmentNo].marginTopArray.pop()
-    this.setState({note: note})
-  }
   updateHtml (object){
-    const html = object.html
-    const note = this.state.note
-    note[this.state.curSegmentNo].html = html
+    const note = this.state.note 
+    note[this.state.curSegmentNo].html = object.html
+    note[this.state.curSegmentNo].offsetHeight = object.offsetHeight
     this.setState({note: note})
   }
 
@@ -356,7 +367,7 @@ class Main extends Component {
   setCurSegment (curNo) {
     this.setState({curSegmentNo: curNo})
     
-    this.colorChange.value = '#000'
+    this.colorChange.value = '#000000'
   }
 
   setBold (){
@@ -409,19 +420,43 @@ class Main extends Component {
     } else {
       this.setState({isPrint: true})
     }
-  }
 
+  }
 
   printFinish (){
     this.setState({isPrint: false})
   }
 
+  onKeyDown (event){
+    if (event.keyCode==9){
+      console.log('child count: %d', this.div.childElementCount)
+    }
+  }
+
+  addTabNode (object){
+    let tabNodeList = this.state.tabNodeList
+    tabNodeList.splice(object.id, 0, object.node)
+    this.setState({tabNodeList: tabNodeList})
+  }
+
+  delTabNode (id){
+    let tabNodeList = this.state.tabNodeList
+    tabNodeList.splice(id, 1)
+    this.setState({tabNodeList: tabNodeList})
+  }
+
+  updateTabNode (object){
+    let tabNodeList = this.state.tabNodeList
+    tabNodeList[object.id] = object.node
+    this.setState({tabNodeList: tabNodeList})
+  }
+
   render () {
     return (
-      <div>
+      <div onKeyDown={this.onKeyDown} ref={ref=>this.div=ref} >
         <PrintOrientation layout={this.state.setting.layout} />
         <DivBg innerRef={ref => this.bg = ref} isPrint={this.state.isPrint}>
-          <DivFixed >
+          <DivFixed>
             <DivTitle width={`${this.state.width}px`}>
               <DivFixedTitle> 4線マスター</DivFixedTitle>
               <TitleBorder>
@@ -486,12 +521,15 @@ class Main extends Component {
               delSegment={this.delSegment}
               addPageBreak={this.addPageBreak}
               setCurSegment={this.setCurSegment}
-              addSentence={this.addSentence}
-              delSentence={this.delSentence}
               updateHtml={this.updateHtml}
               updateJaHtml={this.updateJaHtml}
               setType={this.setType}
-              setImg={this.setImg} />
+              setImg={this.setImg}
+              tabNodeList={this.state.tabNodeList}
+              addTabNode={this.addTabNode}
+              delTabNode={this.delTabNode}
+              updateTabNode={this.updateTabNode}
+              isJaSizeChanged={this.isJaSizeChanged} />
           </DivSegments>
         </DivBg>
         <PrintNote
@@ -507,6 +545,7 @@ class Main extends Component {
           addSentence={this.addSentence}
           delSentence={this.delSentence}
           namelist={[{id: 0, name: '四線太郎'}]} />
+        
       </div>
     )
   }

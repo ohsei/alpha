@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import html2canvas from 'html2canvas'
+import FileSaver from 'file-saver'
+import PrintTemplate from 'react-print'
 
 import PrintSegments from './PrintSegments'
 
@@ -25,7 +29,8 @@ class PrintNote extends Component{
       listSegments: null,
       isloadArrayCreated: false,
       loadedArray: [],
-      printStatus: '印刷用意中...'
+      printStatus: '印刷用意中...',
+      isPrintPressed: false,
     }
     this.pushSegment = this.pushSegment.bind(this)
     this.setLoadedStatus = this.setLoadedStatus.bind(this)
@@ -45,7 +50,6 @@ class PrintNote extends Component{
       this.setState({isloadArrayCreated: true})
     }
   }
-
   componentDidUpdate (){
     if (this.props.isPrint == true){
       if (this.state.printStatus == '印刷可'){
@@ -54,6 +58,12 @@ class PrintNote extends Component{
 
       if (this.state.printStatus == '印刷用意中...'){
         if (this.getState() == true){
+    /*      const note = this.printDiv
+          html2canvas(this.stylediv, {
+            onrendered: function(canvas){
+              note.appendChild(canvas)
+            }
+          })*/
           this.setState({printStatus: '印刷可'})
         }
       }
@@ -61,9 +71,13 @@ class PrintNote extends Component{
   }
 
   print (){
+    
     window.print()
+
     this.onClearLoadstateArray()
     this.props.printFinish()
+    this.setState({printStatus: '印刷用意中...'})
+ //   this.printDiv.removeChild(this.printDiv.lastChild)
   }
 
   cancel (){

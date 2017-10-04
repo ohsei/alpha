@@ -9,7 +9,7 @@ const DivSentences = styled.div`
   width: ${props => `${props.width}px`};
 `
 const DivJan = styled(ContentEditable)`
-  border: 1px solid lightgray;
+  border: 1px solid white;
   width: 95%;
   font-size: ${props => props.fontSize}
 `

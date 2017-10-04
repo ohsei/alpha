@@ -7,8 +7,6 @@ const DivSen = styled.div`
   width: 100%;
   z-index: 0;
   display: block;
-  overflow: hidden;
-  background-color: white;
 `
 const DivLine = styled.div`
   width: 100%;

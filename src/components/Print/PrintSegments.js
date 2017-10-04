@@ -44,7 +44,8 @@ class PrintSegments extends Component{
         addSentence={addSentence}
         delSentence={delSentence}
         name={name}
-      ></PrintSegment>)
+      ></PrintSegment>
+      )
     })
     return (
       <StyledSection width='100%' className='text-center'>

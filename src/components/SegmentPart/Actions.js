@@ -2,27 +2,35 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-const DivAction = styled.div`
+const DivAction = styled.div.attrs({
+  tabIndex: -1,
+})`
   display: flex;
   margin: 10px 0 10px 0;
   -webkit-box-pack:justify;
   -ms-flex-pack:justify;
   justify-content: space-between;
 `
-const StyledButton = styled.button`
+const StyledButton = styled.button.attrs({
+  tabIndex: -1,
+})`
   margin: 0px 5px 0px 5px;
   width: 40px;
   height: 40px;
   border: 1px solid white;
 `
-const ImgAddLabel = styled.label`
+const ImgAddLabel = styled.label.attrs({
+  tabIndex: -1,
+})`
   margin: 0px 5px 0 5px;
   width: 40px;
   height: 40px;
   border: 1px solid white;
   display: inline-block;
 `
-const InputFileOpen = styled.input`
+const InputFileOpen = styled.input.attrs({
+  tabIndex: -1,
+})`
   display: none;
 `
 
