@@ -16,6 +16,10 @@ class TxtOnlySeg extends Component{
   constructor (props){
     super(props)
     this.setCurSegment = this.setCurSegment.bind(this)
+    this.setBold = this.setBold.bind(this)
+    this.setColor = this.setColor.bind(this)
+    this.setItalic = this.setItalic.bind(this)
+    this.setUnderline =  this.setUnderline.bind(this)
   }
   static propTypes = {
     id: PropTypes.number,
@@ -34,6 +38,18 @@ class TxtOnlySeg extends Component{
     updateTabNode: PropTypes.func,
   }
 
+  setBold (){
+    this.sentences.setBold()
+  }
+  setColor (color){
+    this.sentences.setColor(color)
+  }
+  setItalic (){
+    this.sentences.setItalic()
+  }
+  setUnderline (){
+    this.sentences.setUnderline()
+  }
   setCurSegment (){
     this.props.setCurSegment(this.props.id)
   }

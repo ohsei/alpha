@@ -28,11 +28,26 @@ class TxtImgSeg extends Component{
 
     this.setCurSegment = this.setCurSegment.bind(this)
     this.loadImage = this.loadImage.bind(this)
+    this.setBold = this.setBold.bind(this)
+    this.setColor = this.setColor.bind(this)
+    this.setItalic = this.setItalic.bind(this)
+    this.setUnderline =  this.setUnderline.bind(this)
   }
   setCurSegment (){
     this.props.setCurSegment(this.props.id)
   }
-
+  setBold (color){
+    this.sentences.setBold(color)
+  }
+  setColor (){
+    this.sentences.setColor()
+  }
+  setItalic (){
+    this.sentences.setItalic()
+  }
+  setUnderline (){
+    this.sentences.setUnderline()
+  }
   loadImage (){
     var img = new Image()
     var canvas = this.imgCanvas
@@ -81,7 +96,7 @@ class TxtImgSeg extends Component{
   }
 
   render (){
-    const {id, isPrint, width, segContent, curSegmentNo, setting, tabNodeList,
+    const {id, isPrint, width, segContent, curSegmentNo, setting, tabNodeList,isJaSizeChanged,
       updateHtml, updateJaHtml, addSegment, setCurSegment, updateTabNode,
       addTabNode, delTabNode} = this.props
     return (
@@ -105,6 +120,7 @@ class TxtImgSeg extends Component{
           tabNodeList={tabNodeList}
           updateTabNode={updateTabNode}
           id={id}
+          isJaSizeChanged={isJaSizeChanged}
         />
         <DivCanvas
           width={(this.props.width - 50) * 0.4}
@@ -136,6 +152,7 @@ TxtImgSeg.propTypes = {
   addTabNode: PropTypes.func,
   delTabNode: PropTypes.func,
   updateTabNode: PropTypes.func,
+  isJaSizeChanged: PropTypes.bool,
 }
 
 export default TxtImgSeg

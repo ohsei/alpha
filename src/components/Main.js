@@ -325,9 +325,9 @@ class Main extends Component {
     this.setState({saveFileTitle: saveFileTitle})
   }
 
-  addSegment (){
+  addSegment (id){
     let note = this.state.note
-    let curNo = this.state.curSegmentNo
+    let curNo = id
 
     for (let i = curNo + 1;i < note.length;i++){
       note[i].id++
@@ -339,9 +339,9 @@ class Main extends Component {
     this.setCurSegment(curNo)
   }
 
-  delSegment (){
+  delSegment (id){
     let note = this.state.note
-    let curNo = this.state.curSegmentNo
+    let curNo = id
 
     for (let i = curNo + 1;i < note.length;i++){
       note[i].id--
@@ -371,18 +371,18 @@ class Main extends Component {
   }
 
   setBold (){
-    document.execCommand('bold', false)
+     this.segments.setBold()
   }
   setItalic (){
-    document.execCommand('italic', false)
+    this.segments.setItalic()
   }
 
   setUnderline (){
-    document.execCommand('underline', false)
+    this.segments.setUnderline()
   }
 
   setColor (){
-    document.execCommand('ForeColor', false, this.colorChange.value)
+    this.segments.setColor(this.colorChange.value)
 
   }
 
@@ -400,17 +400,20 @@ class Main extends Component {
 
   setType (object){
     let note = this.state.note
-    note[this.state.curSegmentNo].type = object.type
-
+    note[object.id].type = object.type
     this.setState({note: note})
+    if (object.id != this.state.curSegmentNo){
+      this.setState({curSegmentNo: object.id})
+    }
   }
 
-  addPageBreak (){
+  addPageBreak (id){
     let note = this.state.note
-    note[this.state.curSegmentNo].isPageBreak = true
-    this.addSegment()
+    note[id].isPageBreak = true
+    this.addSegment(id)
 
     this.setState({note: note})
+    
   }
 
   print (){
@@ -435,19 +438,23 @@ class Main extends Component {
 
   addTabNode (object){
     let tabNodeList = this.state.tabNodeList
-    tabNodeList.splice(object.id, 0, object.node)
+    tabNodeList.splice(object.id, 0, object)
     this.setState({tabNodeList: tabNodeList})
   }
 
   delTabNode (id){
     let tabNodeList = this.state.tabNodeList
-    tabNodeList.splice(id, 1)
+    let i = 0
+    while (tabNodeList[i].id != id){
+      i++
+    }
+    tabNodeList.splice(i, 1)
     this.setState({tabNodeList: tabNodeList})
   }
 
   updateTabNode (object){
     let tabNodeList = this.state.tabNodeList
-    tabNodeList[object.id] = object.node
+    tabNodeList[object.id] = object
     this.setState({tabNodeList: tabNodeList})
   }
 
@@ -511,6 +518,7 @@ class Main extends Component {
             innerRef={(ref) => {this.allSegs = ref}}
             width={this.state.width}>
             <Segments
+              ref={ref => this.segments = ref}
               isPrint={this.state.isPrint}
               title={this.state.saveFileTitle}
               width={this.state.width}

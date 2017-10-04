@@ -47,6 +47,10 @@ class Segment extends Component{
     this.state = {
       imeMode: 'inactive'
     }
+    this.setBold = this.setBold.bind(this)
+    this.setColor = this.setColor.bind(this)
+    this.setItalic = this.setItalic.bind(this)
+    this.setUnderline =  this.setUnderline.bind(this)
   }
   static propTypes = {
     id: PropTypes.number,
@@ -73,6 +77,50 @@ class Segment extends Component{
     updateTabNode: PropTypes.func,
   }
 
+  setBold (){
+    if (this.props.type == 'imgTxt' ){
+      this.imgTxtSeg.setBold()
+    }
+    else if (this.props.type == 'txtImg'){
+      this.txtImgSeg.setBold()
+    }
+    else{
+      this.txtOnlySeg.setBold()
+    }
+  }
+  setColor (color){
+    if (this.props.type == 'imgTxt' ){
+      this.imgTxtSeg.setColor(color)
+    }
+    else if (this.props.type == 'txtImg'){
+      this.txtImgSeg.setColor(color)
+    }
+    else{
+      this.txtOnlySeg.setColor(color)
+    }
+  }
+  setItalic (){
+    if (this.props.type == 'imgTxt' ){
+      this.imgTxtSeg.setItalic()
+    }
+    else if (this.props.type == 'txtImg'){
+      this.txtImgSeg.setItalic()
+    }
+    else{
+      this.txtOnlySeg.setItalic()
+    }
+  }
+  setUnderline (){
+    if (this.props.type == 'imgTxt' ){
+      this.imgTxtSeg.setUnderline()
+    }
+    else if (this.props.type == 'txtImg'){
+      this.txtImgSeg.setUnderline()
+    }
+    else{
+      this.txtOnlySeg.setUnderline()
+    }
+  }
   render (){
     const {
       width, addSegment, id, setting, segContent, title, name, curSegmentNo, isPrint, tabNodeList,
@@ -87,6 +135,9 @@ class Segment extends Component{
     const content = (()  => {
       if (type == 'imgOnly'){
         return <ImgOnlySeg
+          id={id}
+          addTabNode={addTabNode}
+          delTabNode={delTabNode}
           curSegmentNo={curSegmentNo}
           isPrint={isPrint}
           width={width}
@@ -95,7 +146,9 @@ class Segment extends Component{
           dataUrl={dataUrl}
           segContent={segContent}
           setting={setting}
+          updateTabNode={updateTabNode}
           setCurSegment={setCurSegment}
+          tabNodeList={tabNodeList}
         />
       } else if (type == 'imgTxt'){
         return <ImgTxtSeg
@@ -168,6 +221,7 @@ class Segment extends Component{
         <SegArea width={width}>
           {content}
           <Actions
+            setCurSegment={setCurSegment}
             curSegmentNo={curSegmentNo}
             addSegment={addSegment}
             delSegment={delSegment}

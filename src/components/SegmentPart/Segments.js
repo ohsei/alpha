@@ -8,6 +8,10 @@ class Segments extends Component{
   constructor (props){
     super(props)
     this.onKeyDown = this.onKeyDown.bind(this)
+    this.setBold = this.setBold.bind(this)
+    this.setColor = this.setColor.bind(this)
+    this.setItalic = this.setItalic.bind(this)
+    this.setUnderline =  this.setUnderline.bind(this)
   }
 
   static propTypes = {
@@ -34,22 +38,34 @@ class Segments extends Component{
   onKeyDown (event){
     const {tabNodeList} = this.props
     if (tabNodeList.length>0 && event.keyCode == 9){
-      const length =  tabNodeList[tabNodeList.length-1].length
-      if (event.target == tabNodeList[tabNodeList.length-1][length-1]){
+      const length =  tabNodeList[tabNodeList.length-1].node.length
+      if (event.target == tabNodeList[tabNodeList.length-1].node[length-1].node){
         event.preventDefault()
-        tabNodeList[0][0].focus()
+        tabNodeList[0].node[0].node.focus()
       }
     }
+  }
+    
+  setBold (){
+    this.segment.setBold()
+  }
+  setColor (color){
+    this.segment.setColor(color)
+  }
+  setItalic (){
+    this.segment.setItalic()
+  }
+  setUnderline (){
+    this.segment.setUnderline()
   }
   render (){
     const { width, note, title, setting, curSegmentNo, isPrint, tabNodeList,
       updateHtml, updateJaHtml, addSegment, delSegment, addPageBreak,setCurSegment,
       setType, setImg, addTabNode, delTabNode, updateTabNode} = this.props
     const segList = note.map((obj, i) =>{
-      console.log('i', i)
-      console.log('note[i].html',note[i].html)
       return(
       <Segment
+        ref={ref => this.segment = ref}
         isPrint={isPrint}
         width={width}
         key={i}

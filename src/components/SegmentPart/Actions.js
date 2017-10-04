@@ -45,6 +45,7 @@ class Actions extends Component{
     this.setTxtImg = this.setTxtImg.bind(this)
     this.setTxtOnly = this.setTxtOnly.bind(this)
     this.imgAdd = this.imgAdd.bind(this)
+    this.onClick =  this.onClick.bind(this)
   }
 
 
@@ -57,62 +58,63 @@ class Actions extends Component{
     setType: PropTypes.func,
     setImg: PropTypes.any,
     type: PropTypes.string.isRequired,
+    setCurSegment: PropTypes.func
   }
 
   setImgOnly (){
-    if (this.props.curSegmentNo != this.props.id){
+   /* if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
       return
-    }
-    this.props.setType({type: 'imgOnly'})
+    }*/
+    this.props.setType({id: this.props.id, type: 'imgOnly'})
   }
 
   setImgTxt (){
-    if (this.props.curSegmentNo != this.props.id){
+ /*   if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
       return
-    }
-    this.props.setType({type: 'imgTxt'})
+    }*/
+    this.props.setType({id: this.props.id, type: 'imgTxt'})
   }
 
   setTxtImg (){
-    if (this.props.curSegmentNo != this.props.id){
+ /*   if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
       return
-    }
-    this.props.setType({type: 'txtImg'})
+    }*/
+    this.props.setType({id: this.props.id, type: 'txtImg'})
   }
 
   setTxtOnly (){
-    if (this.props.curSegmentNo != this.props.id){
+ /*   if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
       return
-    }
-    this.props.setType({type: 'txtOnly'})
+    }*/
+    this.props.setType({id: this.props.id, type: 'txtOnly'})
   }
 
   delSegment (){
-    if (this.props.curSegmentNo != this.props.id){
+ /*  if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
       return
-    }
-    this.props.delSegment()
+    }*/
+    this.props.delSegment(this.props.id)
   }
 
   addSegment (){
-    if (this.props.curSegmentNo != this.props.id){
+/*    if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
       return
-    }
-    this.props.addSegment()
+    }*/
+    this.props.addSegment(this.props.id)
   }
 
   addPageBreak (){
-    if (this.props.curSegmentNo != this.props.id){
+ /*   if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
       return
-    }
-    this.props.addPageBreak()
+    }*/
+    this.props.addPageBreak(this.props.id)
   }
 
   imgAdd (event){
@@ -193,7 +195,7 @@ class Actions extends Component{
     }
   }
   componentDidUpdate (){
-    if (this.props.curSegmentNo == 0){
+    if (this.props.id == 0){
       this.btnDelSeg.disabled = true
     }
     else {
@@ -237,11 +239,15 @@ class Actions extends Component{
     }
   }
 
+  onClick (){
+   
+  }
+
   render (){
     const imgopenId = 'imgopen' + (this.props.id).toString()
 
     return (
-      <DivAction>
+      <DivAction onClick={this.onClick}>
         <StyledButton
           style={{
             marginLeft: 5,

@@ -39,6 +39,11 @@ class ImgOnlySeg extends Component{
     offsetHeight: PropTypes.any,
     isPageBreak: PropTypes.any,
     dataUrl: PropTypes.any,
+    addTabNode: PropTypes.func,
+    delTabNode: PropTypes.func,
+    id: PropTypes.number,
+    tabNodeList: PropTypes.array,
+    updateTabNode: PropTypes.func,
   }
 
   setCurSegment (){
@@ -69,11 +74,16 @@ class ImgOnlySeg extends Component{
     img.src = this.props.dataUrl
   }
 
+
   componentDidMount (){
     this.loadImage ()
   }
   componentDidUpdate (){
     this.loadImage ()
+  
+  }
+
+  componentWillUnmount (){
   }
 
   render (){

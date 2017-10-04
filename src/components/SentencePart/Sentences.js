@@ -22,6 +22,10 @@ class Sentences extends Component{
     this.onUpChange = this.onUpChange.bind(this)
     this.keyDown = this.keyDown.bind(this)
     this.onFocus = this.onFocus.bind(this)
+    this.setBold = this.setBold.bind(this)
+    this.setColor = this.setColor.bind(this)
+    this.setItalic = this.setItalic.bind(this)
+    this.setUnderline =  this.setUnderline.bind(this)
   }
   static propTypes = {
     curSegmentNo: PropTypes.number,
@@ -40,6 +44,18 @@ class Sentences extends Component{
     updateTabNode: PropTypes.func,
   }
 
+  setBold (){
+    this.sentence.setBold()
+  }
+  setColor (color){
+    this.sentence.setColor(color)
+  }
+  setItalic (){
+    this.sentence.setItalic()
+  }
+  setUnderline (){
+    this.sentence.setUnderline()
+  }
   getHeight (){
     return this.divSentences.offsetHeight
   }
@@ -61,7 +77,7 @@ class Sentences extends Component{
     setCurSegment(id)
   }
 
-  componentDidUpdate (prevProps){
+  componentDidUpdate (){
     const {id, tabNodeList, updateTabNode} = this.props
     const upJaNode = () => { return (this.upJaHtml ? this.upJaHtml.htmlEl : null)}
     const enNode = this.sentence.inputText.htmlEl
@@ -70,23 +86,35 @@ class Sentences extends Component{
     let node = []
 
     if (upJaNode()){
-      node=[upJaNode(), enNode]
+      node=[{label: 'up', node: upJaNode()}, {label: 'en', node: enNode}]
     } 
     else if (downJaNode()){
-      node=[enNode, downJaNode()]
+      node=[{label: 'en', node: enNode}, {label: 'down', node: downJaNode()}]
     }
     else{
-      node=[enNode]
+      node=[{label: 'en', node: enNode}]
     }
     
-    if (tabNodeList[id].length != node.length){
-      updateTabNode({id: id, node: node})
+    let i = 0
+    let tabNode = tabNodeList[i]
+
+    while (tabNodeList[i].id != id){
+      i++
     }
-    else {
-      for(let i=0;i<node.length;i++){
-        if (tabNodeList[id][i] != node[i]){
-          updateTabNode({id: id, node: node})
-          return
+   /* const tabNode = tabNodeList.find((tabNode) => {
+      return (tabNode.id === id);
+    })*/
+
+    if (tabNode){
+      if (tabNode.node.length != node.length){
+        updateTabNode({id: id, node: node})
+      }
+      else {
+        for(let i=0;i<node.length;i++){
+          if (tabNode.node[i].label != node[i].label){
+            updateTabNode({id: id, node: node})
+            return
+          }
         }
       }
     }
@@ -101,13 +129,13 @@ class Sentences extends Component{
     let node = []
 
     if (upJaNode()){
-      node=[upJaNode(), enNode]
+      node=[{label: 'up', node: upJaNode()}, {label: 'en', node: enNode}]
     } 
     else if (downJaNode()){
-      node=[enNode, downJaNode()]
+      node=[{label: 'en', node: enNode}, {label: 'down', node: downJaNode()}]
     }
     else{
-      node=[enNode]
+      node=[{label: 'en', node: enNode}]
     }
     
     addTabNode({id: id, node: node })
@@ -129,7 +157,7 @@ class Sentences extends Component{
         onKeyDown={this.keyDown}
         innerRef={ref => this.divSentences = ref}
         width={this.props.senWidth}>
-        {setting.upJaSize != 'オフ' && <DivJan  html={segContent.jaHtml} innerRef={ref => this.upJaHtml = ref} fontSize={upJaSize} spellCheck={false} onChange={this.onUpChange} />}
+        {setting.upJaSize != 'オフ' && <DivJan html={segContent.jaHtml} innerRef={ref => this.upJaHtml = ref} fontSize={upJaSize} spellCheck={false} onChange={this.onUpChange} />}
         <Sentence
           curSegmentNo={curSegmentNo}
           isPrint={isPrint}

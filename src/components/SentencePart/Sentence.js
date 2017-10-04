@@ -50,6 +50,10 @@ class Sentence extends Component{
     this.onTextAreaClick = this.onTextAreaClick.bind(this)
     this.onPaste = this.onPaste.bind(this)
     this.focus = this.focus.bind(this)
+    this.setBold = this.setBold.bind(this)
+    this.setColor = this.setColor.bind(this)
+    this.setItalic = this.setItalic.bind(this)
+    this.setUnderline =  this.setUnderline.bind(this)
   }
 
   static propTypes = {
@@ -62,7 +66,45 @@ class Sentence extends Component{
     updateHtml: PropTypes.func,
     addSegment: PropTypes.func,
   }
+  setBold (){
+    const {updateHtml} = this.props
+    document.execCommand('bold', false)
+    updateHtml(
+    {
+      html: this.inputText.htmlEl.innerHTML,
+      offsetHeight: this.inputText.htmlEl.offsetHeight,
+    })
+  }
+  setItalic (){
+    const {updateHtml} = this.props
+    document.execCommand('italic', false)
+    updateHtml(
+      {
+        html: this.inputText.htmlEl.innerHTML,
+        offsetHeight: this.inputText.htmlEl.offsetHeight,
+      })
+  }
 
+  setUnderline (){
+    const {updateHtml} = this.props
+    document.execCommand('underline', false)
+    updateHtml(
+      {
+        html: this.inputText.htmlEl.innerHTML,
+        offsetHeight: this.inputText.htmlEl.offsetHeight,
+      })
+  }
+
+  setColor (color){
+    const {updateHtml} = this.props
+    document.execCommand('ForeColor', false, color)
+    updateHtml(
+      {
+        html: this.inputText.htmlEl.innerHTML,
+        offsetHeight: this.inputText.htmlEl.offsetHeight,
+      })
+
+  }
   onKeyUp (event){
     const {updateHtml} = this.props
 
