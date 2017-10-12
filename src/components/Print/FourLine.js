@@ -6,6 +6,9 @@ const DivSen = styled.div`
   width: 100%;
   z-index: 0;
   display: block;
+  :first-child {
+    
+  }
 `
 const DivLine = styled.div`
   width: 100%;

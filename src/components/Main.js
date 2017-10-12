@@ -195,6 +195,10 @@ class Main extends Component {
           dataUrl: '',
           isPageBreak: false,
           offsetHeight: 0,
+          imgWidth: 0,
+          imgHeight: 0,
+          posX: 20,
+          posY: 20,
         }
       ],
       saveFileTitle: '',
@@ -245,14 +249,13 @@ class Main extends Component {
     /* 印刷完了処理 */
     this.printFinish = this.printFinish.bind(this)
 
-    this.onInputChange = this.onInputChange.bind(this)
-
     this.updateHtml = this.updateHtml.bind(this)
     this.updateJaHtml = this.updateJaHtml.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.addTabNode = this.addTabNode.bind(this)
     this.delTabNode = this.delTabNode.bind(this)
     this.updateTabNode = this.updateTabNode.bind(this)
+    this.updateImage = this.updateImage.bind(this)
   }
 
   createNewFile (){
@@ -264,7 +267,12 @@ class Main extends Component {
         jaHtml: '',
         dataUrl: '',
         isPageBreak: false,
-        offsetHeight: 0,
+        offsetHeight: 0,      /*英文文章height */
+        imgWidth: 0,          /*画像width*/
+        imgHeight: 0,         /*画像height*/
+        posX: 20,             /*画像位置x*/
+        posY: 20,             /*画像位置y*/
+        scale: 1,             /*画像resize*/
       }
     ]
     this.saveFileTitle.value = ''
@@ -333,7 +341,7 @@ class Main extends Component {
       note[i].id++
     }
     curNo++
-    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', jaHtml: '', dataUrl: '', isPageBreak: false, offsetHeight: 0,})
+    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', jaHtml: '', dataUrl: '', isPageBreak: false, offsetHeight: 0, imgWidth: 0, imgHeight: 0, posX: 20, posY: 20,})
 
     this.setState({note: note})
     this.setCurSegment(curNo)
@@ -386,11 +394,6 @@ class Main extends Component {
 
   }
 
-  onInputChange (event){
-
-   // this.inputText.value = this.inputText.value.replace(/[^\x01-\x7E]/, '')
-
-  }
   setImg (object){
     let note = this.state.note
     note[this.state.curSegmentNo].dataUrl = object.img
@@ -458,6 +461,15 @@ class Main extends Component {
     this.setState({tabNodeList: tabNodeList})
   }
 
+  updateImage (width, height, posX, posY){
+    let note = this.state.note
+    note[this.state.curSegmentNo].imgWidth = width
+    note[this.state.curSegmentNo].imgHeight = height
+    note[this.state.curSegmentNo].posX = posX
+    note[this.state.curSegmentNo].posY = posY
+
+    this.setState({note: note})
+  }
   render () {
     return (
       <div onKeyDown={this.onKeyDown} ref={ref=>this.div=ref} >
@@ -537,7 +549,8 @@ class Main extends Component {
               addTabNode={this.addTabNode}
               delTabNode={this.delTabNode}
               updateTabNode={this.updateTabNode}
-              isJaSizeChanged={this.isJaSizeChanged} />
+              isJaSizeChanged={this.isJaSizeChanged}
+              updateImage={this.updateImage} />
           </DivSegments>
         </DivBg>
         <PrintNote

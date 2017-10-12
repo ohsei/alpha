@@ -20,11 +20,9 @@ const TextArea = styled(ContentEditable)`
   font-size: ${props => props.fontSize};
   position: relative;
   z-index: 9;
-
 `
 const DivSen = styled.div`
   width: 100%;
-  height: auto;
   z-index: 0;
   display: block;
   position: relative;
@@ -223,9 +221,8 @@ class Sentence extends Component{
     const { segContent } = this.props
 
     return (
-
         <DivSen>
-           <TextArea
+         <TextArea
             html={segContent.html}
             spellCheck={false}
             style={{imeMode: this.state.imeMode}}
@@ -240,6 +237,7 @@ class Sentence extends Component{
             fontSize={browserType == 'ie' ? '96px': '80px'}
           />
         </DivSen>
+
     )
   }
 }

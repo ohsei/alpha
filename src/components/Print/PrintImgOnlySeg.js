@@ -16,19 +16,17 @@ const DivCanvas = styled.div`
   direction: row;
   justify-content: space-around;
   margin: 0px auto;
-  text-align: center;
 `
 
 class PrintImgOnlySeg extends Component{
   constructor (props){
     super(props)
 
-    this.setCurSegment = this.setCurSegment.bind(this)
     this.loadImage = this.loadImage.bind(this)
   }
 
   static propTypes = {
-    content: PropTypes.any,
+    segContent: PropTypes.any,
     editSegments: PropTypes.any,
     jaSentence: PropTypes.any,
     setting: PropTypes.any,
@@ -41,39 +39,22 @@ class PrintImgOnlySeg extends Component{
     setLoadedStatus: PropTypes.func,
   }
 
-  setCurSegment (){
-    this.props.setCurSegment(this.props.id)
-  }
-
   loadImage (){
     let img = new Image()
     let canvas = this.imgCanvas
     let ctx = canvas.getContext('2d')
 
     img.onload = function (){
-      let picWidth = img.width
-      let picHeight = img.height
-      let scale = 1.0
-
-      if (img.width > canvas.width){
-        picWidth = canvas.width
-        scale = img.width / picWidth
-        picHeight = picHeight / scale
-      }
-      canvas.width = picWidth
-      canvas.height = picHeight
-
-      ctx.drawImage(img, 0, 0, picWidth, picHeight)
+      canvas.height = this.props.segContent.imgHeight + 40
+      ctx.drawImage(img, 0, 0, img.width, img.height, this.props.segContent.posX, this.props.segContent.posY, this.props.segContent.imgWidth, this.props.segContent.imgHeight)
       this.props.setLoadedStatus()
     }.bind(this)
     img.src = this.props.dataUrl
-  
   }
 
   componentDidMount (){
     this.loadImage ()
   }
-
 
   render (){
     return (
@@ -81,7 +62,7 @@ class PrintImgOnlySeg extends Component{
         onClick={this.setCurSegment} >
         <PrintLabNum {...this.props} />
         <DivCanvas innerRef={(ref) => this.divCanvas = ref}>
-          <canvas height='110px' ref={(ref) => {this.imgCanvas = ref}} />
+          <canvas width={`${this.props.width-50}px`} height='110px' ref={(ref) => {this.imgCanvas = ref}} />
         </DivCanvas>
       </SentenceArea>
     )

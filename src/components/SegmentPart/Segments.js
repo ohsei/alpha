@@ -33,6 +33,7 @@ class Segments extends Component{
     delTabNode: PropTypes.func,
     updateTabNode: PropTypes.func,
     isPrint: PropTypes.bool,
+    updateImage: PropTypes.func
   }
 
   onKeyDown (event){
@@ -61,7 +62,7 @@ class Segments extends Component{
   render (){
     const { width, note, title, setting, curSegmentNo, isPrint, tabNodeList,
       updateHtml, updateJaHtml, addSegment, delSegment, addPageBreak,setCurSegment,
-      setType, setImg, addTabNode, delTabNode, updateTabNode} = this.props
+      setType, setImg, addTabNode, delTabNode, updateTabNode, updateImage} = this.props
     const segList = note.map((obj, i) =>{
       return(
       <Segment
@@ -86,6 +87,7 @@ class Segments extends Component{
         addTabNode={addTabNode}
         delTabNode={delTabNode}
         updateTabNode={updateTabNode}
+        updateImage={updateImage}
       />)
       }
     )

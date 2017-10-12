@@ -31,7 +31,7 @@ class PrintTxtOnlySeg extends Component{
 
     return (
       <SentenceArea width={width}>
-        <PrintLabNum {...this.props} />
+        <PrintLabNum setting={setting} id={id} />
         <Sentences
           id={id}
           senWidth={width - 50}

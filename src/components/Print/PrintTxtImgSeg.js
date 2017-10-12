@@ -37,36 +37,8 @@ class PrintTxtImgSeg extends Component{
     var ctx = canvas.getContext('2d')
 
     img.onload = function (){
-
-      let picWidth = img.width
-      let picHeight = img.height
-      let scale = 1.0
-
-      if (picWidth > canvas.width * 0.95){
-        picWidth = canvas.width * 0.95
-        scale = img.width / picWidth
-        picHeight =  img.height / scale
-      }
-
-      let wordHeight = this.divSegWithJan.getHeight()
-
-      canvas.width = picWidth
-
-      if (picHeight >= wordHeight){
-        canvas.height = picHeight
-      }
-      else {
-        canvas.height = wordHeight
-      }
-
-      let x = 0
-      let y = 0
-
-      if (picHeight < canvas.height){
-        y = (canvas.height - picHeight) / 2
-      }
-
-      ctx.drawImage(img, x, y, picWidth, picHeight)
+      canvas.height = this.props.segContent.imgHeight + 40
+      ctx.drawImage(img, 0, 0, img.width, img.height, this.props.segContent.posX, this.props.segContent.posY, this.props.segContent.imgWidth, this.props.segContent.imgHeight)
       this.props.setLoadedStatus()
     }.bind(this)
     img.src = this.props.dataUrl
@@ -77,12 +49,12 @@ class PrintTxtImgSeg extends Component{
   }
 
   render (){
-    const { segContent, width, setting, updateHtml, updateJaHtml, addSentence, delSentence} = this.props
+    const {id, segContent, width, setting, updateHtml, updateJaHtml, addSentence, delSentence} = this.props
     return (
       <SentenceArea
         width={width}
         onClick={this.setCurSegment} >
-        <PrintLabNum {...this.props} />
+        <PrintLabNum setting={setting} id={id} />
         <Sentences
           senWidth={(width - 50) * 0.6}
           segContent={segContent}
@@ -94,9 +66,12 @@ class PrintTxtImgSeg extends Component{
           delSentence={delSentence}
         />
         <DivCanvas
-          width={(width - 50) * 0.4}
           innerRef={(ref) => this.divCanvas = ref}>
-          <canvas height='110px' ref={(ref) => {this.imgCanvas = ref}} />
+          <canvas
+            width={(width - 50) * 0.4}
+            height='110px'
+            ref={(ref) => {this.imgCanvas = ref}}
+          />
         </DivCanvas>
       </SentenceArea>
     )

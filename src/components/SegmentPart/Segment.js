@@ -75,13 +75,21 @@ class Segment extends Component{
     addTabNode: PropTypes.func,
     delTabNode: PropTypes.func,
     updateTabNode: PropTypes.func,
+    updateImage: PropTypes.func,
   }
 
   setBold (){
-    if (this.props.type == 'imgTxt' ){
+    if (this.props.curSegmentNo != this.props.id){
+      return
+    }
+    if (this.props.segContent.type == 'imgOnly'){
+      return
+    }
+    
+    if (this.props.segContent.type == 'imgTxt' ){
       this.imgTxtSeg.setBold()
     }
-    else if (this.props.type == 'txtImg'){
+    else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setBold()
     }
     else{
@@ -89,10 +97,17 @@ class Segment extends Component{
     }
   }
   setColor (color){
-    if (this.props.type == 'imgTxt' ){
+    if (this.props.curSegmentNo != this.props.id){
+      return
+    }
+    if (this.props.segContent.type == 'imgOnly'){
+      return
+    }
+
+    if (this.props.segContent.type == 'imgTxt' ){
       this.imgTxtSeg.setColor(color)
     }
-    else if (this.props.type == 'txtImg'){
+    else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setColor(color)
     }
     else{
@@ -100,10 +115,17 @@ class Segment extends Component{
     }
   }
   setItalic (){
-    if (this.props.type == 'imgTxt' ){
+    if (this.props.curSegmentNo != this.props.id){
+      return
+    }
+    if (this.props.segContent.type == 'imgOnly'){
+      return
+    }
+
+    if (this.props.segContent.type == 'imgTxt' ){
       this.imgTxtSeg.setItalic()
     }
-    else if (this.props.type == 'txtImg'){
+    else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setItalic()
     }
     else{
@@ -111,10 +133,17 @@ class Segment extends Component{
     }
   }
   setUnderline (){
-    if (this.props.type == 'imgTxt' ){
+    if (this.props.curSegmentNo != this.props.id){
+      return
+    }
+    if (this.props.segContent.type == 'imgOnly'){
+      return
+    }
+
+    if (this.props.segContent.type == 'imgTxt' ){
       this.imgTxtSeg.setUnderline()
     }
-    else if (this.props.type == 'txtImg'){
+    else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setUnderline()
     }
     else{
@@ -123,9 +152,9 @@ class Segment extends Component{
   }
   render (){
     const {
-      width, addSegment, id, setting, segContent, title, name, curSegmentNo, isPrint, tabNodeList,
+      width, addSegment, id, setting, segContent, title, name, curSegmentNo, tabNodeList,
       updateHtml, updateJaHtml, setCurSegment, delSegment, addSentence, delSentence, addPageBreak,
-      setType, setImg, addTabNode, delTabNode, updateTabNode,
+      setType, setImg, addTabNode, delTabNode, updateTabNode, updateImage
     } = this.props
 
     const dataUrl = segContent.dataUrl
@@ -136,24 +165,16 @@ class Segment extends Component{
       if (type == 'imgOnly'){
         return <ImgOnlySeg
           id={id}
-          addTabNode={addTabNode}
-          delTabNode={delTabNode}
-          curSegmentNo={curSegmentNo}
-          isPrint={isPrint}
           width={width}
           ref={(ref) => {this.imgOnlySeg = ref}}
-          id={id}
-          dataUrl={dataUrl}
           segContent={segContent}
           setting={setting}
-          updateTabNode={updateTabNode}
           setCurSegment={setCurSegment}
-          tabNodeList={tabNodeList}
+          updateImage={updateImage}
         />
       } else if (type == 'imgTxt'){
         return <ImgTxtSeg
           curSegmentNo={curSegmentNo}
-          isPrint={isPrint}
           width={width}
           ref={(ref) => {this.imgTxtSeg = ref}}
           id={id}
@@ -170,11 +191,11 @@ class Segment extends Component{
           delTabNode={delTabNode}
           updateTabNode={updateTabNode}
           tabNodeList={tabNodeList}
+          updateImage={updateImage}
         />
       } else if (type == 'txtImg'){
         return <TxtImgSeg
           curSegmentNo={curSegmentNo}
-          isPrint={isPrint}
           width={width}
           ref={(ref) => {this.txtImgSeg = ref}}
           id={id}
@@ -191,11 +212,11 @@ class Segment extends Component{
           delTabNode={delTabNode}
           updateTabNode={updateTabNode}
           tabNodeList={tabNodeList}
+          updateImage={updateImage}
         />
       } else {
         return <TxtOnlySeg
           curSegmentNo={curSegmentNo}
-          isPrint={isPrint}
           width={width}
           ref={(ref) => {this.txtOnlySeg = ref}}
           id={id}
@@ -212,6 +233,7 @@ class Segment extends Component{
           delTabNode={delTabNode}
           updateTabNode={updateTabNode}
           tabNodeList={tabNodeList}
+          updateImage={updateImage}
         />
       }
     })()
