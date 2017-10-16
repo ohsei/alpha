@@ -8,6 +8,7 @@ import Flines_block_Regular_ie from '../resources/font/4lines_block-regular-webf
 import Menu from './Menu/Menu'
 import Segments from './SegmentPart/Segments'
 import PrintNote from './Print/PrintNote'
+import FileDialog from './Menu/FileDialog'
 
 import ColorPicker from './ColorPicker'
 
@@ -25,7 +26,6 @@ const defaultWidth = 1200
 const strDefaultWidth = defaultWidth.toString() + 'px'
 
 /* define layout start*/
-
 const DivBg = styled.div.attrs({
   tabIndex: -1,
 })`
@@ -37,6 +37,16 @@ const DivBg = styled.div.attrs({
   margin: 0;
   padding: 0;
   border: none;
+`
+const DivOverlap = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(222,222,222,0.5);
+  display: ${props => props.show ? 'block': 'none'}
 `
 const DivFixed = styled.div.attrs({
   tabIndex: -1,
@@ -216,6 +226,8 @@ class Main extends Component {
       isCtrlKeyPressed: false,
       isEnterKeyPressed: false,
       tabNodeList: [],
+      isShowFileDialog: false,
+      isShowMenu: false,
     }
     /* 編集中セグメントの選択 */
     this.setCurSegment = this.setCurSegment.bind(this)
@@ -258,6 +270,7 @@ class Main extends Component {
     this.delTabNode = this.delTabNode.bind(this)
     this.updateTabNode = this.updateTabNode.bind(this)
     this.updateImage = this.updateImage.bind(this)
+    this.setShowFileDialog = this.setShowFileDialog.bind(this)
   }
 
   createNewFile (){
@@ -278,7 +291,7 @@ class Main extends Component {
       }
     ]
     this.saveFileTitle.value = ''
-    this.colorChange.value = '#000'
+    this.colorChange.setColor({r: 0, g: 0, b: 0, a: 1})
     this.setState({note: note})
     this.setState({saveFileTitle: ''})
     this.setState({curSegmentNo: 0})
@@ -411,6 +424,9 @@ class Main extends Component {
       this.setState({curSegmentNo: object.id})
     }
   }
+  setShowFileDialog (isShow) {
+    this.setState({isShowFileDialog: isShow})
+  }
 
   addPageBreak (id){
     let note = this.state.note
@@ -477,7 +493,7 @@ class Main extends Component {
     return (
       <div onKeyDown={this.onKeyDown} ref={ref=>this.div=ref} >
         <PrintOrientation layout={this.state.setting.layout} />
-        <DivBg innerRef={ref => this.bg = ref} isPrint={this.state.isPrint}>
+        <DivBg innerRef={ref => this.bg = ref} isPrint={this.state.isPrint} fileDialog={this.state.isShowFileDialog}>
           <DivFixed>
             <DivTitle width={`${this.state.width}px`}>
               <DivFixedTitle> 4線マスター</DivFixedTitle>
@@ -500,11 +516,12 @@ class Main extends Component {
                 setSetting={this.setSetting}
                 createNewFile={this.createNewFile}
                 print={this.print}
+                setShowFileDialog={this.setShowFileDialog}
               />
             </DivMenu>
             <StyleEditArea>
               <ColorPicker
-                innerRef={ref => this.colorChange = ref}
+                ref={ref => this.colorChange = ref}
                 setColor={this.setColor}
               />
               <Button
@@ -553,6 +570,10 @@ class Main extends Component {
               isJaSizeChanged={this.isJaSizeChanged}
               updateImage={this.updateImage} />
           </DivSegments>
+          <DivOverlap show={this.state.isShowFileDialog}>
+            <FileDialog show={this.state.isShowFileDialog}
+            setShowFileDialog={this.setShowFileDialog} />
+          </DivOverlap>
         </DivBg>
         <PrintNote
           width={this.state.width}
