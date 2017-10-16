@@ -40,18 +40,20 @@ class Sentence extends Component{
     super(props)
     this.state = {
       imeMode: 'inactive',
+      range: null,
     }
     this.onKeyUp = this.onKeyUp.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.onTextAreaChange = this.onTextAreaChange.bind(this)
     this.onTextAreaBlur = this.onTextAreaBlur.bind(this)
-    this.onTextAreaClick = this.onTextAreaClick.bind(this)
     this.onPaste = this.onPaste.bind(this)
-    this.focus = this.focus.bind(this)
     this.setBold = this.setBold.bind(this)
     this.setColor = this.setColor.bind(this)
     this.setItalic = this.setItalic.bind(this)
     this.setUnderline =  this.setUnderline.bind(this)
+    this.saveSelection = this.saveSelection.bind(this)
+    this.restoreSelection = this.restoreSelection.bind(this)
+    this.handelMouseUp = this.handelMouseUp.bind(this)
   }
 
   static propTypes = {
@@ -93,15 +95,56 @@ class Sentence extends Component{
       })
   }
 
+saveSelection () {
+  if (window.getSelection) {
+        var sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+            return sel.getRangeAt(0);
+        }
+    } else if (document.selection && document.selection.createRange) {
+        return document.selection.createRange();
+    }
+    return null;
+}
+
+restoreSelection (range) {
+  if (range) {
+      if (window.getSelection) {
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+      } else if (document.selection && range.select) {
+          range.select();
+      }
+  }
+}
+
+toHex = (number) => {
+  if ( number.toString(16) < 10 ) {
+    return `0${number.toString(16)}`
+  }
+  else {
+    return number.toString(16)
+  }
+}
+
   setColor (color){
     const {updateHtml} = this.props
-    document.execCommand('ForeColor', false, color)
+    var r = this.toHex(color.r)
+    var g = this.toHex(color.g)
+    var b = this.toHex(color.b)
+    const newColor = `#${r}${g}${b}`
+    this.restoreSelection(this.state.range)
+    document.execCommand('foreColor', false,  newColor)
     updateHtml(
       {
         html: this.inputText.htmlEl.innerHTML,
         offsetHeight: this.inputText.htmlEl.offsetHeight,
       })
 
+  }
+  handelMouseUp () {
+    this.setState({range: this.saveSelection()})
   }
   onKeyUp (event){
     const {updateHtml} = this.props
@@ -115,6 +158,7 @@ class Sentence extends Component{
         isNewLine = false
       }
     }
+    this.setState({range: this.saveSelection()})
     updateHtml(
     {
       html: this.inputText.htmlEl.innerHTML,
@@ -122,11 +166,7 @@ class Sentence extends Component{
     })
   }
 
-  focus (){
-    this.inputText.htmlEl.focus()
-  }
   onKeyDown (event){
-
     if (event.ctrlKey){
       isCtrlKeyPressed = true
     }
@@ -191,6 +231,7 @@ class Sentence extends Component{
       }
       this.inputText.htmlEl.innerText = newText
     }
+  //  this.setState({range: this.saveSelection()})
   }
 
   onTextAreaChange (){
@@ -201,10 +242,6 @@ class Sentence extends Component{
         html: this.inputText.htmlEl.innerHTML,  
         offsetHeight: this.inputText.htmlEl.offsetHeight,
       })
-  }
-
-  onTextAreaClick (){
-    
   }
 
   componentDidMount (){
@@ -229,9 +266,9 @@ class Sentence extends Component{
             innerRef={(ref) => {this.inputText = ref}}
             onChange={this.onTextAreaChange}
             onBlur={this.onTextAreaBlur}
-            onClick={this.onTextAreaClick}
             onKeyUp={this.onKeyUp}
             onKeyDown={this.onKeyDown}
+            onMouseUp={this.handelMouseUp}
             onPaste={this.onPaste}
             fontFamily={browserType == 'ie' ? 'MyFamilyIE' : 'MyFamilyCHROME'}
             fontSize={browserType == 'ie' ? '96px': '80px'}

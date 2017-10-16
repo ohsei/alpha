@@ -45,7 +45,7 @@ class Actions extends Component{
     this.setTxtImg = this.setTxtImg.bind(this)
     this.setTxtOnly = this.setTxtOnly.bind(this)
     this.imgAdd = this.imgAdd.bind(this)
-    this.onClick =  this.onClick.bind(this)
+    this.onClick = this.onClick.bind(this)
   }
 
 
@@ -61,6 +61,10 @@ class Actions extends Component{
     setCurSegment: PropTypes.func
   }
 
+  onClick (){
+    this.props.setCurSegment(this.props.id)
+  }
+  
   setImgOnly (){
    /* if (this.props.curSegmentNo != this.props.id){
       alert('先にこの行を選択してください。')
@@ -170,6 +174,7 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict_gray.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext_gray.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict_gray.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict_gray.png')})`
       break
 
     case 'imgTxt':
@@ -177,6 +182,7 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict_gray.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict_gray.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict.png')})`
       break
 
     case 'txtImg':
@@ -184,6 +190,7 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict_gray.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext_gray.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict.png')})`
       break
 
     case 'imgOnly':
@@ -191,6 +198,7 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext_gray.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict_gray.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict.png')})`
       break
     }
   }
@@ -214,6 +222,7 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict_gray.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext_gray.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict_gray.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict_gray.png')})`
       break
 
     case 'imgTxt':
@@ -221,6 +230,7 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict_gray.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict_gray.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict.png')})`
       break
 
     case 'txtImg':
@@ -228,6 +238,7 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict_gray.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext_gray.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict.png')})`
       break
 
     case 'imgOnly':
@@ -235,12 +246,9 @@ class Actions extends Component{
       this.imgOnly.style.backgroundImage = `url(${require('../../resources/img/pict.png')})`
       this.imgTxt.style.backgroundImage = `url(${require('../../resources/img/picttext_gray.png')})`
       this.txtImg.style.backgroundImage = `url(${require('../../resources/img/textpict_gray.png')})`
+      this.imgAddLabel.style.backgroundImage = `url(${require('../../resources/img/import_pict.png')})`
       break
     }
-  }
-
-  onClick (){
-   
   }
 
   render (){
@@ -259,7 +267,7 @@ class Actions extends Component{
           onClick={this.delSegment} />
         <div style={{display: 'flex'}}>
           <ImgAddLabel
-            style={{backgroundImage: 'url(' + require('../../resources/img/import_pict.png') + ')',
+            style={{
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
             }}

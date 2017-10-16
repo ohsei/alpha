@@ -9,6 +9,8 @@ import Menu from './Menu/Menu'
 import Segments from './SegmentPart/Segments'
 import PrintNote from './Print/PrintNote'
 
+import ColorPicker from './ColorPicker'
+
 injectGlobal`
 @font-face {
    font-family: 'MyFamilyIE';
@@ -375,7 +377,7 @@ class Main extends Component {
   setCurSegment (curNo) {
     this.setState({curSegmentNo: curNo})
     
-    this.colorChange.value = '#000000'
+   // this.colorChange.value = '#000000'
   }
 
   setBold (){
@@ -389,8 +391,8 @@ class Main extends Component {
     this.segments.setUnderline()
   }
 
-  setColor (){
-    this.segments.setColor(this.colorChange.value)
+  setColor (color){
+    this.segments.setColor(color)
 
   }
 
@@ -470,6 +472,7 @@ class Main extends Component {
 
     this.setState({note: note})
   }
+
   render () {
     return (
       <div onKeyDown={this.onKeyDown} ref={ref=>this.div=ref} >
@@ -500,11 +503,9 @@ class Main extends Component {
               />
             </DivMenu>
             <StyleEditArea>
-              <InSetColor
-                type='color'
-                list
+              <ColorPicker
                 innerRef={ref => this.colorChange = ref}
-                onChange={this.setColor}
+                setColor={this.setColor}
               />
               <Button
                 active={this.state.isBoldBtnActive}
