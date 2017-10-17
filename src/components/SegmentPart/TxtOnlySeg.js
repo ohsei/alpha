@@ -28,6 +28,7 @@ class TxtOnlySeg extends Component{
     isPrint: PropTypes.bool,
     segContent: PropTypes.object,
     setCurSegment: PropTypes.func,
+    setCurComponent: PropTypes.func,
     setting: PropTypes.object,
     updateHtml: PropTypes.func,
     updateJaHtml: PropTypes.func,
@@ -55,7 +56,7 @@ class TxtOnlySeg extends Component{
   }
 
   render (){
-    const {id, segContent, width, setting, isPrint, curSegmentNo, tabNodeList,
+    const {id, segContent, width, setting, isPrint, curSegmentNo, tabNodeList, setCurComponent,
       updateHtml, updateJaHtml, addSegment, addTabNode, delTabNode, updateTabNode, setCurSegment} = this.props
     return (
       <SentenceArea
@@ -78,6 +79,7 @@ class TxtOnlySeg extends Component{
           delTabNode={delTabNode}
           updateTabNode={updateTabNode}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           tabNodeList={tabNodeList}/>
       </SentenceArea>
     )

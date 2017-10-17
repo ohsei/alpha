@@ -49,7 +49,7 @@ class TxtImgSeg extends Component{
   }
 
   render (){
-    const {id, isPrint, width, segContent, curSegmentNo, setting, tabNodeList,
+    const {id, isPrint, width, segContent, curSegmentNo, setting, tabNodeList, setCurComponent,
       updateHtml, updateJaHtml, addSegment, setCurSegment, updateTabNode, updateImage,
       addTabNode, delTabNode} = this.props
     return (
@@ -69,6 +69,7 @@ class TxtImgSeg extends Component{
           addTabNode={addTabNode}
           delTabNode={delTabNode}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           tabNodeList={tabNodeList}
           updateTabNode={updateTabNode}
           id={id}
@@ -102,6 +103,7 @@ TxtImgSeg.propTypes = {
   delTabNode: PropTypes.func,
   updateTabNode: PropTypes.func,
   updateImage: PropTypes.func,
+  setCurComponent: PropTypes.func,
 }
 
 export default TxtImgSeg

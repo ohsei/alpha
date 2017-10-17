@@ -10,14 +10,12 @@ import Canvas from './Canvas'
 
 const SentenceArea = styled.div`
   display: flex;
+  direction: row;
   width: 100%;
 `
 
 const DivCanvas = styled.div`
   width: ${props => `${props.width}px`};
-  display: flex;
-  direction: row;
-  justify-content: space-around;
   margin: 0px auto;
 `
 
@@ -48,22 +46,22 @@ class ImgTxtSeg extends Component{
   }
  
   render (){
-    const {id, width, segContent, setting, addSegment, curSegmentNo, tabNodeList,
+    const {id, width, segContent, setting, addSegment, curSegmentNo, tabNodeList, setCurComponent,
       updateHtml, updateJaHtml, addTabNode, delTabNode, setCurSegment, updateTabNode, updateImage} = this.props
     return (
       <SentenceArea
         width={width}
         onClick={this.setCurSegment} >
         <LabNum setting={setting} id={id} />
-        <Canvas
-          width={(width - 50) * 0.4}
-          dataUrl={segContent.dataUrl}
-          imgWidth={segContent.imgWidth}
-          imgHeight={segContent.imgHeight}
-          objX={segContent.posX}
-          objY={segContent.posY}
-          updateImage={updateImage}
-        />
+          <Canvas
+            width={(width - 50) * 0.4}
+            dataUrl={segContent.dataUrl}
+            imgWidth={segContent.imgWidth}
+            imgHeight={segContent.imgHeight}
+            objX={segContent.posX}
+            objY={segContent.posY}
+            updateImage={updateImage}
+          />
         <Sentences
           curSegmentNo={curSegmentNo}
           senWidth={(width - 50) * 0.6}
@@ -76,6 +74,7 @@ class ImgTxtSeg extends Component{
           addTabNode={addTabNode}
           delTabNode={delTabNode}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           tabNodeList={tabNodeList}
           updateTabNode={updateTabNode}
           id={id}

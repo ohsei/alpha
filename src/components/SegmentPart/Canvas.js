@@ -73,7 +73,7 @@ class Canvas extends Component{
       if (this.state.imgHeight !=0 ){
         picHeight = this.state.imgHeight
       }
-    
+      console.log(this.props.parentHeight)
       console.log('picWidth',picWidth)
       console.log('picHeight',picHeight)
       
@@ -89,7 +89,12 @@ class Canvas extends Component{
         isScalingRD = false
         isScalingRT = false
       }
-      canvas.height = picHeight + anchorSize*2
+      if (canvas.offsetHeight < (picHeight + anchorSize*2)) {
+        canvas.height = picHeight + anchorSize*2
+      }
+      else {
+        canvas.height = canvas.offsetHeight
+      }
 
       ctx.drawImage(img, 0, 0, img.width,  img.height, this.state.objX, this.state.objY, picWidth, picHeight )
 
@@ -132,6 +137,14 @@ class Canvas extends Component{
   componentDidMount (){
     this.loadImage ()
   }
+
+  componentWillReceiveProps (nextProps){
+    if (this.props.dataUrl != nextProps.dataUrl) {
+      this.setState({imgWidth: 0})
+      this.setState({imgHeight: 0})
+    }
+  }
+
   componentDidUpdate (){
     this.loadImage ()
   }
@@ -288,7 +301,6 @@ class Canvas extends Component{
     return (
     <CustomCanvas
       width={this.props.width}
-      height='200px'
       innerRef={(ref) => {this.imgCanvas = ref}}
       tabIndex='0'
       onFocus={this.handleFocus}

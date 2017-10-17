@@ -41,6 +41,7 @@ class Sentences extends Component{
     addTabNode: PropTypes.func,
     delTabNode: PropTypes.func,
     setCurSegment: PropTypes.func,
+    setCurComponent: PropTypes.func,
     updateTabNode: PropTypes.func,
   }
 
@@ -73,8 +74,9 @@ class Sentences extends Component{
   }
 
   onFocus (event){
-    const {id, setCurSegment} = this.props
+    const {id, setCurSegment, setCurComponent} = this.props
     setCurSegment(id)
+    setCurComponent(this.sentence)
   }
 
   componentDidUpdate (){

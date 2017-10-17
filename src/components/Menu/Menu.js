@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {InitDB, setItem, getAllItems} from '../../utils/database'
 
 import SetMenuItem from './SetMenu/SetMenuItem'
 
@@ -58,17 +57,13 @@ class Menu extends Component {
   openFile (event){
     let file = event.target.files[0] // FileList object
 
-    var fileList = getAllItems()
-    this.props.setShowFileDialog(true)
     if (file != null){
-      // Loop through the FileList and render image files as thumbnails.
-      // for (let i = 0, f; f = files[i]; i++) {
+
       var reader = new FileReader()
 
       reader.onload = function (){
         var fileStr = reader.result
-       // let savedFile = JSON.parse(fileStr)
-       let savedFile = JSON.parse(localStorage.getItem('file'))
+        let savedFile = JSON.parse(fileStr)
         this.props.loadFile(savedFile)
         
       }.bind(this)
@@ -89,20 +84,15 @@ class Menu extends Component {
     objContent.setting = this.props.setting
     objContent.saveFileTitle = this.props.saveFileTitle
     let content = JSON.stringify(objContent)
-    const fileObj = {
-      filename: this.props.saveFileTitle,
-      data: content
-    }
-    setItem(fileObj)
  
-  /*  var blob = new Blob([content], {type: 'text/plain;charset=utf-8'})
+    var blob = new Blob([content], {type: 'text/plain;charset=utf-8'})
 
     if (window.navigator.msSaveBlob) {
       window.navigator.msSaveBlob(blob, this.props.saveFileTitle)
     } else {
       this.save.download = this.props.saveFileTitle
       this.save.href = window.URL.createObjectURL(blob)
-    }*/
+    }
   }
 
   onPrint (){
@@ -115,9 +105,6 @@ class Menu extends Component {
     this.props.printSegments()
   }
 
-  componentDidMount (){
-    InitDB()
-  }
   render (){
     return (
       <DivMenu>

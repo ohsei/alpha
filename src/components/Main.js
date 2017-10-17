@@ -8,7 +8,6 @@ import Flines_block_Regular_ie from '../resources/font/4lines_block-regular-webf
 import Menu from './Menu/Menu'
 import Segments from './SegmentPart/Segments'
 import PrintNote from './Print/PrintNote'
-import FileDialog from './Menu/FileDialog'
 
 import ColorPicker from './ColorPicker'
 
@@ -226,8 +225,8 @@ class Main extends Component {
       isCtrlKeyPressed: false,
       isEnterKeyPressed: false,
       tabNodeList: [],
-      isShowFileDialog: false,
       isShowMenu: false,
+      curComponent: null,
     }
     /* 編集中セグメントの選択 */
     this.setCurSegment = this.setCurSegment.bind(this)
@@ -271,6 +270,7 @@ class Main extends Component {
     this.updateTabNode = this.updateTabNode.bind(this)
     this.updateImage = this.updateImage.bind(this)
     this.setShowFileDialog = this.setShowFileDialog.bind(this)
+    this.setCurComponent = this.setCurComponent.bind(this)
   }
 
   createNewFile (){
@@ -302,6 +302,11 @@ class Main extends Component {
     this.setState({isUnderLineBtnActive: false})
   }
 
+
+  setCurComponent (curComponent) {
+
+    this.setState({curComponent: curComponent})
+  }
 
   setSetting (param){
     this.setState({setting: param.setting})
@@ -394,19 +399,18 @@ class Main extends Component {
   }
 
   setBold (){
-     this.segments.setBold()
+    this.state.curComponent.setBold()
   }
   setItalic (){
-    this.segments.setItalic()
+    this.state.curComponent.setItalic()
   }
 
   setUnderline (){
-    this.segments.setUnderline()
+    this.state.curComponent.setUnderline()
   }
 
   setColor (color){
-    this.segments.setColor(color)
-
+    this.state.curComponent.setColor(color)
   }
 
   setImg (object){
@@ -559,6 +563,7 @@ class Main extends Component {
               delSegment={this.delSegment}
               addPageBreak={this.addPageBreak}
               setCurSegment={this.setCurSegment}
+              setCurComponent={this.setCurComponent}
               updateHtml={this.updateHtml}
               updateJaHtml={this.updateJaHtml}
               setType={this.setType}
@@ -570,10 +575,7 @@ class Main extends Component {
               isJaSizeChanged={this.isJaSizeChanged}
               updateImage={this.updateImage} />
           </DivSegments>
-          <DivOverlap show={this.state.isShowFileDialog}>
-            <FileDialog show={this.state.isShowFileDialog}
-            setShowFileDialog={this.setShowFileDialog} />
-          </DivOverlap>
+          <DivOverlap show={this.state.isShowMenu} />
         </DivBg>
         <PrintNote
           width={this.state.width}

@@ -27,6 +27,7 @@ class Segments extends Component{
     setImg: PropTypes.func,
     delSegment: PropTypes.func,
     setCurSegment: PropTypes.func,
+    setCurComponent: PropTypes.func,
     updateHtml: PropTypes.func,
     updateJaHtml: PropTypes.func,
     addTabNode: PropTypes.func,
@@ -61,7 +62,7 @@ class Segments extends Component{
   }
   render (){
     const { width, note, title, setting, curSegmentNo, isPrint, tabNodeList,
-      updateHtml, updateJaHtml, addSegment, delSegment, addPageBreak,setCurSegment,
+      updateHtml, updateJaHtml, addSegment, delSegment, addPageBreak,setCurSegment, setCurComponent,
       setType, setImg, addTabNode, delTabNode, updateTabNode, updateImage} = this.props
     const segList = note.map((obj, i) =>{
       return(
@@ -77,6 +78,7 @@ class Segments extends Component{
         addSegment={addSegment}
         delSegment={delSegment}
         setCurSegment={setCurSegment}
+        setCurComponent={setCurComponent}
         segContent={note[i]}
         setType={setType}
         setImg={setImg}

@@ -68,6 +68,7 @@ class Segment extends Component{
     updateHtml: PropTypes.func,
     updateJaHtml: PropTypes.func,
     setCurSegment: PropTypes.func,
+    setCurComponent: PropTypes.func,
     setType: PropTypes.func,
     setImg: PropTypes.func,
     isPrint: PropTypes.bool,
@@ -154,7 +155,7 @@ class Segment extends Component{
     const {
       width, addSegment, id, setting, segContent, title, name, curSegmentNo, tabNodeList,
       updateHtml, updateJaHtml, setCurSegment, delSegment, addSentence, delSentence, addPageBreak,
-      setType, setImg, addTabNode, delTabNode, updateTabNode, updateImage
+      setType, setImg, addTabNode, delTabNode, updateTabNode, updateImage, setCurComponent
     } = this.props
 
     const dataUrl = segContent.dataUrl
@@ -170,6 +171,7 @@ class Segment extends Component{
           segContent={segContent}
           setting={setting}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           updateImage={updateImage}
         />
       } else if (type == 'imgTxt'){
@@ -184,6 +186,7 @@ class Segment extends Component{
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment}
@@ -205,6 +208,7 @@ class Segment extends Component{
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment
@@ -226,6 +230,7 @@ class Segment extends Component{
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment}
