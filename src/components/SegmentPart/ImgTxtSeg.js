@@ -10,14 +10,12 @@ import Canvas from './Canvas'
 
 const SentenceArea = styled.div`
   display: flex;
+  direction: row;
   width: 100%;
 `
 
 const DivCanvas = styled.div`
   width: ${props => `${props.width}px`};
-  display: flex;
-  direction: row;
-  justify-content: space-around;
   margin: 0px auto;
 `
 
@@ -55,15 +53,15 @@ class ImgTxtSeg extends Component{
         width={width}
         onClick={this.setCurSegment} >
         <LabNum setting={setting} id={id} />
-        <Canvas
-          width={(width - 50) * 0.4}
-          dataUrl={segContent.dataUrl}
-          imgWidth={segContent.imgWidth}
-          imgHeight={segContent.imgHeight}
-          objX={segContent.posX}
-          objY={segContent.posY}
-          updateImage={updateImage}
-        />
+          <Canvas
+            width={(width - 50) * 0.4}
+            dataUrl={segContent.dataUrl}
+            imgWidth={segContent.imgWidth}
+            imgHeight={segContent.imgHeight}
+            objX={segContent.posX}
+            objY={segContent.posY}
+            updateImage={updateImage}
+          />
         <Sentences
           curSegmentNo={curSegmentNo}
           senWidth={(width - 50) * 0.6}

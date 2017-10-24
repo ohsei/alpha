@@ -175,6 +175,7 @@ class Segment extends Component{
           segContent={segContent}
           setting={setting}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           updateImage={updateImage}
         />
       } else if (type == 'imgTxt'){

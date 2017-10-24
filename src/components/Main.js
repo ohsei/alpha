@@ -219,8 +219,8 @@ class Main extends Component {
       isCtrlKeyPressed: false,
       isEnterKeyPressed: false,
       tabNodeList: [],
-      isShowFileDialog: false,
       isShowMenu: false,
+      isShowFileDialog: false,
       curComponent: null,
       isFileListUpdated: false,
     }
@@ -269,10 +269,6 @@ class Main extends Component {
     this.updateFilelist = this.updateFilelist.bind(this)
   }
 
-  setCurComponent (curComponent) {
-    this.setState({curComponent: curComponent})
-  }
-
   createNewFile (){
     let note =  [
       {
@@ -303,6 +299,11 @@ class Main extends Component {
     this.setState({curComponent: null})
   }
 
+
+  setCurComponent (curComponent) {
+
+    this.setState({curComponent: curComponent})
+  }
 
   setSetting (param){
     this.setState({setting: param.setting})

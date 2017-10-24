@@ -105,7 +105,6 @@ class Menu extends Component {
     this.props.printSegments()
   }
 
-
   render (){
     return (
       <DivMenu>

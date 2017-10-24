@@ -28,6 +28,7 @@ const DivSen = styled.div`
 `
 let isShiftKeyPressed = false
 let isNewLine = false
+let isCtrlKeyPressed = false
 
 class Sentence extends Component{
   constructor (props){

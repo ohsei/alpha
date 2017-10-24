@@ -74,7 +74,6 @@ class Canvas extends Component{
       if (this.state.imgHeight != 0 ){
         picHeight = this.state.imgHeight
       }
-
       if (isScaling){
         const transformScale = this.state.transformScale
 
@@ -138,6 +137,14 @@ class Canvas extends Component{
   componentDidMount (){
     this.loadImage ()
   }
+
+  componentWillReceiveProps (nextProps){
+    if (this.props.dataUrl != nextProps.dataUrl) {
+      this.setState({imgWidth: 0})
+      this.setState({imgHeight: 0})
+    }
+  }
+
   componentDidUpdate (){
     this.loadImage ()
   }
