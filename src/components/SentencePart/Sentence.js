@@ -2,11 +2,9 @@ import React, {Component} from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import ContentEditable from 'react-contenteditable'
-import FileSaver from 'file-saver'
 
 import {getBrowserType} from '../../utils/browserType'
 
-import FourLine from './FourLine'
 const browserType = getBrowserType()
 
 const TextArea = styled(ContentEditable)`
@@ -20,6 +18,7 @@ const TextArea = styled(ContentEditable)`
   font-size: ${props => props.fontSize};
   position: relative;
   z-index: 9;
+  letter-spacing: 1.5px;
 `
 const DivSen = styled.div`
   width: 100%;
@@ -27,13 +26,8 @@ const DivSen = styled.div`
   display: block;
   position: relative;
 `
-let keyPressed = false
-let isKey229 = false
 let isShiftKeyPressed = false
-let isCtrlKeyPressed = false
 let isNewLine = false
-
-
 
 class Sentence extends Component{
   constructor (props){
@@ -70,10 +64,10 @@ class Sentence extends Component{
     const {updateHtml} = this.props
     document.execCommand('bold', false)
     updateHtml(
-    {
-      html: this.inputText.htmlEl.innerHTML,
-      offsetHeight: this.inputText.htmlEl.offsetHeight,
-    })
+      {
+        html: this.inputText.htmlEl.innerHTML,
+        offsetHeight: this.inputText.htmlEl.offsetHeight,
+      })
   }
   setItalic (){
     const {updateHtml} = this.props
@@ -95,29 +89,30 @@ class Sentence extends Component{
       })
   }
 
-saveSelection () {
-  if (window.getSelection) {
-        var sel = window.getSelection();
-        if (sel.getRangeAt && sel.rangeCount) {
-            return sel.getRangeAt(0);
-        }
-    } else if (document.selection && document.selection.createRange) {
-        return document.selection.createRange();
-    }
-    return null;
-}
+  saveSelection () {
+    if (window.getSelection) {
+      var sel = window.getSelection()
 
-restoreSelection (range) {
-  if (range) {
-      if (window.getSelection) {
-          var sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-      } else if (document.selection && range.select) {
-          range.select();
+      if (sel.getRangeAt && sel.rangeCount) {
+        return sel.getRangeAt(0)
       }
+    } else if (document.selection && document.selection.createRange) {
+      return document.selection.createRange()
+    }
+    return null
   }
-}
+
+  restoreSelection (range) {
+    if (range) {
+      if (window.getSelection) {
+        var sel = window.getSelection()
+        sel.removeAllRanges()
+        sel.addRange(range)
+      } else if (document.selection && range.select) {
+        range.select()
+      }
+    }
+  }
 
 toHex = (number) => {
   if ( number.toString(16) < 10 ) {
@@ -128,155 +123,157 @@ toHex = (number) => {
   }
 }
 
-  setColor (color){
-    const {updateHtml} = this.props
-    var r = this.toHex(color.r)
-    var g = this.toHex(color.g)
-    var b = this.toHex(color.b)
-    const newColor = `#${r}${g}${b}`
-    this.restoreSelection(this.state.range)
-    document.execCommand('foreColor', false,  newColor)
-    updateHtml(
-      {
-        html: this.inputText.htmlEl.innerHTML,
-        offsetHeight: this.inputText.htmlEl.offsetHeight,
-      })
-
-  }
-  handelMouseUp () {
-    this.setState({range: this.saveSelection()})
-  }
-  onKeyUp (event){
-    const {updateHtml} = this.props
-
-    if (event.keyCode == 16){
-      isShiftKeyPressed = false
-    }
-
-    if (browserType == 'ie' ){
-      if (isNewLine) {
-        isNewLine = false
-      }
-    }
-    this.setState({range: this.saveSelection()})
-    updateHtml(
+setColor (color){
+  const {updateHtml} = this.props
+  var r = this.toHex(color.r)
+  var g = this.toHex(color.g)
+  var b = this.toHex(color.b)
+  const newColor = `#${r}${g}${b}`
+  this.restoreSelection(this.state.range)
+  document.execCommand('foreColor', false,  newColor)
+  updateHtml(
     {
       html: this.inputText.htmlEl.innerHTML,
       offsetHeight: this.inputText.htmlEl.offsetHeight,
     })
+
+}
+handelMouseUp () {
+  this.setState({range: this.saveSelection()})
+}
+onKeyUp (event){
+  const {updateHtml} = this.props
+
+  if (event.keyCode == 16){
+    isShiftKeyPressed = false
   }
 
-  onKeyDown (event){
-    if (event.ctrlKey){
-      isCtrlKeyPressed = true
+  if (browserType == 'ie' ){
+    if (isNewLine) {
+      isNewLine = false
     }
+  }
+  this.setState({range: this.saveSelection()})
+  updateHtml(
+    {
+      html: this.inputText.htmlEl.innerHTML,
+      offsetHeight: this.inputText.htmlEl.offsetHeight,
+    })
+}
 
-    if (event.keyCode == 16){
-      isShiftKeyPressed = true
-    }
+onKeyDown (event){
+  if (event.ctrlKey){
+    isCtrlKeyPressed = true
+  }
 
-    if (browserType == 'ie'){
-      if (event.keyCode == 13){
-        if (isShiftKeyPressed == true){
-          isNewLine = true
-        }
-        else {
-          event.preventDefault()
-        }
+  if (event.keyCode == 16){
+    isShiftKeyPressed = true
+  }
+
+  if (browserType == 'ie'){
+    if (event.keyCode == 13){
+      if (isShiftKeyPressed == true){
+        isNewLine = true
+      }
+      else {
+        event.preventDefault()
       }
     }
   }
+}
 
-  onPaste (e){
-    e.preventDefault()
-    var text
+onPaste (e){
+  e.preventDefault()
+  var text
+  var range
 
-    if (window.clipboardData) {
-      text = window.clipboardData.getData('text')
-    } else {
-      text = e.clipboardData.getData('text/plain')
-    }
-
-    if (document.selection) {
-      // 〜Internet Explorer 10
-      var range = document.selection.createRange()
-      range.text = text
-    } else {
-      // Internet Explorer 11/Chrome/Firefox
-      var selection = window.getSelection()
-      var range = selection.getRangeAt(0)
-      var node = document.createTextNode(text)
-      range.insertNode(node)
-      range.setStartAfter(node)
-      range.setEndAfter(node)
-      selection.removeAllRanges()
-      selection.addRange(range)
-    }
+  if (window.clipboardData) {
+    text = window.clipboardData.getData('text')
+  } else {
+    text = e.clipboardData.getData('text/plain')
   }
 
-  onTextAreaBlur (){
-    console.log('onTextAreaBlur',this.inputText.htmlEl.innerHTML)
-    if (this.inputText.htmlEl.innerHTML.match(/[^\x01-\x7E]/)){
-      alert('英字のみでお願いいします。')
-      let i = 0
-      let newText = ''
-      while (i < this.inputText.htmlEl.innerText.length){
-        if (this.inputText.htmlEl.innerText[i].match(/[^\x01-\x7E]/)){
-          newText = newText + ''
-        }
-        else {
-          newText = newText + this.inputText.htmlEl.innerText[i]
-        }
-        i ++
+  if (document.selection) {
+    // 〜Internet Explorer 10
+    range = document.selection.createRange()
+    range.text = text
+  } else {
+    // Internet Explorer 11/Chrome/Firefox
+    var selection = window.getSelection()
+    range = selection.getRangeAt(0)
+    var node = document.createTextNode(text)
+    range.insertNode(node)
+    range.setStartAfter(node)
+    range.setEndAfter(node)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
+}
+
+onTextAreaBlur (){
+
+  if (this.inputText.htmlEl.innerHTML.match(/[^\x01-\x7E]/)){
+    alert('英字のみでお願いいします。')
+    let i = 0
+    let newText = ''
+
+    while (i < this.inputText.htmlEl.innerText.length){
+      if (this.inputText.htmlEl.innerText[i].match(/[^\x01-\x7E]/)){
+        newText = newText + ''
       }
-      this.inputText.htmlEl.innerText = newText
+      else {
+        newText = newText + this.inputText.htmlEl.innerText[i]
+      }
+      i ++
     }
+    this.inputText.htmlEl.innerText = newText
+  }
   //  this.setState({range: this.saveSelection()})
+}
+
+onTextAreaChange (){
+  const {updateHtml} = this.props
+
+  updateHtml(
+    {
+      html: this.inputText.htmlEl.innerHTML,
+      offsetHeight: this.inputText.htmlEl.offsetHeight,
+    })
+}
+
+componentDidMount (){
+  if (browserType == 'ie'){
+    this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line_ie.png')})`
   }
-
-  onTextAreaChange (){
-    const {updateHtml} = this.props
-
-    updateHtml(
-      {
-        html: this.inputText.htmlEl.innerHTML,  
-        offsetHeight: this.inputText.htmlEl.offsetHeight,
-      })
+  else {
+    this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line.png')})`
   }
+}
 
-  componentDidMount (){
-    if (browserType == 'ie'){
-      this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line_ie.png')})`    
-    }
-    else{
-      this.inputText.htmlEl.style.backgroundImage = `url(${require('../../resources/img/4line.png')})` 
-    }
-  }
+render (){
 
-  render (){
+  const { segContent } = this.props
 
-    const { segContent } = this.props
+  return (
+    <DivSen>
+      <TextArea
+        html={segContent.html}
+        spellCheck={false}
+        style={{imeMode: this.state.imeMode}}
+        innerRef={(ref) => {this.inputText = ref}}
+        onChange={this.onTextAreaChange}
+        onBlur={this.onTextAreaBlur}
+        onKeyUp={this.onKeyUp}
+        onKeyDown={this.onKeyDown}
+        onMouseUp={this.handelMouseUp}
+        onPaste={this.onPaste}
+        fontFamily={browserType == 'ie' ? 'MyFamilyIE' : 'MyFamilyCHROME'}
+        fontSize={browserType == 'ie' ? '96px' : '80px'}
+      />
+    </DivSen>
 
-    return (
-        <DivSen>
-         <TextArea
-            html={segContent.html}
-            spellCheck={false}
-            style={{imeMode: this.state.imeMode}}
-            innerRef={(ref) => {this.inputText = ref}}
-            onChange={this.onTextAreaChange}
-            onBlur={this.onTextAreaBlur}
-            onKeyUp={this.onKeyUp}
-            onKeyDown={this.onKeyDown}
-            onMouseUp={this.handelMouseUp}
-            onPaste={this.onPaste}
-            fontFamily={browserType == 'ie' ? 'MyFamilyIE' : 'MyFamilyCHROME'}
-            fontSize={browserType == 'ie' ? '96px': '80px'}
-          />
-        </DivSen>
-
-    )
-  }
+  )
+}
 }
 
 export default Sentence

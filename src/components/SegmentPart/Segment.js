@@ -68,6 +68,7 @@ class Segment extends Component{
     updateHtml: PropTypes.func,
     updateJaHtml: PropTypes.func,
     setCurSegment: PropTypes.func,
+    setCurComponent: PropTypes.func,
     setType: PropTypes.func,
     setImg: PropTypes.func,
     isPrint: PropTypes.bool,
@@ -82,17 +83,18 @@ class Segment extends Component{
     if (this.props.curSegmentNo != this.props.id){
       return
     }
+
     if (this.props.segContent.type == 'imgOnly'){
       return
     }
-    
+
     if (this.props.segContent.type == 'imgTxt' ){
       this.imgTxtSeg.setBold()
     }
     else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setBold()
     }
-    else{
+    else {
       this.txtOnlySeg.setBold()
     }
   }
@@ -100,6 +102,7 @@ class Segment extends Component{
     if (this.props.curSegmentNo != this.props.id){
       return
     }
+
     if (this.props.segContent.type == 'imgOnly'){
       return
     }
@@ -110,7 +113,7 @@ class Segment extends Component{
     else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setColor(color)
     }
-    else{
+    else {
       this.txtOnlySeg.setColor(color)
     }
   }
@@ -118,6 +121,7 @@ class Segment extends Component{
     if (this.props.curSegmentNo != this.props.id){
       return
     }
+
     if (this.props.segContent.type == 'imgOnly'){
       return
     }
@@ -128,7 +132,7 @@ class Segment extends Component{
     else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setItalic()
     }
-    else{
+    else {
       this.txtOnlySeg.setItalic()
     }
   }
@@ -136,6 +140,7 @@ class Segment extends Component{
     if (this.props.curSegmentNo != this.props.id){
       return
     }
+
     if (this.props.segContent.type == 'imgOnly'){
       return
     }
@@ -146,13 +151,13 @@ class Segment extends Component{
     else if (this.props.segContent.type == 'txtImg'){
       this.txtImgSeg.setUnderline()
     }
-    else{
+    else {
       this.txtOnlySeg.setUnderline()
     }
   }
   render (){
     const {
-      width, addSegment, id, setting, segContent, title, name, curSegmentNo, tabNodeList,
+      width, addSegment, id, setting, segContent, title, name, curSegmentNo, tabNodeList, setCurComponent,
       updateHtml, updateJaHtml, setCurSegment, delSegment, addSentence, delSentence, addPageBreak,
       setType, setImg, addTabNode, delTabNode, updateTabNode, updateImage
     } = this.props
@@ -184,6 +189,7 @@ class Segment extends Component{
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment}
@@ -205,6 +211,7 @@ class Segment extends Component{
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment
@@ -226,6 +233,7 @@ class Segment extends Component{
           updateHtml={updateHtml}
           updateJaHtml={updateJaHtml}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           addSentence={addSentence}
           delSentence={delSentence}
           addSegment={addSegment}

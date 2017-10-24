@@ -48,7 +48,7 @@ class ImgTxtSeg extends Component{
   }
  
   render (){
-    const {id, width, segContent, setting, addSegment, curSegmentNo, tabNodeList,
+    const {id, width, segContent, setting, addSegment, curSegmentNo, tabNodeList, setCurComponent,
       updateHtml, updateJaHtml, addTabNode, delTabNode, setCurSegment, updateTabNode, updateImage} = this.props
     return (
       <SentenceArea
@@ -76,6 +76,7 @@ class ImgTxtSeg extends Component{
           addTabNode={addTabNode}
           delTabNode={delTabNode}
           setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
           tabNodeList={tabNodeList}
           updateTabNode={updateTabNode}
           id={id}
@@ -89,7 +90,8 @@ ImgTxtSeg.propTypes = {
   width: PropTypes.number,
   segContent: PropTypes.object,
   setting: PropTypes.any,
-  setCurSegment: PropTypes.any,
+  setCurSegment: PropTypes.func,
+  setCurComponent: PropTypes.func,
   id: PropTypes.any,
   curSegmentNo: PropTypes.any,
   updateHtml: PropTypes.func,

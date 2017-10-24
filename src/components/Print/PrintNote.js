@@ -2,9 +2,6 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import html2canvas from 'html2canvas'
-import FileSaver from 'file-saver'
-import PrintTemplate from 'react-print'
 
 import PrintSegments from './PrintSegments'
 

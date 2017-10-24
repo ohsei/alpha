@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {InitDB, setItem, getAllItems} from '../../utils/database'
+import styled from 'styled-components'
+
+import {dbOperate} from '../../utils/database'
 
 import SetMenuItem from './SetMenu/SetMenuItem'
-
-import styled from 'styled-components'
 
 const Item = styled.div`
   width: 30px;
@@ -55,34 +55,12 @@ class Menu extends Component {
     this.props.setSetting(param)
   }
 
-  openFile (event){
-    let file = event.target.files[0] // FileList object
-
-    var fileList = getAllItems()
+  openFile (){
     this.props.setShowFileDialog(true)
-    if (file != null){
-      // Loop through the FileList and render image files as thumbnails.
-      // for (let i = 0, f; f = files[i]; i++) {
-      var reader = new FileReader()
 
-      reader.onload = function (){
-        var fileStr = reader.result
-       // let savedFile = JSON.parse(fileStr)
-       let savedFile = JSON.parse(localStorage.getItem('file'))
-        this.props.loadFile(savedFile)
-        
-      }.bind(this)
-
-      reader.readAsText(file)
-    }
   }
 
-  saveFile (){
-    if (this.props.saveFileTitle == ''){
-      alert('Please input the file name')
-      return
-    }
-
+  confirmOverWrite = (e) => {
     let objContent = {}
 
     objContent.note = this.props.note
@@ -93,16 +71,28 @@ class Menu extends Component {
       filename: this.props.saveFileTitle,
       data: content
     }
-    setItem(fileObj)
- 
-  /*  var blob = new Blob([content], {type: 'text/plain;charset=utf-8'})
 
-    if (window.navigator.msSaveBlob) {
-      window.navigator.msSaveBlob(blob, this.props.saveFileTitle)
-    } else {
-      this.save.download = this.props.saveFileTitle
-      this.save.href = window.URL.createObjectURL(blob)
-    }*/
+    if (e) {
+      if (window.confirm('ファイルが存在します。上書きしますか？')) {
+        dbOperate(1, null, fileObj)
+        this.props.updateFilelist(true)
+      }
+      else {
+        console.log('cancel')
+      }
+    }
+    else {
+      dbOperate(1, null, fileObj)
+      this.props.updateFilelist(true)
+    }
+  }
+
+  saveFile (){
+    if (this.props.saveFileTitle == ''){
+      alert('Please input the file name')
+      return
+    }
+    dbOperate(4, null, null, this.props.saveFileTitle, null, this.confirmOverWrite)
   }
 
   onPrint (){
@@ -115,9 +105,7 @@ class Menu extends Component {
     this.props.printSegments()
   }
 
-  componentDidMount (){
-    InitDB()
-  }
+
   render (){
     return (
       <DivMenu>
@@ -133,12 +121,9 @@ class Menu extends Component {
         <ItemSetting vertical><a
           ref={(ref) => {this.newFile = ref}}
           onClick={this.createNewFile}>新規</a></ItemSetting>
-        <ItemSetting vertical><label htmlFor='fileopen'>
-          開く
-        </label></ItemSetting>
-        <InputFileOpen id='fileopen' type='file'
-          innerRef={(ref) => {this.open = ref}}
-          onChange={this.openFile} />
+        <ItemSetting vertical><a
+          ref={(ref) => {this.open = ref}}
+          onClick={this.openFile}>開く</a></ItemSetting>
       </DivMenu>
     )
   }
@@ -152,6 +137,8 @@ Menu.propTypes = {
   createNewFile: PropTypes.any,
   printSegments: PropTypes.any,
   print: PropTypes.any,
+  setShowFileDialog: PropTypes.func,
+  updateFilelist: PropTypes.func,
 }
 
 export default Menu

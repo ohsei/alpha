@@ -13,14 +13,13 @@ const DivJan = styled(ContentEditable)`
   width: 95%;
   font-size: ${props => props.fontSize}
 `
-let isChanged = false
+
 class Sentences extends Component{
   constructor (props){
     super(props)
     this.getHeight = this.getHeight.bind(this)
     this.onDownChange = this.onDownChange.bind(this)
     this.onUpChange = this.onUpChange.bind(this)
-    this.keyDown = this.keyDown.bind(this)
     this.onFocus = this.onFocus.bind(this)
     this.setBold = this.setBold.bind(this)
     this.setColor = this.setColor.bind(this)
@@ -41,6 +40,7 @@ class Sentences extends Component{
     addTabNode: PropTypes.func,
     delTabNode: PropTypes.func,
     setCurSegment: PropTypes.func,
+    setCurComponent: PropTypes.func,
     updateTabNode: PropTypes.func,
   }
 
@@ -68,40 +68,37 @@ class Sentences extends Component{
     this.props.updateJaHtml({jaHtml: this.downJaHtml.htmlEl.innerHTML})
   }
 
-  keyDown (event){
-
-  }
-
-  onFocus (event){
-    const {id, setCurSegment} = this.props
+  onFocus (){
+    const {id, setCurSegment, setCurComponent} = this.props
     setCurSegment(id)
+    setCurComponent(this.sentence)
   }
 
   componentDidUpdate (){
     const {id, tabNodeList, updateTabNode} = this.props
     const upJaNode = () => { return (this.upJaHtml ? this.upJaHtml.htmlEl : null)}
     const enNode = this.sentence.inputText.htmlEl
-    const downJaNode = () => {return(this.downJaHtml ? this.downJaHtml.htmlEl : null)}
+    const downJaNode = () => {return (this.downJaHtml ? this.downJaHtml.htmlEl : null)}
 
     let node = []
 
     if (upJaNode()){
-      node=[{label: 'up', node: upJaNode()}, {label: 'en', node: enNode}]
-    } 
+      node = [{label: 'up', node: upJaNode()}, {label: 'en', node: enNode}]
+    }
     else if (downJaNode()){
-      node=[{label: 'en', node: enNode}, {label: 'down', node: downJaNode()}]
+      node = [{label: 'en', node: enNode}, {label: 'down', node: downJaNode()}]
     }
-    else{
-      node=[{label: 'en', node: enNode}]
+    else {
+      node = [{label: 'en', node: enNode}]
     }
-    
+
     let i = 0
     let tabNode = tabNodeList[i]
 
     while (tabNodeList[i].id != id){
       i++
     }
-   /* const tabNode = tabNodeList.find((tabNode) => {
+    /* const tabNode = tabNodeList.find((tabNode) => {
       return (tabNode.id === id);
     })*/
 
@@ -110,7 +107,7 @@ class Sentences extends Component{
         updateTabNode({id: id, node: node})
       }
       else {
-        for(let i=0;i<node.length;i++){
+        for (let i = 0;i < node.length;i++){
           if (tabNode.node[i].label != node[i].label){
             updateTabNode({id: id, node: node})
             return
@@ -121,23 +118,23 @@ class Sentences extends Component{
   }
 
   componentDidMount (){
-    const {id, addTabNode, setting} = this.props
+    const {id, addTabNode} = this.props
     const upJaNode = () => { return (this.upJaHtml ? this.upJaHtml.htmlEl : null)}
     const enNode = this.sentence.inputText.htmlEl
-    const downJaNode = () => {return(this.downJaHtml ? this.downJaHtml.htmlEl : null)}
+    const downJaNode = () => {return (this.downJaHtml ? this.downJaHtml.htmlEl : null)}
 
     let node = []
 
     if (upJaNode()){
-      node=[{label: 'up', node: upJaNode()}, {label: 'en', node: enNode}]
-    } 
+      node = [{label: 'up', node: upJaNode()}, {label: 'en', node: enNode}]
+    }
     else if (downJaNode()){
-      node=[{label: 'en', node: enNode}, {label: 'down', node: downJaNode()}]
+      node = [{label: 'en', node: enNode}, {label: 'down', node: downJaNode()}]
     }
-    else{
-      node=[{label: 'en', node: enNode}]
+    else {
+      node = [{label: 'en', node: enNode}]
     }
-    
+
     addTabNode({id: id, node: node })
   }
 
@@ -150,7 +147,7 @@ class Sentences extends Component{
     const {segContent, id, setting, isPrint, curSegmentNo, updateTabNode} = this.props
     const upJaSize = setting.upJaSize
     const downJaSize = setting.downJaSize
-  
+
     return (
       <DivSentences
         onFocus={this.onFocus}

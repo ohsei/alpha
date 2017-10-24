@@ -27,6 +27,7 @@ class Segments extends Component{
     setImg: PropTypes.func,
     delSegment: PropTypes.func,
     setCurSegment: PropTypes.func,
+    setCurComponent: PropTypes.func,
     updateHtml: PropTypes.func,
     updateJaHtml: PropTypes.func,
     addTabNode: PropTypes.func,
@@ -38,15 +39,17 @@ class Segments extends Component{
 
   onKeyDown (event){
     const {tabNodeList} = this.props
-    if (tabNodeList.length>0 && event.keyCode == 9){
-      const length =  tabNodeList[tabNodeList.length-1].node.length
-      if (event.target == tabNodeList[tabNodeList.length-1].node[length-1].node){
+
+    if (tabNodeList.length > 0 && event.keyCode == 9){
+      const length =  tabNodeList[tabNodeList.length - 1].node.length
+
+      if (event.target == tabNodeList[tabNodeList.length - 1].node[length - 1].node){
         event.preventDefault()
         tabNodeList[0].node[0].node.focus()
       }
     }
   }
-    
+
   setBold (){
     this.segment.setBold()
   }
@@ -61,35 +64,36 @@ class Segments extends Component{
   }
   render (){
     const { width, note, title, setting, curSegmentNo, isPrint, tabNodeList,
-      updateHtml, updateJaHtml, addSegment, delSegment, addPageBreak,setCurSegment,
+      updateHtml, updateJaHtml, addSegment, delSegment, addPageBreak, setCurSegment, setCurComponent,
       setType, setImg, addTabNode, delTabNode, updateTabNode, updateImage} = this.props
-    const segList = note.map((obj, i) =>{
-      return(
-      <Segment
-        ref={ref => this.segment = ref}
-        isPrint={isPrint}
-        width={width}
-        key={i}
-        id={i}
-        title={title}
-        tabNodeList={tabNodeList}
-        curSegmentNo={curSegmentNo}
-        addSegment={addSegment}
-        delSegment={delSegment}
-        setCurSegment={setCurSegment}
-        segContent={note[i]}
-        setType={setType}
-        setImg={setImg}
-        setting={setting}
-        updateHtml={updateHtml}
-        updateJaHtml={updateJaHtml}
-        addPageBreak={addPageBreak}
-        addTabNode={addTabNode}
-        delTabNode={delTabNode}
-        updateTabNode={updateTabNode}
-        updateImage={updateImage}
-      />)
-      }
+    const segList = note.map((obj, i) => {
+      return (
+        <Segment
+          ref={ref => this.segment = ref}
+          isPrint={isPrint}
+          width={width}
+          key={i}
+          id={i}
+          title={title}
+          tabNodeList={tabNodeList}
+          curSegmentNo={curSegmentNo}
+          addSegment={addSegment}
+          delSegment={delSegment}
+          setCurSegment={setCurSegment}
+          setCurComponent={setCurComponent}
+          segContent={note[i]}
+          setType={setType}
+          setImg={setImg}
+          setting={setting}
+          updateHtml={updateHtml}
+          updateJaHtml={updateJaHtml}
+          addPageBreak={addPageBreak}
+          addTabNode={addTabNode}
+          delTabNode={delTabNode}
+          updateTabNode={updateTabNode}
+          updateImage={updateImage}
+        />)
+    }
     )
 
     return (

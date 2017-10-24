@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled, { injectGlobal } from 'styled-components'
-import html2canvas from 'html2canvas'
+
 import {getBrowserType} from '../utils/browserType'
 import Flines_block_Regular_chrome from '../resources/font/4lines_block-Regular.otf'
 import Flines_block_Regular_ie from '../resources/font/4lines_block-regular-webfont.eot'
@@ -9,7 +9,6 @@ import Menu from './Menu/Menu'
 import Segments from './SegmentPart/Segments'
 import PrintNote from './Print/PrintNote'
 import FileDialog from './Menu/FileDialog'
-
 import ColorPicker from './ColorPicker'
 
 injectGlobal`
@@ -46,7 +45,7 @@ const DivOverlap = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(222,222,222,0.5);
-  display: ${props => props.show ? 'block': 'none'}
+  display: ${props => props.show ? 'block' : 'none'}
 `
 const DivFixed = styled.div.attrs({
   tabIndex: -1,
@@ -106,11 +105,6 @@ const DivSegments = styled.div`
     margin: 0;
     padding: 0;
   }
-`
-const InSetColor = styled.input.attrs({
-  tabIndex: -1,
-})`
-  height: 50px;
 `
 const Button = styled.button.attrs({
   tabIndex: -1,
@@ -175,7 +169,6 @@ const defaultSetting = {
   interval: '24pt',
   lineNos: 0,
 }
-const browserType = getBrowserType()
 
 const PrintOrientation = (object) => {
   if (object.layout == 'landscape'){
@@ -228,6 +221,8 @@ class Main extends Component {
       tabNodeList: [],
       isShowFileDialog: false,
       isShowMenu: false,
+      curComponent: null,
+      isFileListUpdated: false,
     }
     /* 編集中セグメントの選択 */
     this.setCurSegment = this.setCurSegment.bind(this)
@@ -265,12 +260,17 @@ class Main extends Component {
 
     this.updateHtml = this.updateHtml.bind(this)
     this.updateJaHtml = this.updateJaHtml.bind(this)
-    this.onKeyDown = this.onKeyDown.bind(this)
     this.addTabNode = this.addTabNode.bind(this)
     this.delTabNode = this.delTabNode.bind(this)
     this.updateTabNode = this.updateTabNode.bind(this)
     this.updateImage = this.updateImage.bind(this)
     this.setShowFileDialog = this.setShowFileDialog.bind(this)
+    this.setCurComponent = this.setCurComponent.bind(this)
+    this.updateFilelist = this.updateFilelist.bind(this)
+  }
+
+  setCurComponent (curComponent) {
+    this.setState({curComponent: curComponent})
   }
 
   createNewFile (){
@@ -300,6 +300,7 @@ class Main extends Component {
     this.setState({isBoldBtnActive: false})
     this.setState({isItalicBtnActive: false})
     this.setState({isUnderLineBtnActive: false})
+    this.setState({curComponent: null})
   }
 
 
@@ -356,7 +357,7 @@ class Main extends Component {
       note[i].id++
     }
     curNo++
-    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', jaHtml: '', dataUrl: '', isPageBreak: false, offsetHeight: 0, imgWidth: 0, imgHeight: 0, posX: 20, posY: 20,})
+    note.splice(curNo, 0, {id: curNo, type: 'txtOnly', html: '', jaHtml: '', dataUrl: '', isPageBreak: false, offsetHeight: 0, imgWidth: 0, imgHeight: 0, posX: 20, posY: 20, })
 
     this.setState({note: note})
     this.setCurSegment(curNo)
@@ -375,7 +376,7 @@ class Main extends Component {
   }
 
   updateHtml (object){
-    const note = this.state.note 
+    const note = this.state.note
     note[this.state.curSegmentNo].html = object.html
     note[this.state.curSegmentNo].offsetHeight = object.offsetHeight
     this.setState({note: note})
@@ -389,24 +390,21 @@ class Main extends Component {
 
   setCurSegment (curNo) {
     this.setState({curSegmentNo: curNo})
-    
-   // this.colorChange.value = '#000000'
   }
 
   setBold (){
-     this.segments.setBold()
+    this.state.curComponent.setBold()
   }
   setItalic (){
-    this.segments.setItalic()
+    this.state.curComponent.setItalic()
   }
 
   setUnderline (){
-    this.segments.setUnderline()
+    this.state.curComponent.setUnderline()
   }
 
   setColor (color){
-    this.segments.setColor(color)
-
+    this.state.curComponent.setColor(color)
   }
 
   setImg (object){
@@ -420,6 +418,7 @@ class Main extends Component {
     let note = this.state.note
     note[object.id].type = object.type
     this.setState({note: note})
+
     if (object.id != this.state.curSegmentNo){
       this.setState({curSegmentNo: object.id})
     }
@@ -434,27 +433,18 @@ class Main extends Component {
     this.addSegment(id)
 
     this.setState({note: note})
-    
   }
 
   print (){
-
     if (this.state.isPrint == true){
       this.PrintNote.onClearLoadstateArray()
     } else {
       this.setState({isPrint: true})
     }
-
   }
 
   printFinish (){
     this.setState({isPrint: false})
-  }
-
-  onKeyDown (event){
-    if (event.keyCode==9){
-      console.log('child count: %d', this.div.childElementCount)
-    }
   }
 
   addTabNode (object){
@@ -466,6 +456,7 @@ class Main extends Component {
   delTabNode (id){
     let tabNodeList = this.state.tabNodeList
     let i = 0
+
     while (tabNodeList[i].id != id){
       i++
     }
@@ -489,9 +480,16 @@ class Main extends Component {
     this.setState({note: note})
   }
 
+  updateFilelist (status) {
+    this.setState({isFileListUpdated: status})
+  }
+  componentDidMount (){
+    this.colorChange.setColor({r: 0, g: 0, b: 0, a: 1})
+  }
+
   render () {
     return (
-      <div onKeyDown={this.onKeyDown} ref={ref=>this.div=ref} >
+      <div onKeyDown={this.onKeyDown} ref={ref => this.div = ref} >
         <PrintOrientation layout={this.state.setting.layout} />
         <DivBg innerRef={ref => this.bg = ref} isPrint={this.state.isPrint} fileDialog={this.state.isShowFileDialog}>
           <DivFixed>
@@ -517,6 +515,7 @@ class Main extends Component {
                 createNewFile={this.createNewFile}
                 print={this.print}
                 setShowFileDialog={this.setShowFileDialog}
+                updateFilelist={this.updateFilelist}
               />
             </DivMenu>
             <StyleEditArea>
@@ -559,6 +558,7 @@ class Main extends Component {
               delSegment={this.delSegment}
               addPageBreak={this.addPageBreak}
               setCurSegment={this.setCurSegment}
+              setCurComponent={this.setCurComponent}
               updateHtml={this.updateHtml}
               updateJaHtml={this.updateJaHtml}
               setType={this.setType}
@@ -572,7 +572,10 @@ class Main extends Component {
           </DivSegments>
           <DivOverlap show={this.state.isShowFileDialog}>
             <FileDialog show={this.state.isShowFileDialog}
-            setShowFileDialog={this.setShowFileDialog} />
+              setShowFileDialog={this.setShowFileDialog}
+              loadFile={this.loadFile}
+              isFileListUpdated={this.state.isFileListUpdated}
+              updateFilelist={this.updateFilelist} />
           </DivOverlap>
         </DivBg>
         <PrintNote
@@ -588,7 +591,7 @@ class Main extends Component {
           addSentence={this.addSentence}
           delSentence={this.delSentence}
           namelist={[{id: 0, name: '四線太郎'}]} />
-        
+
       </div>
     )
   }
