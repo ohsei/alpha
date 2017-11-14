@@ -1,9 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Main from './components/Main'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
 
+import reducer from './redux/reducer'
+import MainContainer from './components/MainContainer'
+
+let store = createStore(reducer)
 
 ReactDOM.render(
-  <Main />,
+  <Provider store={store}>
+    <MainContainer />
+  </Provider>,
   document.getElementById('root'),
 )

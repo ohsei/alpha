@@ -1,51 +1,16 @@
-const dbName = 'fileSaveDB'
-const tblName = 'fileList'
+import {
+  dbName,
+  tblName,
+  GET_ALL_FILE,
+  GET_ONE_FILE,
+  SAVE_ONE_FILE,
+  DEL_ONE_FILE,
+} from './const.js'
+
 let fileList = []
 
-export const InitDB = (callback) => {
-  const openReq = indexedDB.open(dbName, 1)
-
-  openReq.onupgradeneeded = () => {
-    console.log('initdb')
-    var db = openReq.result
-    db.createObjectStore(tblName, {keyPath: 'filename'})
-  }
-
-  openReq.onsuccess = (event) => {
-    var db = event.target.result
-    db.close()
-  }
-
-  openReq.onblocked = () => {
-    console.log ('open blocked')
-  }
-}
-
-export const setItem = (fileObj) => {
+export const dbOperate = (pattern, operateJson) => {
   const openReq = indexedDB.open(dbName)
-
-  openReq.onsuccess = () => {
-    var db = openReq.result
-    var trans = db.transaction(tblName, 'readwrite')
-    var store = trans.objectStore(tblName)
-
-    var putQuery = store.put({filename: fileObj.filename, data: fileObj.data, createtime: new Date()})
-
-    putQuery.onsuccess = () => {
-      console.log('put data success')
-    }
-
-    trans.oncomplete = function (){
-      // トランザクション完了時(putReq.onsuccessの後)に実行
-      console.log('transaction complete')
-      db.close()
-    }
-  }
-}
-
-export const dbOperate = (pattern, callback, fileObj, filename, getCallback, overWriteCallback, deleteCallback) => {
-  const openReq = indexedDB.open(dbName)
-  fileList = []
 
   openReq.onblocked = () => {
     console.log ('open blocked')
@@ -68,63 +33,65 @@ export const dbOperate = (pattern, callback, fileObj, filename, getCallback, ove
     var req = null
 
     switch (pattern) {
-    case 0: {
+    case GET_ALL_FILE: {
+      fileList = []
       req = store.openCursor()
       break
     }
 
-    case 1: {
-      req = store.put({filename: fileObj.filename, data: fileObj.data, createtime: new Date()})
+    case SAVE_ONE_FILE: {
+      const fileObj = operateJson.fileObj
+      req = store.put(
+        {
+          filename: fileObj.filename,
+          data: fileObj.data,
+          createtime: new Date()
+        }
+      )
       break
     }
 
-    case 3: {
+    case GET_ONE_FILE: {
+      const filename = operateJson.filename
       req = store.get(filename)
       break
     }
 
-    case 4: {
-      req = store.get(filename)
-      break
-    }
-
-    case 5: {
+    case DEL_ONE_FILE: {
+      const filename = operateJson.filename
       req = store.delete(filename)
       break
     }
     }
 
-    var i = 0
-
     req.onsuccess = function (event){
 
-      if (pattern == 0){
+      if (pattern == GET_ALL_FILE){
         var cursor = event.target.result
 
         if (cursor){
           fileList.push(cursor.value.filename)
-          i++
           cursor.continue()
         }
       }
 
-      if (pattern == 3){
-        getCallback(event.target.result)
+      if (pattern == GET_ONE_FILE){
+        operateJson.callback(event.target.result)
       }
 
-      if (pattern == 4){
-        overWriteCallback(event.target.result)
+      if (pattern == SAVE_ONE_FILE){
+        operateJson.callback()
       }
 
     }
 
     trans.oncomplete = () => {
-      if (pattern == 0){
-        callback()
+      if (pattern == GET_ALL_FILE){
+        operateJson.callback()
       }
 
-      if (pattern == 5){
-        deleteCallback()
+      if (pattern == DEL_ONE_FILE){
+        operateJson.callback()
       }
       db.close()
     }

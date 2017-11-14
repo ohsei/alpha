@@ -5,3 +5,7 @@ body{
   background-size: cover;
   width: 100%;
 }
+
+*:focus {
+  outline: none;
+}

@@ -1,0 +1,3 @@
+export const UPDATE_PRINT_STATUS = 'printNote/UPDATE_PRINT_STATUS'
+
+export const UPDATE_LOADED_ARRAY = 'printNote/UPDATE_LOADED_ARRAY'
